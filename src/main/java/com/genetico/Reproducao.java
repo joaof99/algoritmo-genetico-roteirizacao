@@ -37,9 +37,7 @@ public class Reproducao {
 
             System.out.println("Imprimindo população de filhos, de tamanho: " + segundaPopulacao.size());
             segundaPopulacao
-                    .forEach(cromossomo -> {
-                        System.out.println(cromossomo.formatarGenes());
-                    });
+                    .forEach(cromossomo -> System.out.println(cromossomo.formatarGenes()));
 
             segundaPopulacao.clear();
 
