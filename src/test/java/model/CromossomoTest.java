@@ -24,7 +24,7 @@ public class CromossomoTest {
     @Test
     @DisplayName("Valor do fitness deve ser calculado corretamente")
     public void valorDoFitnessDeveSeCalculadoCorretamente() {
-        try (MockedStatic<CalculadorDistancias> calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
+        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
             calculadorDeDistancias
                     .when(CalculadorDistancias::getDistancias)
                     .thenReturn(inicializarDistanciasFixas());
@@ -36,7 +36,7 @@ public class CromossomoTest {
     }
 
     private int[][] inicializarDistanciasFixas() {
-        int[][] distancias = new int[Cromossomo.QTDE_MAXIMA_GENES][Cromossomo.QTDE_MAXIMA_GENES];
+        var distancias = new int[Cromossomo.QTDE_MAXIMA_GENES][Cromossomo.QTDE_MAXIMA_GENES];
 
         distancias[0][0] = 10;
         distancias[0][1] = 10;
@@ -207,7 +207,7 @@ public class CromossomoTest {
             int[] pontosCorteFixos,
             String genesEsperadosFilho1,
             String genesEsperadosFilho2) {
-        try (MockedStatic<CalculadorDistancias> calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
+        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
             calculadorDeDistancias
                     .when(CalculadorDistancias::getDistancias)
                     .thenReturn(inicializarDistanciasFixas());

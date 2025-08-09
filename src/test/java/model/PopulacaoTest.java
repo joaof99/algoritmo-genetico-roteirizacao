@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.MockedStatic;
 
 import java.util.ArrayList;
 import java.util.stream.Stream;
@@ -30,7 +29,7 @@ public class PopulacaoTest {
     @Test
     @DisplayName(value = "deve ordenar os fitness dos cromossomos em ordem crescente")
     public void deveOrdenarOsFitnessDosCromossomosEmOrdemCrescente() {
-        try (MockedStatic<CalculadorDistancias> calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
+        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
             calculadorDeDistancias
                     .when(CalculadorDistancias::getDistancias)
                     .thenReturn(inicializarDistanciasFixas());
@@ -49,7 +48,7 @@ public class PopulacaoTest {
     @DisplayName("Deve selecionar corretamente o pai na roleta")
     @MethodSource("casosDeTesteParaSelecacaoRoleta")
     public void deveSelecionarCorretamenteOPaiNaRoleta(int numeroAleatorio, String formatacaoGenesEsperado) {
-        try (MockedStatic<CalculadorDistancias> calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
+        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
             calculadorDeDistancias
                     .when(CalculadorDistancias::getDistancias)
                     .thenReturn(inicializarDistanciasFixas());
@@ -64,7 +63,7 @@ public class PopulacaoTest {
     }
 
     private int[][] inicializarDistanciasFixas() {
-        int[][] distancias = new int[Cromossomo.QTDE_MAXIMA_GENES][Cromossomo.QTDE_MAXIMA_GENES];
+        var distancias = new int[Cromossomo.QTDE_MAXIMA_GENES][Cromossomo.QTDE_MAXIMA_GENES];
 
         distancias[0][0] = 10;
         distancias[0][1] = 10;
