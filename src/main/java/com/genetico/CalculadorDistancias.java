@@ -6,9 +6,9 @@ import java.util.Random;
 
 public class CalculadorDistancias {
 
-    public static final int[][] distancias = inicializarDistancias();
+    private static final int[][] distancias = inicializarDistanciasAleatoriamente();
 
-    public static int[][] inicializarDistancias() {
+    public static int[][] inicializarDistanciasAleatoriamente() {
         var distancias = new int[Cromossomo.QTDE_MAXIMA_GENES][Cromossomo.QTDE_MAXIMA_GENES];
         var randomizadorNumeros = new Random();
 
@@ -18,6 +18,10 @@ public class CalculadorDistancias {
             }
         }
 
+        return distancias;
+    }
+
+    public static int[][] getDistancias() {
         return distancias;
     }
 }
