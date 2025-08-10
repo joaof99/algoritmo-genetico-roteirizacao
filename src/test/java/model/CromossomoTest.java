@@ -23,7 +23,7 @@ public class CromossomoTest {
     @ParameterizedTest
     @MethodSource("casosDeTesteParaCalculoFitness")
     @DisplayName("Valor do fitness deve ser calculado corretamente")
-    public void valorDoFitnessDeveSeCalculadoCorretamente(int[] genesFixos, int[][] distanciasFixas) {
+    public void valorDoFitnessDeveSeCalculadoCorretamente(int[] genesFixos, int[][] distanciasFixas, int fitnessEsperado) {
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
             calculadorDeDistancias
                     .when(CalculadorDistancias::getDistancias)
@@ -31,14 +31,15 @@ public class CromossomoTest {
 
             var cromossomo = new Cromossomo(genesFixos);
 
-            assertEquals(70, cromossomo.getFitness());
+            assertEquals(fitnessEsperado, cromossomo.getFitness());
         }
     }
 
     private static Stream<Arguments> casosDeTesteParaCalculoFitness() {
         return Stream.of(
                 Arguments.of(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-                        inicializarDistanciasFixas()
+                        inicializarDistanciasFixas(),
+                        70
                 )
         );
     }
