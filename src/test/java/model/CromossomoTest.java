@@ -31,13 +31,6 @@ public class CromossomoTest {
 
             var cromossomo = new Cromossomo(genesFixos);
 
-            for (int i = 0; i < distanciasFixas.length; i++) {
-                for (int y = 0; y < distanciasFixas.length; y++) {
-                    System.out.print(String.format("[%d][%d] - %d ",  i, y,distanciasFixas[i][y]));
-                }
-                System.out.println();
-            }
-
             assertEquals(fitnessEsperado, cromossomo.getFitness());
         }
     }
