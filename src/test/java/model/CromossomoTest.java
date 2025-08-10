@@ -162,16 +162,6 @@ public class CromossomoTest {
         return distancias;
     }
 
-    private int[] inicializarValoresGenesFixos() {
-        var genesFixos = new int[Cromossomo.QTDE_MAXIMA_GENES];
-
-        for (int indice = 0; indice < genesFixos.length; indice++) {
-            genesFixos[indice] = indice;
-        }
-
-        return genesFixos;
-    }
-
     @Test
     @DisplayName(value = "Genes devem ser inicializados com o tamanho correto definido na constante")
     public void genesDevemSerInicializadosComOTamanhoCorreto() {
