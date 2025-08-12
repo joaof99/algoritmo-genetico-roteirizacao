@@ -171,12 +171,10 @@ public class CromossomoTest {
     @Test
     @DisplayName(value = "Genes devem ser formatados corretamente com caracter delimitador: |")
     public void genesDevemSerFormatadosCorretamenteAoImprimir() {
-        var padraoImpressaoCromossomo = "^(\\d+\\s\\|\\s)*\\d+$";
-
         boolean impressaoCromossomoEstaNoPadrao = new Individuo()
                 .getCromosso()
                 .formatarGenes()
-                .matches(padraoImpressaoCromossomo);
+                .matches("^(\\d+\\s\\|\\s)*\\d+$");
 
         assertTrue(impressaoCromossomoEstaNoPadrao);
     }
