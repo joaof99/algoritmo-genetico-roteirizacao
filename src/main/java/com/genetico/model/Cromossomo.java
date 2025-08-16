@@ -16,7 +16,6 @@ public class Cromossomo {
 
     public Cromossomo() {
         this.genes = inicializarGenes();
-        this.fitness = 0;
         this.fitness = calcularFitness();
     }
 
@@ -26,7 +25,6 @@ public class Cromossomo {
         }
 
         this.genes = genes;
-        this.fitness = 0;
         this.fitness = calcularFitness();
     }
 
