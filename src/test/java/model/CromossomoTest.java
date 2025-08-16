@@ -3,7 +3,6 @@ package model;
 import com.genetico.CalculadorDistancias;
 import com.genetico.model.Cromossomo;
 import com.genetico.model.Individuo;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,13 +28,6 @@ public class CromossomoTest {
             calculadorDeDistancias
                     .when(CalculadorDistancias::getDistancias)
                     .thenReturn(distanciasFixas);
-
-            for (int i = 0; i < distanciasFixas.length; i++) {
-                for (int y = 0; y < distanciasFixas.length; y++) {
-                    System.out.print(String.format("[%d][%d] - %d ",  i, y,distanciasFixas[i][y]));
-                }
-                System.out.println();
-            }
 
             assertEquals(fitnessEsperado, new Cromossomo(genesFixos).getFitness());
         }
