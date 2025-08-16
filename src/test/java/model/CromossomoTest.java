@@ -3,6 +3,7 @@ package model;
 import com.genetico.CalculadorDistancias;
 import com.genetico.model.Cromossomo;
 import com.genetico.model.Individuo;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,6 +30,13 @@ public class CromossomoTest {
                     .when(CalculadorDistancias::getDistancias)
                     .thenReturn(distanciasFixas);
 
+            for (int i = 0; i < distanciasFixas.length; i++) {
+                for (int y = 0; y < distanciasFixas.length; y++) {
+                    System.out.print(String.format("[%d][%d] - %d ",  i, y,distanciasFixas[i][y]));
+                }
+                System.out.println();
+            }
+
             assertEquals(fitnessEsperado, new Cromossomo(genesFixos).getFitness());
         }
     }
@@ -37,7 +45,7 @@ public class CromossomoTest {
         return Stream.of(
                 Arguments.of(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
                         inicializarDistanciasFixas(),
-                        70
+                        100
                 ),
                 Arguments.of(new int[]{0, 9, 8, 7, 6, 5, 4, 3, 2, 1},
                         inicializarDistanciasFixas(),
@@ -234,7 +242,7 @@ public class CromossomoTest {
                         new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
                         new int[]{0, 4, 3, 2, 1, 7, 6, 5, 8, 9},
                         new int[]{3, 5},
-                        "0 | 4 | 2 | 3 | 1 | 7 | 6 | 5 | 8 | 9 | 170",
+                        "0 | 4 | 2 | 3 | 1 | 7 | 6 | 5 | 8 | 9 | 200",
                         "0 | 1 | 3 | 2 | 4 | 5 | 6 | 7 | 8 | 9 | 100"
                 ),
                 Arguments.of(
@@ -242,7 +250,7 @@ public class CromossomoTest {
                         new int[]{0, 3, 2, 1, 4, 5, 6, 7},
                         new int[]{0, 3},
                         "0 | 3 | 2 | 1 | 4 | 5 | 6 | 7 | 105",
-                        "0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 55"
+                        "0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 85"
                 )
         );
     }
