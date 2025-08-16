@@ -61,6 +61,7 @@ public class CromossomoTest {
         distancias[0][9] = 90;
 
         distancias[1][0] = 15;
+        distancias[1][1] = 15;
         distancias[1][2] = 15;
         distancias[1][3] = 25;
         distancias[1][4] = 35;
@@ -73,6 +74,7 @@ public class CromossomoTest {
         distancias[2][0] = 10;
         distancias[2][1] = 10;
         distancias[2][2] = 10;
+        distancias[2][3] = 30;
         distancias[2][4] = 20;
         distancias[2][5] = 30;
         distancias[2][6] = 40;
