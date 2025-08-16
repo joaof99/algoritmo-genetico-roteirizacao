@@ -63,7 +63,7 @@ public class PopulacaoTest {
     }
 
     private int[][] inicializarDistanciasFixas() {
-        var distancias = new int[Cromossomo.QTDE_MAXIMA_GENES][Cromossomo.QTDE_MAXIMA_GENES];
+        var distancias = new int[10][10];
 
         distancias[0][0] = 10;
         distancias[0][1] = 10;

@@ -53,9 +53,9 @@ public class Cromossomo {
     private int calcularFitness() {
         var fitness = 0;
 
-        for (int i = 0; i < this.genes.length - 1; i++) {
-            var cidadeOrigem = this.genes[i];
-            var cidadeDestino = this.genes[i + 1];
+        for (int indice = 0; indice < this.genes.length - 1; indice++) {
+            var cidadeOrigem = this.genes[indice];
+            var cidadeDestino = this.genes[indice + 1];
 
             fitness += CalculadorDistancias.getDistancias()[cidadeOrigem][cidadeDestino];
         }

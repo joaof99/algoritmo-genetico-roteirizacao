@@ -29,9 +29,7 @@ public class CromossomoTest {
                     .when(CalculadorDistancias::getDistancias)
                     .thenReturn(distanciasFixas);
 
-            var cromossomo = new Cromossomo(genesFixos);
-
-            assertEquals(fitnessEsperado, cromossomo.getFitness());
+            assertEquals(fitnessEsperado, new Cromossomo(genesFixos).getFitness());
         }
     }
 
