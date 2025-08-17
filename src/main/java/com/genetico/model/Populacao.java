@@ -34,7 +34,6 @@ public class Populacao {
 
     private List<Cromossomo> avaliarPopulacao(List<Cromossomo> cromossomos) {
         var cromossomoOrdenado = new ArrayList<>(cromossomos);
-
         cromossomoOrdenado.sort(Comparator.comparingInt(Cromossomo::getFitness));
 
         return cromossomoOrdenado;
