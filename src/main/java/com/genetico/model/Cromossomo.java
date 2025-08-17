@@ -16,7 +16,7 @@ public class Cromossomo {
     private int fitness;
 
     public Cromossomo() {
-        this.genes = inicializarGenes();
+        this.genes = inicializarGenesPosicoesAleatorias();
         this.fitness = calcularFitness();
     }
 
@@ -29,7 +29,7 @@ public class Cromossomo {
         this.fitness = calcularFitness();
     }
 
-    private int[] inicializarGenes() {
+    private int[] inicializarGenesPosicoesAleatorias() {
         var genes = new int[QTDE_MAXIMA_GENES];
         genes[0] = VALOR_GENE_ORIGEM;
 

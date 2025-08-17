@@ -55,7 +55,7 @@ public class PopulacaoTest {
 
             var populacao = spy(inicializarPopulacaoTeste());
 
-            doReturn(numeroAleatorio).when(populacao).gerarNumeroAleatorio(anyInt());
+            doReturn(numeroAleatorio).when(populacao).gerarNumeroAleatorioMaximoFitness(anyInt());
 
             var cromossomoPai = populacao.selecionarCromossomoPaiPorRoleta();
             assertEquals(formatacaoGenesEsperado, cromossomoPai.formatarGenes());

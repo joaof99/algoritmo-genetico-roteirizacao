@@ -53,22 +53,11 @@ public class Populacao {
 
             var filhosCrossover = pai1.realizarCrossoverPmx(pai2, new Random());
 
-            System.out.println("Pai 1:");
-            System.out.println(pai1.formatarGenes());
-            System.out.println("Pai 2:");
-            System.out.println(pai2.formatarGenes());
-
             var filho1Crossover = filhosCrossover.getFirst();
             var filho2Crossover = filhosCrossover.getLast();
 
             filho1Crossover.atualizarFitness();
             filho2Crossover.atualizarFitness();
-
-            System.out.println("Filho 1:");
-            System.out.println(filho1Crossover.formatarGenes());
-
-            System.out.println("Filho 2:");
-            System.out.println(filho2Crossover.formatarGenes());
 
             filhos.add(filho1Crossover);
             filhos.add(filho2Crossover);
@@ -92,14 +81,14 @@ public class Populacao {
         var indicePaiEscolhido = 0;
         var fitnessTotalPopulacao = calcularSomaFitnessTotalDaPopulacao();
 
-        var somaTotalFitness = 0;
+        var somaTotalFitnessIteracoes = 0;
 
-        var numeroAleatorio = gerarNumeroAleatorio(fitnessTotalPopulacao);
+        var numeroAleatorioMaximoFitness = gerarNumeroAleatorioMaximoFitness(fitnessTotalPopulacao);
 
         for (int indice = 0; indice < TAMANHO_POPULACAO; indice++) {
-            somaTotalFitness += this.cromossomos.get(indice).getFitness();
+            somaTotalFitnessIteracoes += this.cromossomos.get(indice).getFitness();
 
-            if (somaTotalFitness >= numeroAleatorio) {
+            if (somaTotalFitnessIteracoes >= numeroAleatorioMaximoFitness) {
                 indicePaiEscolhido = indice;
                 break;
             }
@@ -108,7 +97,7 @@ public class Populacao {
         return this.cromossomos.get(indicePaiEscolhido);
     }
 
-    public int gerarNumeroAleatorio(int fitnessTotalPopulacao) {
+    public int gerarNumeroAleatorioMaximoFitness(int fitnessTotalPopulacao) {
         return randomizador.nextInt(fitnessTotalPopulacao);
     }
 
