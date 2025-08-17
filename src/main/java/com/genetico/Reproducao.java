@@ -11,15 +11,22 @@ public class Reproducao {
     }
 
     private static void reproduzir() {
-        var populacaoInicial = new Populacao();
+        var populacao = new Populacao();
+        var contadorGeracoes = 0;
 
         System.out.println("População inicial");
-        populacaoInicial.imprimirPopulacao();
+        populacao.imprimirPopulacao();
 
-        var novaPopulacao = populacaoInicial.gerarPopulacaoFilha();
+        while (contadorGeracoes < QTDE_GERACOES) {
+            var novaPopulacao = populacao.gerarPopulacaoFilha();
+            populacao = new Populacao(novaPopulacao.getCromossomos());
 
-        System.out.println("População filha "+novaPopulacao.getCromossomos().size());
-        novaPopulacao.imprimirPopulacao();
+            System.out.println("Geração " + (contadorGeracoes + 1));
+            populacao.imprimirPopulacao();
+            contadorGeracoes++;
+        }
 
+        System.out.println("População final");
+        populacao.imprimirPopulacao();
     }
 }
