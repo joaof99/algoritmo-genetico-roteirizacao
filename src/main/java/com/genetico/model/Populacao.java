@@ -44,14 +44,48 @@ public class Populacao {
         for (var cromossomo : cromossomos) System.out.println(cromossomo.formatarGenes());
     }
 
-    public void reproduzir() {
-        var pai1 = selecionarCromossomoPaiPorRoleta();
-        var pai2 = selecionarCromossomoPaiPorRoleta();
+    public Populacao gerarPopulacaoFilha() {
+        var filhos = new ArrayList<Cromossomo>();
 
-        var filhos = pai1.realizarCrossoverPmx(pai2, new Random());
+        do {
+            var pai1 = selecionarCromossomoPaiPorRoleta();
+            var pai2 = selecionarCromossomoPaiPorRoleta();
 
-        var filho1 = filhos.getFirst();
-        var filho2 = filhos.getLast();
+            var filhosCrossover = pai1.realizarCrossoverPmx(pai2, new Random());
+
+            System.out.println("Pai 1:");
+            System.out.println(pai1.formatarGenes());
+            System.out.println("Pai 2:");
+            System.out.println(pai2.formatarGenes());
+
+            var filho1Crossover = filhosCrossover.getFirst();
+            var filho2Crossover = filhosCrossover.getLast();
+
+            filho1Crossover.atualizarFitness();
+            filho2Crossover.atualizarFitness();
+
+            System.out.println("Filho 1:");
+            System.out.println(filho1Crossover.formatarGenes());
+
+            System.out.println("Filho 2:");
+            System.out.println(filho2Crossover.formatarGenes());
+
+            filhos.add(filho1Crossover);
+            filhos.add(filho2Crossover);
+
+        } while (filhos.size() < Populacao.TAMANHO_POPULACAO);
+
+        var todosOsCromossomos = new ArrayList<Cromossomo>();
+        todosOsCromossomos.addAll(getCromossomos());
+        todosOsCromossomos.addAll(filhos);
+
+        var populacaoPaiComFilhos = new Populacao(todosOsCromossomos);
+
+        var melhoresCromosomosNovaPopulacao = populacaoPaiComFilhos
+                .getCromossomos()
+                .subList(0, populacaoPaiComFilhos.getCromossomos().size() / 2);
+
+        return new Populacao(melhoresCromosomosNovaPopulacao);
     }
 
     public Cromossomo selecionarCromossomoPaiPorRoleta() {
@@ -75,7 +109,7 @@ public class Populacao {
     }
 
     public int gerarNumeroAleatorio(int fitnessTotalPopulacao) {
-        return randomizador.nextInt() * fitnessTotalPopulacao;
+        return randomizador.nextInt(fitnessTotalPopulacao);
     }
 
     private int calcularSomaFitnessTotalDaPopulacao() {

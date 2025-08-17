@@ -1,6 +1,7 @@
 package com.genetico.model;
 
 import com.genetico.CalculadorDistancias;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -61,6 +62,10 @@ public class Cromossomo {
         }
 
         return fitness;
+    }
+
+    public void atualizarFitness() {
+        calcularFitness();
     }
 
     public List<Cromossomo> realizarCrossoverPmx(Cromossomo pai2, Random random) {
