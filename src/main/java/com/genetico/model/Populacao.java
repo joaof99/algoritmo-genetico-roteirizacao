@@ -44,13 +44,31 @@ public class Populacao {
     }
 
     public Populacao gerarPopulacaoFilha() {
+        var filhos = reproduzirAteFormarPopulacaoFilhos();
+
+        var todosOsCromossomos = new ArrayList<Cromossomo>();
+        todosOsCromossomos.addAll(this.getCromossomos());
+        todosOsCromossomos.addAll(filhos);
+
+        var populacaoPaiComFilhos = new Populacao(todosOsCromossomos);
+
+        var melhoresCromosomosNovaPopulacao = new ArrayList<>(
+                populacaoPaiComFilhos.getCromossomos()
+                        .subList(0, Populacao.TAMANHO_POPULACAO)
+        );
+
+        return new Populacao(melhoresCromosomosNovaPopulacao);
+    }
+
+    private List<Cromossomo> reproduzirAteFormarPopulacaoFilhos() {
         var filhos = new ArrayList<Cromossomo>();
+        var randomizador = new Random();
 
         do {
             var pai1 = selecionarCromossomoPaiPorRoleta();
             var pai2 = selecionarCromossomoPaiPorRoleta();
 
-            var filhosCrossover = pai1.realizarCrossoverPmx(pai2, new Random());
+            var filhosCrossover = pai1.realizarCrossoverPmx(pai2, randomizador);
 
             var filho1Crossover = filhosCrossover.getFirst();
             var filho2Crossover = filhosCrossover.getLast();
@@ -63,17 +81,7 @@ public class Populacao {
 
         } while (filhos.size() < Populacao.TAMANHO_POPULACAO);
 
-        var todosOsCromossomos = new ArrayList<Cromossomo>();
-        todosOsCromossomos.addAll(getCromossomos());
-        todosOsCromossomos.addAll(filhos);
-
-        var populacaoPaiComFilhos = new Populacao(todosOsCromossomos);
-
-        var melhoresCromosomosNovaPopulacao = populacaoPaiComFilhos
-                .getCromossomos()
-                .subList(0, populacaoPaiComFilhos.getCromossomos().size() / 2);
-
-        return new Populacao(melhoresCromosomosNovaPopulacao);
+        return filhos;
     }
 
     public Cromossomo selecionarCromossomoPaiPorRoleta() {
