@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -78,7 +79,9 @@ public class PopulacaoTest {
 
             var populacao = spy(inicializarPopulacaoTeste());
 
-            doReturn(numeroAleatorio).when(populacao).gerarNumeroAleatorioMaximoFitness(anyInt());
+            var random = mock(Random.class);
+            when(random.nextInt(anyInt())).thenReturn(numeroAleatorio);
+            doReturn(random).when(populacao).getRandomizador();
 
             var cromossomoPai = populacao.selecionarCromossomoPaiPorRoleta();
             assertEquals(formatacaoGenesEsperado, cromossomoPai.formatarGenes());

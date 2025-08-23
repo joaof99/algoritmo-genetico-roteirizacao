@@ -8,7 +8,7 @@ import java.util.Random;
 public class Populacao {
     private List<Cromossomo> cromossomos;
     private final int tamanhoPopulacao;
-    public final Random randomizador;
+    private Random randomizador;
 
     public Populacao(int tamanhoPopulacao) {
         this.tamanhoPopulacao = tamanhoPopulacao;
@@ -106,8 +106,8 @@ public class Populacao {
         return this.cromossomos.get(indicePaiEscolhido);
     }
 
-    public int gerarNumeroAleatorioMaximoFitness(int fitnessTotalPopulacao) {
-        return randomizador.nextInt(fitnessTotalPopulacao);
+    private int gerarNumeroAleatorioMaximoFitness(int fitnessTotalPopulacao) {
+        return getRandomizador().nextInt(fitnessTotalPopulacao);
     }
 
     private int calcularSomaFitnessTotalDaPopulacao() {
@@ -126,5 +126,9 @@ public class Populacao {
 
     public int getTamanhoPopulacao() {
         return this.tamanhoPopulacao;
+    }
+
+    public Random getRandomizador() {
+        return this.randomizador;
     }
 }
