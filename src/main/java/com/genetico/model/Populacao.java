@@ -7,15 +7,17 @@ import java.util.Random;
 
 public class Populacao {
     private List<Cromossomo> cromossomos;
-    public static final int TAMANHO_POPULACAO = 30;
+    private final int tamanhoPopulacao;
     public final Random randomizador;
 
-    public Populacao() {
+    public Populacao(int tamanhoPopulacao) {
+        this.tamanhoPopulacao = tamanhoPopulacao;
         this.cromossomos = avaliarPopulacao(iniciarPopulacaoAleatoriamente());
         this.randomizador = new Random();
     }
 
     public Populacao(List<Cromossomo> cromossomos) {
+        this.tamanhoPopulacao = cromossomos.size();
         this.cromossomos = avaliarPopulacao(cromossomos);
         this.randomizador = new Random();
     }
@@ -23,7 +25,7 @@ public class Populacao {
     private List<Cromossomo> iniciarPopulacaoAleatoriamente() {
         var cromossomos = new ArrayList<Cromossomo>();
 
-        for (int indice = 0; indice < TAMANHO_POPULACAO; indice++) {
+        for (int indice = 0; indice < getTamanhoPopulacao(); indice++) {
             var cromossomo = new Cromossomo();
 
             cromossomos.add(cromossomo);
@@ -54,7 +56,7 @@ public class Populacao {
 
         var melhoresCromosomosNovaPopulacao = new ArrayList<>(
                 populacaoPaiComFilhos.getCromossomos()
-                        .subList(0, Populacao.TAMANHO_POPULACAO)
+                        .subList(0, getTamanhoPopulacao())
         );
 
         return new Populacao(melhoresCromosomosNovaPopulacao);
@@ -79,7 +81,7 @@ public class Populacao {
             filhos.add(filho1Crossover);
             filhos.add(filho2Crossover);
 
-        } while (filhos.size() < Populacao.TAMANHO_POPULACAO);
+        } while (filhos.size() < getTamanhoPopulacao());
 
         return filhos;
     }
@@ -92,7 +94,7 @@ public class Populacao {
 
         var numeroAleatorioMaximoFitness = gerarNumeroAleatorioMaximoFitness(fitnessTotalPopulacao);
 
-        for (int indice = 0; indice < TAMANHO_POPULACAO; indice++) {
+        for (int indice = 0; indice < getTamanhoPopulacao(); indice++) {
             somaTotalFitnessIteracoes += this.cromossomos.get(indice).getFitness();
 
             if (somaTotalFitnessIteracoes >= numeroAleatorioMaximoFitness) {
@@ -120,5 +122,9 @@ public class Populacao {
 
     public List<Cromossomo> getCromossomos() {
         return this.cromossomos;
+    }
+
+    public int getTamanhoPopulacao() {
+        return this.tamanhoPopulacao;
     }
 }

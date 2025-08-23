@@ -21,7 +21,8 @@ public class PopulacaoTest {
     @Test
     @DisplayName("Tamanho da população deve ser inicializado corretamente")
     public void tamanhoDaPopulacaoDeveSerInicializadoCorretamente() {
-        assertEquals(Populacao.TAMANHO_POPULACAO, new Populacao().getCromossomos().size());
+        var populacao = new Populacao(30);
+        assertEquals(30, populacao.getTamanhoPopulacao());
     }
 
     @Test

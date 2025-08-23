@@ -11,7 +11,7 @@ public class Reproducao {
     }
 
     private static void reproduzir() {
-        var populacao = new Populacao();
+        var populacao = new Populacao(30);
         var contadorGeracoes = 0;
 
         System.out.println("População inicial");
