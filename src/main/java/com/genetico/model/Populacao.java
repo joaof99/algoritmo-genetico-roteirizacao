@@ -7,6 +7,7 @@ import java.util.Random;
 
 public class Populacao {
     private List<Cromossomo> cromossomos;
+    private static final int PROBABILIDADE_OCORRER_CROSSOVER = 50;
     private final int tamanhoPopulacao;
     private Random randomizador;
 
@@ -67,19 +68,25 @@ public class Populacao {
         var randomizador = new Random();
 
         do {
+            var porcentagemAleatoria = randomizador.nextInt(100) + 1;
             var pai1 = selecionarCromossomoPaiPorRoleta();
             var pai2 = selecionarCromossomoPaiPorRoleta();
+            Cromossomo filho1, filho2;
 
-            var filhosCrossover = pai1.realizarCrossoverPmx(pai2, randomizador);
+            if (porcentagemAleatoria <= PROBABILIDADE_OCORRER_CROSSOVER) {
+                var filhosCrossover = pai1.realizarCrossoverPmx(pai2, randomizador);
+                filho1 = filhosCrossover.getFirst();
+                filho2 = filhosCrossover.getLast();
 
-            var filho1Crossover = filhosCrossover.getFirst();
-            var filho2Crossover = filhosCrossover.getLast();
+                filho1.atualizarFitness();
+                filho2.atualizarFitness();
 
-            filho1Crossover.atualizarFitness();
-            filho2Crossover.atualizarFitness();
-
-            filhos.add(filho1Crossover);
-            filhos.add(filho2Crossover);
+                filhos.add(filho1);
+                filhos.add(filho2);
+            } else {
+               filhos.add(pai1);
+               filhos.add(pai2);
+            }
 
         } while (filhos.size() < getTamanhoPopulacao());
 
