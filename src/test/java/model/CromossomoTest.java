@@ -25,9 +25,13 @@ public class CromossomoTest {
     @DisplayName("Valor do fitness deve ser calculado corretamente")
     public void valorDoFitnessDeveSeCalculadoCorretamente(int[] genesFixos, int[][] distanciasFixas, int fitnessEsperado) {
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias
-                    .when(CalculadorDistancias::getDistancias)
-                    .thenReturn(distanciasFixas);
+            calculadorDeDistancias.when(() -> CalculadorDistancias.getDistancias(anyInt(), anyInt()))
+                    .thenAnswer(invocation -> {
+                        int origem = invocation.getArgument(0);
+                        int destino = invocation.getArgument(1);
+                        return distanciasFixas[origem][destino];
+                    });
+
 
             assertEquals(fitnessEsperado, new Cromossomo(genesFixos).getFitness());
         }
@@ -208,10 +212,14 @@ public class CromossomoTest {
             int[] pontosCorteFixos,
             String genesEsperadosFilho1,
             String genesEsperadosFilho2) {
+        var distanciasFixas = inicializarDistanciasFixas();
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias
-                    .when(CalculadorDistancias::getDistancias)
-                    .thenReturn(inicializarDistanciasFixas());
+            calculadorDeDistancias.when(() -> CalculadorDistancias.getDistancias(anyInt(), anyInt()))
+                    .thenAnswer(invocation -> {
+                        int origem = invocation.getArgument(0);
+                        int destino = invocation.getArgument(1);
+                        return distanciasFixas[origem][destino];
+                    });
 
             var pai1 = spy(new Cromossomo(genesFixos1));
             var pai2 = new Cromossomo(genesFixos2);

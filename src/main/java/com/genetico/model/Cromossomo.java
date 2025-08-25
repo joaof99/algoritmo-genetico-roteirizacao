@@ -58,7 +58,7 @@ public class Cromossomo {
             var cidadeOrigem = this.genes[indice];
             var cidadeDestino = this.genes[indice + 1];
 
-            fitness += CalculadorDistancias.getDistancias()[cidadeOrigem][cidadeDestino];
+            fitness += CalculadorDistancias.getDistancias(cidadeOrigem,cidadeDestino);
         }
 
         return fitness;

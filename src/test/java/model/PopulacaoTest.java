@@ -29,10 +29,14 @@ public class PopulacaoTest {
     @Test
     @DisplayName(value = "deve ordenar os fitness dos cromossomos em ordem crescente")
     public void deveOrdenarOsFitnessDosCromossomosEmOrdemCrescente() {
+        var distanciasFixas = inicializarDistanciasFixas();
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias
-                    .when(CalculadorDistancias::getDistancias)
-                    .thenReturn(inicializarDistanciasFixas());
+            calculadorDeDistancias.when(() -> CalculadorDistancias.getDistancias(anyInt(), anyInt()))
+                    .thenAnswer(invocation -> {
+                        int origem = invocation.getArgument(0);
+                        int destino = invocation.getArgument(1);
+                        return distanciasFixas[origem][destino];
+                    });
 
             var populacao = inicializarPopulacaoTeste();
 
@@ -72,10 +76,14 @@ public class PopulacaoTest {
     @DisplayName("Deve selecionar corretamente o pai na roleta")
     @MethodSource("casosDeTesteParaSelecacaoRoleta")
     public void deveSelecionarCorretamenteOPaiNaRoleta(int numeroAleatorio, String formatacaoGenesEsperado) {
+        var distanciasFixas = inicializarDistanciasFixas();
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias
-                    .when(CalculadorDistancias::getDistancias)
-                    .thenReturn(inicializarDistanciasFixas());
+            calculadorDeDistancias.when(() -> CalculadorDistancias.getDistancias(anyInt(), anyInt()))
+                    .thenAnswer(invocation -> {
+                        int origem = invocation.getArgument(0);
+                        int destino = invocation.getArgument(1);
+                        return distanciasFixas[origem][destino];
+                    });
 
             var populacao = spy(inicializarPopulacaoTeste());
 
