@@ -25,13 +25,12 @@ public class CromossomoTest {
     @DisplayName("Valor do fitness deve ser calculado corretamente")
     public void valorDoFitnessDeveSeCalculadoCorretamente(int[] genesFixos, int[][] distanciasFixas, int fitnessEsperado) {
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(() -> CalculadorDistancias.getDistancias(anyInt(), anyInt()))
+            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
                     .thenAnswer(invocation -> {
-                        int origem = invocation.getArgument(0);
-                        int destino = invocation.getArgument(1);
-                        return distanciasFixas[origem][destino];
+                        int indiceCidadeOrigem = invocation.getArgument(0);
+                        int indiceCidadeDestino = invocation.getArgument(1);
+                        return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
                     });
-
 
             assertEquals(fitnessEsperado, new Cromossomo(genesFixos).getFitness());
         }
@@ -214,11 +213,11 @@ public class CromossomoTest {
             String genesEsperadosFilho2) {
         var distanciasFixas = inicializarDistanciasFixas();
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(() -> CalculadorDistancias.getDistancias(anyInt(), anyInt()))
+            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
                     .thenAnswer(invocation -> {
-                        int origem = invocation.getArgument(0);
-                        int destino = invocation.getArgument(1);
-                        return distanciasFixas[origem][destino];
+                        int indiceCidadeOrigem = invocation.getArgument(0);
+                        int indiceCidadeDestino = invocation.getArgument(1);
+                        return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
                     });
 
             var pai1 = spy(new Cromossomo(genesFixos1));
@@ -253,5 +252,30 @@ public class CromossomoTest {
                         "0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 85"
                 )
         );
+    }
+
+    @Test
+    @DisplayName("Deve realizar mutação corretamente")
+    public void deveRealizarMutacaoCorretamente(){
+        var random = mock(Random.class);
+
+        var cromossomo = new Cromossomo(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}){
+            @Override
+            public Random getRandomizador() {
+                return random;
+            }
+
+            @Override
+            public int getFitness() {
+                return 1000;
+            }
+        };
+
+        when(random.nextInt(anyInt()))
+                .thenReturn(1)
+                .thenReturn(2);
+
+        cromossomo.realizarMutacao();
+        assertEquals("0 | 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1000",cromossomo.formatarGenes());
     }
 }

@@ -31,11 +31,11 @@ public class PopulacaoTest {
     public void deveOrdenarOsFitnessDosCromossomosEmOrdemCrescente() {
         var distanciasFixas = inicializarDistanciasFixas();
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(() -> CalculadorDistancias.getDistancias(anyInt(), anyInt()))
+            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
                     .thenAnswer(invocation -> {
-                        int origem = invocation.getArgument(0);
-                        int destino = invocation.getArgument(1);
-                        return distanciasFixas[origem][destino];
+                        int indiceCidadeOrigem = invocation.getArgument(0);
+                        int indiceCidadeDestino = invocation.getArgument(1);
+                        return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
                     });
 
             var populacao = inicializarPopulacaoTeste();
@@ -78,11 +78,11 @@ public class PopulacaoTest {
     public void deveSelecionarCorretamenteOPaiNaRoleta(int numeroAleatorio, String formatacaoGenesEsperado) {
         var distanciasFixas = inicializarDistanciasFixas();
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(() -> CalculadorDistancias.getDistancias(anyInt(), anyInt()))
+            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
                     .thenAnswer(invocation -> {
-                        int origem = invocation.getArgument(0);
-                        int destino = invocation.getArgument(1);
-                        return distanciasFixas[origem][destino];
+                        int indiceCidadeOrigem = invocation.getArgument(0);
+                        int indiceCidadeDestino = invocation.getArgument(1);
+                        return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
                     });
 
             var populacao = spy(inicializarPopulacaoTeste());
