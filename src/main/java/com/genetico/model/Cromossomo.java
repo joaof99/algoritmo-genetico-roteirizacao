@@ -13,11 +13,13 @@ public class Cromossomo {
     private static final int POSICAO_CORTE_INICIO = 0;
     private static final int POSICAO_CORTE_FIM = 1;
     private final int[] genes;
+    private Random randomizador;
     private int fitness;
 
     public Cromossomo() {
         this.genes = inicializarGenesPosicoesAleatorias();
         this.fitness = calcularFitness();
+        this.randomizador = new Random();
     }
 
     public Cromossomo(int[] genes) {
@@ -27,6 +29,7 @@ public class Cromossomo {
 
         this.genes = genes;
         this.fitness = calcularFitness();
+        this.randomizador = new Random();
     }
 
     private int[] inicializarGenesPosicoesAleatorias() {
@@ -55,10 +58,10 @@ public class Cromossomo {
         var fitness = 0;
 
         for (int indice = 0; indice < this.genes.length - 1; indice++) {
-            var cidadeOrigem = this.genes[indice];
-            var cidadeDestino = this.genes[indice + 1];
+            var indiceCidadeOrigem = this.genes[indice];
+            var indiceCidadeDestino = this.genes[indice + 1];
 
-            fitness += CalculadorDistancias.getDistancias(cidadeOrigem,cidadeDestino);
+            fitness += CalculadorDistancias.obterDistanciaEntreDuasCidades(indiceCidadeOrigem, indiceCidadeDestino);
         }
 
         return fitness;
@@ -148,6 +151,17 @@ public class Cromossomo {
         return new int[]{pontoCorte1, pontoCorte2};
     }
 
+    public void realizarMutacao() {
+        var indiceAleatorio1 = getRandomizador().nextInt(getGenes().length);
+        var indiceAleatorio2 = getRandomizador().nextInt(getGenes().length);
+
+        var genes = getGenes();
+        var valorAnteriorIndice1 = genes[indiceAleatorio1];
+
+        genes[indiceAleatorio1] = genes[indiceAleatorio2];
+        genes[indiceAleatorio2] = valorAnteriorIndice1;
+    }
+
     private boolean pontosDeCorteSaoInvalidos(int pontoCorte1, int pontoCorte2) {
         return pontoCorte1 == pontoCorte2 || pontoCorte1 > pontoCorte2;
     }
@@ -170,5 +184,9 @@ public class Cromossomo {
 
     public int getFitness() {
         return fitness;
+    }
+
+    public Random getRandomizador() {
+        return this.randomizador;
     }
 }
