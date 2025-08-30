@@ -8,6 +8,7 @@ import java.util.Random;
 public class Populacao {
     private List<Cromossomo> cromossomos;
     private static final int PROBABILIDADE_OCORRER_CROSSOVER = 50;
+    private static final int PROBABILIDADE_OCORRER_MUTACAO = 50;
     private final int tamanhoPopulacao;
     private Random randomizador;
 
@@ -56,7 +57,8 @@ public class Populacao {
         var populacaoPaiComFilhos = new Populacao(todosOsCromossomos);
 
         var melhoresCromosomosNovaPopulacao = new ArrayList<>(
-                populacaoPaiComFilhos.getCromossomos()
+                populacaoPaiComFilhos
+                        .getCromossomos()
                         .subList(0, getTamanhoPopulacao())
         );
 
@@ -68,25 +70,36 @@ public class Populacao {
         var randomizador = new Random();
 
         do {
-            var porcentagemAleatoria = randomizador.nextInt(100) + 1;
+            var chanceDeOcorrerCrossover = randomizador.nextInt(100) + 1;
             var pai1 = selecionarCromossomoPaiPorRoleta();
             var pai2 = selecionarCromossomoPaiPorRoleta();
-            Cromossomo filho1, filho2;
+            Cromossomo filho1;
+            Cromossomo filho2;
 
-            if (porcentagemAleatoria <= PROBABILIDADE_OCORRER_CROSSOVER) {
+            if (chanceDeOcorrerCrossover <= PROBABILIDADE_OCORRER_CROSSOVER) {
                 var filhosCrossover = pai1.realizarCrossoverPmx(pai2, randomizador);
                 filho1 = filhosCrossover.getFirst();
                 filho2 = filhosCrossover.getLast();
 
                 filho1.atualizarFitness();
                 filho2.atualizarFitness();
-
-                filhos.add(filho1);
-                filhos.add(filho2);
             } else {
-               filhos.add(pai1);
-               filhos.add(pai2);
+                filho1 = pai1;
+                filho2 = pai2;
             }
+
+            var chanceDeOcorrerMutacao = randomizador.nextInt(100) + 1;
+
+            if (chanceDeOcorrerMutacao <= PROBABILIDADE_OCORRER_MUTACAO) {
+                filho1.realizarMutacao();
+                filho2.realizarMutacao();
+
+                filho1.atualizarFitness();
+                filho2.atualizarFitness();
+            }
+
+            filhos.add(filho1);
+            filhos.add(filho2);
 
         } while (filhos.size() < getTamanhoPopulacao());
 
