@@ -21,7 +21,7 @@ public class CalculadorDistancias {
         return distancias;
     }
 
-    public static int getDistancias(int indiceCidadeOrigem, int indiceCidadeDestino) {
+    public static int obterDistanciaEntreDuasCidades(int indiceCidadeOrigem, int indiceCidadeDestino) {
         return distancias[indiceCidadeOrigem][indiceCidadeDestino];
     }
 }
