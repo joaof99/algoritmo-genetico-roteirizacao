@@ -70,7 +70,7 @@ public class Populacao {
         var randomizador = new Random();
 
         do {
-            var chanceDeOcorrerCrossover = randomizador.nextInt(100) + 1;
+            var chanceDeOcorrerCrossover = getRandomizador().nextInt(100) + 1;
             var pai1 = selecionarCromossomoPaiPorRoleta();
             var pai2 = selecionarCromossomoPaiPorRoleta();
             Cromossomo filho1;
@@ -88,7 +88,7 @@ public class Populacao {
                 filho2 = pai2;
             }
 
-            var chanceDeOcorrerMutacao = randomizador.nextInt(100) + 1;
+            var chanceDeOcorrerMutacao = getRandomizador().nextInt(100) + 1;
 
             if (chanceDeOcorrerMutacao <= PROBABILIDADE_OCORRER_MUTACAO) {
                 filho1.realizarMutacao();
