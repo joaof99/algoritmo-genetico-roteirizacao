@@ -216,4 +216,47 @@ public class PopulacaoTest {
                 Arguments.of(50, "0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 70")
         );
     }
+
+    @Test
+    @DisplayName("População filha deve ser gerada com o tamanho correto")
+    public void populacaoFilhaDeveSerGeradaComOTamanhoCorreto() {
+        var genes1 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        var genes2 = new int[]{0, 1, 2, 3, 4, 5, 7, 6, 8, 9};
+        var genes3 = new int[]{0, 1, 2, 4, 3, 5, 6, 7, 8, 9};
+        var genes4 = new int[]{0, 5, 4, 3, 2, 6, 7, 8, 1, 9};
+        var genes5 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        var genes6 = new int[]{2, 0, 1, 4, 3, 6, 5, 9, 7, 8};
+        var genes7 = new int[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+        var genes8 = new int[]{1, 3, 5, 7, 9, 8, 6, 4, 2, 0};
+        var genes9 = new int[]{4, 0, 2, 6, 8, 1, 3, 5, 7, 9};
+        var genes10 = new int[]{3, 6, 9, 0, 2, 5, 1, 8, 4, 7};
+
+        var cromossomo1 = new Cromossomo(genes1);
+        var cromossomo2 = new Cromossomo(genes2);
+        var cromossomo3 = new Cromossomo(genes3);
+        var cromossomo4 = new Cromossomo(genes4);
+        var cromossomo5 = new Cromossomo(genes5);
+        var cromossomo6 = new Cromossomo(genes6);
+        var cromossomo7 = new Cromossomo(genes7);
+        var cromossomo8 = new Cromossomo(genes8);
+        var cromossomo9 = new Cromossomo(genes9);
+        var cromossomo10 = new Cromossomo(genes10);
+
+        var cromossomos = new ArrayList<Cromossomo>();
+
+        cromossomos.add(cromossomo1);
+        cromossomos.add(cromossomo2);
+        cromossomos.add(cromossomo3);
+        cromossomos.add(cromossomo4);
+        cromossomos.add(cromossomo5);
+        cromossomos.add(cromossomo6);
+        cromossomos.add(cromossomo7);
+        cromossomos.add(cromossomo8);
+        cromossomos.add(cromossomo9);
+        cromossomos.add(cromossomo10);
+
+        var populacaoFilha = new Populacao(cromossomos).gerarPopulacaoFilha();
+
+        assertEquals(10, populacaoFilha.getCromossomos().size());
+    }
 }
