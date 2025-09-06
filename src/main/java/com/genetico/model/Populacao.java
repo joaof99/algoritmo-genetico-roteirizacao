@@ -48,11 +48,11 @@ public class Populacao {
     }
 
     public Populacao gerarPopulacaoFilha() {
-        var filhos = reproduzirAteFormarPopulacaoFilhos();
+        var cromossomosFilhos = gerarCromossomosFilhos();
 
         var todosOsCromossomos = new ArrayList<Cromossomo>();
         todosOsCromossomos.addAll(this.getCromossomos());
-        todosOsCromossomos.addAll(filhos);
+        todosOsCromossomos.addAll(cromossomosFilhos);
 
         var populacaoPaiComFilhos = new Populacao(todosOsCromossomos);
 
@@ -65,7 +65,7 @@ public class Populacao {
         return new Populacao(melhoresCromosomosNovaPopulacao);
     }
 
-    private List<Cromossomo> reproduzirAteFormarPopulacaoFilhos() {
+    private List<Cromossomo> gerarCromossomosFilhos() {
         var filhos = new ArrayList<Cromossomo>();
         var randomizador = new Random();
 
