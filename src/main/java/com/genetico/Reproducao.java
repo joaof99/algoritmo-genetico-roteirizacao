@@ -3,30 +3,24 @@ package com.genetico;
 import com.genetico.model.Populacao;
 
 public class Reproducao {
+    private final int qtdeGeracoes;
+    private Populacao populacao;
 
-    public static final int QTDE_GERACOES = 20;
-
-    public static void main(String[] args) {
-        reproduzir();
+    public Reproducao(int qtdeGeracoes, Populacao populacao) {
+        this.qtdeGeracoes = qtdeGeracoes;
+        this.populacao = populacao;
     }
 
-    private static void reproduzir() {
-        var populacao = new Populacao(30);
+    public Populacao reproduzir() {
         var contadorGeracoes = 0;
 
-        System.out.println("População inicial");
-        populacao.imprimirPopulacao();
-
-        while (contadorGeracoes < QTDE_GERACOES) {
+        while (contadorGeracoes < qtdeGeracoes) {
             var novaPopulacao = populacao.gerarPopulacaoFilha();
             populacao = new Populacao(novaPopulacao.getCromossomos());
 
-            System.out.println("Geração " + (contadorGeracoes + 1));
-            populacao.imprimirPopulacao();
             contadorGeracoes++;
         }
 
-        System.out.println("População final");
-        populacao.imprimirPopulacao();
+        return populacao;
     }
 }
