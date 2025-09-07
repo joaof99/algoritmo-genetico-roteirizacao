@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Populacao {
-    private List<Cromossomo> cromossomos;
+    private final List<Cromossomo> cromossomos;
     private static final int PROBABILIDADE_OCORRER_CROSSOVER = 50;
     private static final int PROBABILIDADE_OCORRER_MUTACAO = 50;
     private final int tamanhoPopulacao;
