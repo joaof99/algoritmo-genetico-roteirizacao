@@ -10,7 +10,7 @@ public class Populacao {
     private static final int PROBABILIDADE_OCORRER_CROSSOVER = 50;
     private static final int PROBABILIDADE_OCORRER_MUTACAO = 50;
     private final int tamanhoPopulacao;
-    private Random randomizador;
+    private final Random randomizador;
 
     public Populacao(int tamanhoPopulacao) {
         this.tamanhoPopulacao = tamanhoPopulacao;
