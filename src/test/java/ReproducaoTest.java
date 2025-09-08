@@ -20,7 +20,7 @@ public class ReproducaoTest {
         var populacaoFinal = reproducao.reproduzir();
 
         var cromossomosPopulacaoFinal = populacaoFinal.getCromossomos();
-        var cromossomosPopulacaoFinalOrdenados = cromossomosPopulacaoFinal
+        var cromossomosEsperados = cromossomosPopulacaoFinal
                 .stream()
                 .sorted(Comparator.comparingInt(Cromossomo::getFitness))
                 .toList();
@@ -30,6 +30,6 @@ public class ReproducaoTest {
 
         assertTrue(melhorFitnessFinal < melhorFitnessInicial, "População não evoluiu");
         assertEquals(30, populacaoFinal.getCromossomos().size());
-        assertEquals(cromossomosPopulacaoFinalOrdenados, populacaoFinal.getCromossomos());
+        assertEquals(cromossomosEsperados, populacaoFinal.getCromossomos());
     }
 }
