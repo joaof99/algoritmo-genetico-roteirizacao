@@ -70,11 +70,12 @@ public class Populacao {
         var randomizador = new Random();
 
         do {
-            var chanceAleatoriaDeOcorrerCrossover = getRandomizador().nextInt(100) + 1;
             var pai1 = selecionarCromossomoPaiPorRoleta();
             var pai2 = selecionarCromossomoPaiPorRoleta();
             Cromossomo filho1;
             Cromossomo filho2;
+
+            var chanceAleatoriaDeOcorrerCrossover = getRandomizador().nextInt(100) + 1;
 
             if (chanceAleatoriaDeOcorrerCrossover <= PROBABILIDADE_DE_OCORRER_OCORRENCIA_CROSSOVER) {
                 var filhosCrossover = pai1.realizarCrossoverPmx(pai2, randomizador);
