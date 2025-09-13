@@ -7,10 +7,10 @@ import java.util.Random;
 
 public class Populacao {
     private final List<Cromossomo> cromossomos;
-    private static final int PROBABILIDADE_OCORRER_CROSSOVER = 50;
-    private static final int PROBABILIDADE_OCORRER_MUTACAO = 50;
     private final int tamanhoPopulacao;
     private final Random randomizador;
+    private static final int PROBABILIDADE_OCORRER_CROSSOVER = 50;
+    private static final int PROBABILIDADE_OCORRER_MUTACAO = 50;
 
     public Populacao(int tamanhoPopulacao) {
         this.tamanhoPopulacao = tamanhoPopulacao;
