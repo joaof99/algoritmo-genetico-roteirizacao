@@ -1,6 +1,7 @@
 package com.genetico.model;
 
 import com.genetico.CalculadorDistancias;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -151,8 +152,12 @@ public class Cromossomo {
     }
 
     public void realizarMutacao() {
-        var indiceAleatorio1 = getRandomizador().nextInt(getGenes().length);
-        var indiceAleatorio2 = getRandomizador().nextInt(getGenes().length);
+        int indiceAleatorio1, indiceAleatorio2;
+
+        do {
+            indiceAleatorio1 = getRandomizador().nextInt(getGenes().length);
+            indiceAleatorio2 = getRandomizador().nextInt(getGenes().length);
+        } while (indiceAleatorio1 == indiceAleatorio2);
 
         var genes = getGenes();
         var valorAnteriorIndice1 = genes[indiceAleatorio1];
