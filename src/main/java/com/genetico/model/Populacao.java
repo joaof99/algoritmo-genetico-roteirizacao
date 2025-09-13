@@ -9,8 +9,8 @@ public class Populacao {
     private final List<Cromossomo> cromossomos;
     private final int tamanhoPopulacao;
     private final Random randomizador;
-    private static final int PROBABILIDADE_OCORRER_CROSSOVER = 50;
-    private static final int PROBABILIDADE_OCORRER_MUTACAO = 50;
+    private static final int PROBABILIDADE_DE_OCORRER_OCORRENCIA_CROSSOVER = 50;
+    private static final int PROBABILIDADE_FIXA_DE_OCORRER_MUTACAO = 50;
 
     public Populacao(int tamanhoPopulacao) {
         this.tamanhoPopulacao = tamanhoPopulacao;
@@ -70,13 +70,13 @@ public class Populacao {
         var randomizador = new Random();
 
         do {
-            var chanceDeOcorrerCrossover = getRandomizador().nextInt(100) + 1;
+            var chanceAleatoriaDeOcorrerCrossover = getRandomizador().nextInt(100) + 1;
             var pai1 = selecionarCromossomoPaiPorRoleta();
             var pai2 = selecionarCromossomoPaiPorRoleta();
             Cromossomo filho1;
             Cromossomo filho2;
 
-            if (chanceDeOcorrerCrossover <= PROBABILIDADE_OCORRER_CROSSOVER) {
+            if (chanceAleatoriaDeOcorrerCrossover <= PROBABILIDADE_DE_OCORRER_OCORRENCIA_CROSSOVER) {
                 var filhosCrossover = pai1.realizarCrossoverPmx(pai2, randomizador);
                 filho1 = filhosCrossover.getFirst();
                 filho2 = filhosCrossover.getLast();
@@ -88,9 +88,9 @@ public class Populacao {
                 filho2 = pai2;
             }
 
-            var chanceDeOcorrerMutacao = getRandomizador().nextInt(100) + 1;
+            var chanceAleatoriaDeOcorrerMutacao = getRandomizador().nextInt(100) + 1;
 
-            if (chanceDeOcorrerMutacao <= PROBABILIDADE_OCORRER_MUTACAO) {
+            if (chanceAleatoriaDeOcorrerMutacao <= PROBABILIDADE_FIXA_DE_OCORRER_MUTACAO) {
                 filho1.realizarMutacao();
                 filho2.realizarMutacao();
 
