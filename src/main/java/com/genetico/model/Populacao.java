@@ -66,8 +66,7 @@ public class Populacao {
 
         } while (cromossomosFilhos.size() < getTamanhoPopulacao());
 
-        var todosOsCromossomos = new ArrayList<Cromossomo>();
-        todosOsCromossomos.addAll(this.getCromossomos());
+        var todosOsCromossomos = new ArrayList<>(this.getCromossomos());
         todosOsCromossomos.addAll(cromossomosFilhos);
 
         var populacaoPaiComFilhos = new Populacao(todosOsCromossomos);
