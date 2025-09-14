@@ -56,6 +56,10 @@ public class Populacao {
 
             var filhos = realizarCrossoverSeProbabilidadeAtingida(pai1, pai2);
 
+            if (filhos.size() != 2) {
+                throw new IllegalStateException("Após um crossover deve ter exatamente 2 filhos. Encontrado: " + filhos.size());
+            }
+
             var filho1 = filhos.getFirst();
             var filho2 = filhos.getLast();
 
