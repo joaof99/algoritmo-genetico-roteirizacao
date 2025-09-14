@@ -71,8 +71,8 @@ public class Cromossomo {
         calcularFitness();
     }
 
-    public List<Cromossomo> realizarCrossoverPmx(Cromossomo pai2, Random random) {
-        var pontosDeCorte = gerarPontosDeCorte(random);
+    public List<Cromossomo> realizarCrossoverPmx(Cromossomo pai2) {
+        var pontosDeCorte = gerarPontosDeCorte();
         var genesPai1 = getGenes();
         var genesPai2 = pai2.getGenes();
         var tamanhoGenes = genesPai1.length;
@@ -140,12 +140,12 @@ public class Cromossomo {
         return false;
     }
 
-    private int[] gerarPontosDeCorte(Random random) {
+    private int[] gerarPontosDeCorte() {
         int pontoCorte1, pontoCorte2;
 
         do {
-            pontoCorte1 = random.nextInt(QTDE_MAXIMA_GENES);
-            pontoCorte2 = random.nextInt(QTDE_MAXIMA_GENES);
+            pontoCorte1 = getRandomizador().nextInt(QTDE_MAXIMA_GENES);
+            pontoCorte2 = getRandomizador().nextInt(QTDE_MAXIMA_GENES);
         } while (pontosDeCorteSaoInvalidos(pontoCorte1, pontoCorte2));
 
         return new int[]{pontoCorte1, pontoCorte2};

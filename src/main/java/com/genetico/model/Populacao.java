@@ -91,7 +91,7 @@ public class Populacao {
         var chanceAleatoriaDeOcorrerCrossover = getRandomizador().nextInt(100) + 1;
 
         if (chanceAleatoriaDeOcorrerCrossover <= PROBABILIDADE_FIXA_DE_OCORRER_CROSSOVER) {
-            var filhosCrossover = pai1.realizarCrossoverPmx(pai2, randomizador);
+            var filhosCrossover = pai1.realizarCrossoverPmx(pai2);
             filho1 = filhosCrossover.getFirst();
             filho2 = filhosCrossover.getLast();
 
