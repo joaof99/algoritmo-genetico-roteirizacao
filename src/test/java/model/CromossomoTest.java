@@ -220,15 +220,19 @@ public class CromossomoTest {
                         return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
                     });
 
-            var pai1 = spy(new Cromossomo(genesFixos1));
-            var pai2 = new Cromossomo(genesFixos2);
             var random = mock(Random.class);
-
             when(random.nextInt(anyInt())).thenReturn(pontosCorteFixos[0], pontosCorteFixos[1]);
 
-            doCallRealMethod().when(pai1).realizarCrossoverPmx(pai2, random);
+            var pai1 = new Cromossomo(genesFixos1){
+                @Override
+                public Random getRandomizador() {
+                    return random;
+                }
+            };
 
-            var filhos = pai1.realizarCrossoverPmx(pai2, random);
+            var pai2 = new Cromossomo(genesFixos2);
+
+            var filhos = pai1.realizarCrossoverPmx(pai2);
 
             assertEquals(genesEsperadosFilho1, filhos.getFirst().formatarGenes());
             assertEquals(genesEsperadosFilho2, filhos.getLast().formatarGenes());
