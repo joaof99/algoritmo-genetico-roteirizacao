@@ -48,7 +48,23 @@ public class Populacao {
     }
 
     public Populacao gerarPopulacaoFilha() {
-        var cromossomosFilhos = gerarCromossomosFilhos();
+        var cromossomosFilhos = new ArrayList<Cromossomo>();
+
+        do {
+            var pai1 = selecionarCromossomoPaiPorRoleta();
+            var pai2 = selecionarCromossomoPaiPorRoleta();
+
+            var filhos = realizarCrossoverSeProbabilidadeAtingida(pai1, pai2);
+
+            var filho1 = filhos.getFirst();
+            var filho2 = filhos.getLast();
+
+            realizarMutacaoSeProbabilidadeAtingida(filho1, filho2);
+
+            cromossomosFilhos.add(filho1);
+            cromossomosFilhos.add(filho2);
+
+        } while (cromossomosFilhos.size() < getTamanhoPopulacao());
 
         var todosOsCromossomos = new ArrayList<Cromossomo>();
         todosOsCromossomos.addAll(this.getCromossomos());
@@ -65,46 +81,36 @@ public class Populacao {
         return new Populacao(melhoresCromosomosNovaPopulacao);
     }
 
-    private List<Cromossomo> gerarCromossomosFilhos() {
-        var filhos = new ArrayList<Cromossomo>();
-        var randomizador = new Random();
+    private List<Cromossomo> realizarCrossoverSeProbabilidadeAtingida(Cromossomo pai1, Cromossomo pai2) {
+        Cromossomo filho1;
+        Cromossomo filho2;
 
-        do {
-            var pai1 = selecionarCromossomoPaiPorRoleta();
-            var pai2 = selecionarCromossomoPaiPorRoleta();
-            Cromossomo filho1;
-            Cromossomo filho2;
+        var chanceAleatoriaDeOcorrerCrossover = getRandomizador().nextInt(100) + 1;
 
-            var chanceAleatoriaDeOcorrerCrossover = getRandomizador().nextInt(100) + 1;
+        if (chanceAleatoriaDeOcorrerCrossover <= PROBABILIDADE_DE_OCORRER_OCORRENCIA_CROSSOVER) {
+            var filhosCrossover = pai1.realizarCrossoverPmx(pai2, randomizador);
+            filho1 = filhosCrossover.getFirst();
+            filho2 = filhosCrossover.getLast();
 
-            if (chanceAleatoriaDeOcorrerCrossover <= PROBABILIDADE_DE_OCORRER_OCORRENCIA_CROSSOVER) {
-                var filhosCrossover = pai1.realizarCrossoverPmx(pai2, randomizador);
-                filho1 = filhosCrossover.getFirst();
-                filho2 = filhosCrossover.getLast();
+            filho1.atualizarFitness();
+            filho2.atualizarFitness();
 
-                filho1.atualizarFitness();
-                filho2.atualizarFitness();
-            } else {
-                filho1 = pai1;
-                filho2 = pai2;
-            }
+            return List.of(filho1, filho2);
+        } else {
+            return List.of(pai1, pai2);
+        }
+    }
 
-            var chanceAleatoriaDeOcorrerMutacao = getRandomizador().nextInt(100) + 1;
+    private void realizarMutacaoSeProbabilidadeAtingida(Cromossomo filho1, Cromossomo filho2) {
+        var chanceAleatoriaDeOcorrerMutacao = getRandomizador().nextInt(100) + 1;
 
-            if (chanceAleatoriaDeOcorrerMutacao <= PROBABILIDADE_FIXA_DE_OCORRER_MUTACAO) {
-                filho1.realizarMutacao();
-                filho2.realizarMutacao();
+        if (chanceAleatoriaDeOcorrerMutacao <= PROBABILIDADE_FIXA_DE_OCORRER_MUTACAO) {
+            filho1.realizarMutacao();
+            filho2.realizarMutacao();
 
-                filho1.atualizarFitness();
-                filho2.atualizarFitness();
-            }
-
-            filhos.add(filho1);
-            filhos.add(filho2);
-
-        } while (filhos.size() < getTamanhoPopulacao());
-
-        return filhos;
+            filho1.atualizarFitness();
+            filho2.atualizarFitness();
+        }
     }
 
     public Cromossomo selecionarCromossomoPaiPorRoleta() {
