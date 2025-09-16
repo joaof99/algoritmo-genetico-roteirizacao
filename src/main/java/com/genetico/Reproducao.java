@@ -16,7 +16,9 @@ public class Reproducao {
 
         while (contadorGeracoes < qtdeGeracoes) {
             var novaPopulacao = populacao.gerarPopulacaoFilha();
-            populacao = new Populacao(novaPopulacao.getCromossomos());
+            populacao = new Populacao(novaPopulacao.getCromossomos(),
+                    populacao.getChanceFixaOcorrenciaCrossover(),
+                    populacao.getChanceFixaOcorrenciaMutacao());
 
             contadorGeracoes++;
         }

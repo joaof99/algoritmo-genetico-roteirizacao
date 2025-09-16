@@ -9,19 +9,23 @@ public class Populacao {
     private final List<Cromossomo> cromossomos;
     private final int tamanhoPopulacao;
     private final Random randomizador;
-    private static final int PROBABILIDADE_FIXA_DE_OCORRER_CROSSOVER = 50;
-    private static final int PROBABILIDADE_FIXA_DE_OCORRER_MUTACAO = 50;
+    private final int chanceFixaOcorrenciaCrossover;
+    private final int chanceFixaOcorrenciaMutacao;
 
-    public Populacao(int tamanhoPopulacao) {
+    public Populacao(int tamanhoPopulacao, int chanceFixaOcorrenciaCrossover, int chanceFixaOcorrenciaMutacao) {
         this.tamanhoPopulacao = tamanhoPopulacao;
         this.cromossomos = avaliarPopulacao(iniciarPopulacaoAleatoriamente());
         this.randomizador = new Random();
+        this.chanceFixaOcorrenciaCrossover = chanceFixaOcorrenciaCrossover;
+        this.chanceFixaOcorrenciaMutacao = chanceFixaOcorrenciaMutacao;
     }
 
-    public Populacao(List<Cromossomo> cromossomos) {
+    public Populacao(List<Cromossomo> cromossomos, int chanceFixaOcorrenciaCrossover, int chanceFixaOcorrenciaMutacao) {
         this.tamanhoPopulacao = cromossomos.size();
         this.cromossomos = avaliarPopulacao(cromossomos);
         this.randomizador = new Random();
+        this.chanceFixaOcorrenciaCrossover = chanceFixaOcorrenciaCrossover;
+        this.chanceFixaOcorrenciaMutacao = chanceFixaOcorrenciaMutacao;
     }
 
     private List<Cromossomo> iniciarPopulacaoAleatoriamente() {
@@ -73,15 +77,11 @@ public class Populacao {
         var todosOsCromossomos = new ArrayList<>(this.getCromossomos());
         todosOsCromossomos.addAll(cromossomosFilhos);
 
-        var populacaoPaiComFilhos = new Populacao(todosOsCromossomos);
+        var populacaoPaiComFilhos = new Populacao(todosOsCromossomos, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao());
 
-        var melhoresCromosomosNovaPopulacao = new ArrayList<>(
-                populacaoPaiComFilhos
-                        .getCromossomos()
-                        .subList(0, getTamanhoPopulacao())
-        );
+        var melhoresCromosomosNovaPopulacao = new ArrayList<>(populacaoPaiComFilhos.getCromossomos().subList(0, getTamanhoPopulacao()));
 
-        return new Populacao(melhoresCromosomosNovaPopulacao);
+        return new Populacao(melhoresCromosomosNovaPopulacao, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao());
     }
 
     private List<Cromossomo> realizarCrossoverSeProbabilidadeAtingida(Cromossomo pai1, Cromossomo pai2) {
@@ -90,7 +90,7 @@ public class Populacao {
 
         var chanceAleatoriaDeOcorrerCrossover = getRandomizador().nextInt(100) + 1;
 
-        if (chanceAleatoriaDeOcorrerCrossover <= PROBABILIDADE_FIXA_DE_OCORRER_CROSSOVER) {
+        if (chanceAleatoriaDeOcorrerCrossover <= getChanceFixaOcorrenciaCrossover()) {
             var filhosCrossover = pai1.realizarCrossoverPmx(pai2);
             filho1 = filhosCrossover.getFirst();
             filho2 = filhosCrossover.getLast();
@@ -107,7 +107,7 @@ public class Populacao {
     private void realizarMutacaoSeProbabilidadeAtingida(Cromossomo filho1, Cromossomo filho2) {
         var chanceAleatoriaDeOcorrerMutacao = getRandomizador().nextInt(100) + 1;
 
-        if (chanceAleatoriaDeOcorrerMutacao <= PROBABILIDADE_FIXA_DE_OCORRER_MUTACAO) {
+        if (chanceAleatoriaDeOcorrerMutacao <= getChanceFixaOcorrenciaMutacao()) {
             filho1.realizarMutacao();
             filho2.realizarMutacao();
 
@@ -160,5 +160,13 @@ public class Populacao {
 
     public Random getRandomizador() {
         return this.randomizador;
+    }
+
+    public int getChanceFixaOcorrenciaCrossover() {
+        return this.chanceFixaOcorrenciaCrossover;
+    }
+
+    public int getChanceFixaOcorrenciaMutacao() {
+        return this.chanceFixaOcorrenciaMutacao;
     }
 }

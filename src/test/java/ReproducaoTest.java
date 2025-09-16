@@ -13,7 +13,7 @@ public class ReproducaoTest {
     @Test
     @DisplayName("Reprodução deve gerar população de tamanho fixo, ordenada e com fitness melhorado")
     public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() {
-        var populacaoInicial = new Populacao(30);
+        var populacaoInicial = new Populacao(30, 50, 50);
 
         var reproducao = new Reproducao(30, populacaoInicial);
 

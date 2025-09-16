@@ -22,7 +22,7 @@ public class PopulacaoTest {
     @Test
     @DisplayName("Tamanho da população deve ser inicializado corretamente")
     public void tamanhoDaPopulacaoDeveSerInicializadoCorretamente() {
-        var populacao = new Populacao(30);
+        var populacao = new Populacao(30, 50, 50);
         assertEquals(30, populacao.getTamanhoPopulacao());
     }
 
@@ -69,7 +69,7 @@ public class PopulacaoTest {
         cromossomos.add(cromossomo4);
         cromossomos.add(cromossomo5);
 
-        return new Populacao(cromossomos);
+        return new Populacao(cromossomos, 50, 50);
     }
 
     @ParameterizedTest
@@ -255,7 +255,7 @@ public class PopulacaoTest {
         cromossomos.add(cromossomo9);
         cromossomos.add(cromossomo10);
 
-        var populacaoFilha = new Populacao(cromossomos).gerarPopulacaoFilha();
+        var populacaoFilha = new Populacao(cromossomos, 50, 50).gerarPopulacaoFilha();
 
         assertEquals(10, populacaoFilha.getCromossomos().size());
     }
