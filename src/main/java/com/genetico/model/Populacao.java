@@ -58,7 +58,7 @@ public class Populacao {
             var pai1 = selecionarCromossomoPaiPorRoleta();
             var pai2 = selecionarCromossomoPaiPorRoleta();
 
-            var filhos = realizarCrossoverSeProbabilidadeAtingida(pai1, pai2);
+            var filhos = realizarCrossover(pai1, pai2);
 
             if (filhos.size() != 2) {
                 throw new IllegalStateException("Após um crossover deve ter exatamente 2 filhos. Encontrado: " + filhos.size());
@@ -67,7 +67,7 @@ public class Populacao {
             var filho1 = filhos.getFirst();
             var filho2 = filhos.getLast();
 
-            realizarMutacaoSeProbabilidadeAtingida(filho1, filho2);
+            realizarMutacao(filho1, filho2);
 
             cromossomosFilhos.add(filho1);
             cromossomosFilhos.add(filho2);
@@ -84,7 +84,7 @@ public class Populacao {
         return new Populacao(melhoresCromosomosNovaPopulacao, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao());
     }
 
-    private List<Cromossomo> realizarCrossoverSeProbabilidadeAtingida(Cromossomo pai1, Cromossomo pai2) {
+    private List<Cromossomo> realizarCrossover(Cromossomo pai1, Cromossomo pai2) {
         Cromossomo filho1;
         Cromossomo filho2;
 
@@ -104,7 +104,7 @@ public class Populacao {
         }
     }
 
-    private void realizarMutacaoSeProbabilidadeAtingida(Cromossomo filho1, Cromossomo filho2) {
+    private void realizarMutacao(Cromossomo filho1, Cromossomo filho2) {
         var chanceAleatoriaDeOcorrerMutacao = getRandomizador().nextInt(100) + 1;
 
         if (chanceAleatoriaDeOcorrerMutacao <= getChanceFixaOcorrenciaMutacao()) {
