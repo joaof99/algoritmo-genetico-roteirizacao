@@ -73,6 +73,9 @@ public class Cromossomo {
 
     public List<Cromossomo> realizarCrossoverPmx(Cromossomo pai2) {
         var pontosDeCorte = gerarPontosDeCorte();
+        var pontoCorteInicio = pontosDeCorte[0];
+        var pontoCorteFim = pontosDeCorte[1];
+
         var genesPai1 = getGenes();
         var genesPai2 = pai2.getGenes();
         var tamanhoGenes = genesPai1.length;
@@ -83,7 +86,7 @@ public class Cromossomo {
         Arrays.fill(genesFilho1, -1);
         Arrays.fill(genesFilho2, -1);
 
-        for (int indice = pontosDeCorte[0] + 1; indice <= pontosDeCorte[1]; indice++) {
+        for (int indice = pontoCorteInicio + 1; indice <= pontoCorteFim; indice++) {
             genesFilho1[indice] = genesPai2[indice];
             genesFilho2[indice] = genesPai1[indice];
         }
@@ -100,11 +103,11 @@ public class Cromossomo {
         }
 
         for (int indice = 0; indice < tamanhoGenes; indice++) {
-            if (indiceEstaNaRegiaoDeCorte(indice, pontosDeCorte)) continue;
+            if (checarSeIndiceEstaNaRegiaoDeCorte(indice, pontosDeCorte)) continue;
 
             var gene = genesPai1[indice];
 
-            while (contemGeneRepetido(genesFilho1, gene)) {
+            while (checarSeContemGeneRepetido(genesFilho1, gene)) {
                 gene = mapeamentoPai2ParaPai1[gene];
             }
 
@@ -112,11 +115,11 @@ public class Cromossomo {
         }
 
         for (int indice = 0; indice < tamanhoGenes; indice++) {
-            if (indiceEstaNaRegiaoDeCorte(indice, pontosDeCorte)) continue;
+            if (checarSeIndiceEstaNaRegiaoDeCorte(indice, pontosDeCorte)) continue;
 
             var gene = genesPai2[indice];
 
-            while (contemGeneRepetido(genesFilho2, gene)) {
+            while (checarSeContemGeneRepetido(genesFilho2, gene)) {
                 gene = mapeamentoPai1ParaPai2[gene];
             }
 
@@ -124,20 +127,6 @@ public class Cromossomo {
         }
 
         return List.of(new Cromossomo(genesFilho1), new Cromossomo(genesFilho2));
-    }
-
-    private boolean indiceEstaNaRegiaoDeCorte(int indice, int[] pontosDeCorte) {
-        return (indice > pontosDeCorte[POSICAO_CORTE_INICIO] && indice <= pontosDeCorte[POSICAO_CORTE_FIM]);
-    }
-
-    private boolean contemGeneRepetido(int[] genes, int geneASerSubstituido) {
-        for (int gene : genes) {
-            if (gene == geneASerSubstituido) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private int[] gerarPontosDeCorte() {
@@ -149,6 +138,20 @@ public class Cromossomo {
         } while (pontosDeCorteSaoInvalidos(pontoCorte1, pontoCorte2));
 
         return new int[]{pontoCorte1, pontoCorte2};
+    }
+
+    private boolean checarSeIndiceEstaNaRegiaoDeCorte(int indice, int[] pontosDeCorte) {
+        return (indice > pontosDeCorte[POSICAO_CORTE_INICIO] && indice <= pontosDeCorte[POSICAO_CORTE_FIM]);
+    }
+
+    private boolean checarSeContemGeneRepetido(int[] genes, int geneASerSubstituido) {
+        for (int gene : genes) {
+            if (gene == geneASerSubstituido) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void realizarMutacao() {
