@@ -166,14 +166,13 @@ public class CromossomoTest {
     @Test
     @DisplayName(value = "Genes devem ser inicializados com o tamanho correto definido na constante")
     public void genesDevemSerInicializadosComOTamanhoCorreto() {
-        assertEquals(Cromossomo.QTDE_MAXIMA_GENES, new Individuo().getCromosso().getGenes().length);
+        assertEquals(Cromossomo.QTDE_MAXIMA_GENES, new Cromossomo().getGenes().length);
     }
 
     @Test
     @DisplayName(value = "Genes devem ser formatados corretamente com caracter delimitador: |")
     public void genesDevemSerFormatadosCorretamenteAoImprimir() {
-        boolean impressaoCromossomoEstaNoPadrao = new Individuo()
-                .getCromosso()
+        boolean impressaoCromossomoEstaNoPadrao = new Cromossomo()
                 .formatarGenes()
                 .matches("^(\\d+\\s\\|\\s)*\\d+$");
 
@@ -221,7 +220,7 @@ public class CromossomoTest {
             var random = mock(Random.class);
             when(random.nextInt(anyInt())).thenReturn(pontosCorteFixos[0], pontosCorteFixos[1]);
 
-            var pai1 = new Cromossomo(genesFixos1){
+            var pai1 = new Cromossomo(genesFixos1) {
                 @Override
                 public Random getRandomizador() {
                     return random;
@@ -258,10 +257,10 @@ public class CromossomoTest {
 
     @Test
     @DisplayName("Deve realizar mutação corretamente")
-    public void deveRealizarMutacaoCorretamente(){
+    public void deveRealizarMutacaoCorretamente() {
         var random = mock(Random.class);
 
-        var cromossomo = new Cromossomo(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}){
+        var cromossomo = new Cromossomo(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}) {
             @Override
             public Random getRandomizador() {
                 return random;
@@ -278,6 +277,6 @@ public class CromossomoTest {
                 .thenReturn(2);
 
         cromossomo.realizarMutacao();
-        assertEquals("0 | 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1000",cromossomo.formatarGenes());
+        assertEquals("0 | 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1000", cromossomo.formatarGenes());
     }
 }
