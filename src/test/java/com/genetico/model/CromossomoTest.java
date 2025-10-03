@@ -1,8 +1,6 @@
-package model;
+package com.genetico.model;
 
 import com.genetico.CalculadorDistancias;
-import com.genetico.model.Cromossomo;
-import com.genetico.model.Individuo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
