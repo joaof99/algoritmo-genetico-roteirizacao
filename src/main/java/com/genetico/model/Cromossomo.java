@@ -103,11 +103,11 @@ public class Cromossomo {
         }
 
         for (int indice = 0; indice < tamanhoGenes; indice++) {
-            if (checarSeIndiceEstaNaRegiaoDeCorte(indice, pontosDeCorte)) continue;
+            if (indiceEstaNaRegiaoDeCorte(indice, pontosDeCorte)) continue;
 
             var gene = genesPai1[indice];
 
-            while (checarSeContemGeneRepetido(genesFilho1, gene)) {
+            while (contemGeneRepetido(genesFilho1, gene)) {
                 gene = mapeamentoPai2ParaPai1[gene];
             }
 
@@ -115,11 +115,11 @@ public class Cromossomo {
         }
 
         for (int indice = 0; indice < tamanhoGenes; indice++) {
-            if (checarSeIndiceEstaNaRegiaoDeCorte(indice, pontosDeCorte)) continue;
+            if (indiceEstaNaRegiaoDeCorte(indice, pontosDeCorte)) continue;
 
             var gene = genesPai2[indice];
 
-            while (checarSeContemGeneRepetido(genesFilho2, gene)) {
+            while (contemGeneRepetido(genesFilho2, gene)) {
                 gene = mapeamentoPai1ParaPai2[gene];
             }
 
@@ -140,11 +140,11 @@ public class Cromossomo {
         return new int[]{pontoCorte1, pontoCorte2};
     }
 
-    private boolean checarSeIndiceEstaNaRegiaoDeCorte(int indice, int[] pontosDeCorte) {
+    private boolean indiceEstaNaRegiaoDeCorte(int indice, int[] pontosDeCorte) {
         return (indice > pontosDeCorte[POSICAO_CORTE_INICIO] && indice <= pontosDeCorte[POSICAO_CORTE_FIM]);
     }
 
-    private boolean checarSeContemGeneRepetido(int[] genes, int geneASerSubstituido) {
+    private boolean contemGeneRepetido(int[] genes, int geneASerSubstituido) {
         for (int gene : genes) {
             if (gene == geneASerSubstituido) {
                 return true;
