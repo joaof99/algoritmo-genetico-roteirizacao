@@ -14,7 +14,7 @@ public class Populacao {
 
     public Populacao(int tamanhoPopulacao, int chanceFixaOcorrenciaCrossover, int chanceFixaOcorrenciaMutacao) {
         this.tamanhoPopulacao = tamanhoPopulacao;
-        this.cromossomos = avaliarPopulacao(iniciarPopulacaoAleatoriamente());
+        this.cromossomos = avaliarPopulacao(iniciarCromossomosPopulacaoAleatoriamente());
         this.randomizador = new Random();
         this.chanceFixaOcorrenciaCrossover = chanceFixaOcorrenciaCrossover;
         this.chanceFixaOcorrenciaMutacao = chanceFixaOcorrenciaMutacao;
@@ -28,7 +28,7 @@ public class Populacao {
         this.chanceFixaOcorrenciaMutacao = chanceFixaOcorrenciaMutacao;
     }
 
-    private List<Cromossomo> iniciarPopulacaoAleatoriamente() {
+    private List<Cromossomo> iniciarCromossomosPopulacaoAleatoriamente() {
         var cromossomos = new ArrayList<Cromossomo>();
 
         for (int indice = 0; indice < getTamanhoPopulacao(); indice++) {
