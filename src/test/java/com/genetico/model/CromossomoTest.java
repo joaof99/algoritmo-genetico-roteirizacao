@@ -184,7 +184,7 @@ public class CromossomoTest {
     public void naoDeveExistirGenesRepetidosNoCromossomo() {
         var cromossomo = new Cromossomo();
 
-        Set<Integer> genesSemRepeticao = new HashSet<>();
+        var genesSemRepeticao = new HashSet<>();
 
         for (int gene : cromossomo.getGenes()) {
             boolean foiAdicionado = genesSemRepeticao.add(gene);
