@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -255,12 +254,13 @@ public class CromossomoTest {
         );
     }
 
-    @Test
-    @DisplayName("Deve realizar mutação corretamente")
-    public void deveRealizarMutacaoCorretamente() {
+    @ParameterizedTest
+    @MethodSource("casosDeTesteParaMutacaoSwap")
+    @DisplayName("Deve realizar mutação swap corretamente com diferentes combinações de genes")
+    public void deveRealizarMutacaoSwapCorretamente(int[] genesCromossomoInicial, int indiceAleatorio1, int indiceAleatorio2, String formatacaoEsperadaCromossomo) {
         var random = mock(Random.class);
 
-        var cromossomo = new Cromossomo(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}) {
+        var cromossomo = new Cromossomo(genesCromossomoInicial) {
             @Override
             public Random getRandomizador() {
                 return random;
@@ -273,10 +273,39 @@ public class CromossomoTest {
         };
 
         when(random.nextInt(anyInt()))
-                .thenReturn(1)
-                .thenReturn(2);
+                .thenReturn(indiceAleatorio1)
+                .thenReturn(indiceAleatorio2);
 
-        cromossomo.realizarMutacao();
-        assertEquals("0 | 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1000", cromossomo.formatarGenes());
+        cromossomo.realizarMutacaoSwap();
+        assertEquals(formatacaoEsperadaCromossomo, cromossomo.formatarGenes());
+    }
+
+    private static Stream<Arguments> casosDeTesteParaMutacaoSwap() {
+        return Stream.of(
+                Arguments.of(
+                        new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+                        1,
+                        2,
+                        "0 | 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1000"
+                ),
+                Arguments.of(
+                        new int[]{0, 2, 1, 4, 3, 7, 6, 5, 8, 9},
+                        2,
+                        3,
+                        "0 | 2 | 4 | 1 | 3 | 7 | 6 | 5 | 8 | 9 | 1000"
+                ),
+                Arguments.of(
+                        new int[]{0, 9, 3, 2, 4, 5, 6, 7, 8, 1},
+                        0,
+                        9,
+                        "1 | 9 | 3 | 2 | 4 | 5 | 6 | 7 | 8 | 0 | 1000"
+                ),
+                Arguments.of(
+                        new int[]{0, 3, 2, 1, 6, 5, 4, 7, 8, 9},
+                        1,
+                        7,
+                        "0 | 7 | 2 | 1 | 6 | 5 | 4 | 3 | 8 | 9 | 1000"
+                )
+        );
     }
 }
