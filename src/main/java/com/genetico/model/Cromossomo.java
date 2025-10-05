@@ -154,7 +154,7 @@ public class Cromossomo {
         return false;
     }
 
-    void realizarMutacao() {
+    void realizarMutacaoSwap() {
         int indiceAleatorio1, indiceAleatorio2;
 
         do {
@@ -162,11 +162,11 @@ public class Cromossomo {
             indiceAleatorio2 = getRandomizador().nextInt(getGenes().length);
         } while (indiceAleatorio1 == indiceAleatorio2);
 
-        var genes = getGenes();
-        var valorAnteriorIndice1 = genes[indiceAleatorio1];
+        var genesAtuais = getGenes();
+        var valorGeneAnteriorIndice1 = genesAtuais[indiceAleatorio1];
 
-        genes[indiceAleatorio1] = genes[indiceAleatorio2];
-        genes[indiceAleatorio2] = valorAnteriorIndice1;
+        genesAtuais[indiceAleatorio1] = genesAtuais[indiceAleatorio2];
+        genesAtuais[indiceAleatorio2] = valorGeneAnteriorIndice1;
     }
 
     private boolean pontosDeCorteSaoInvalidos(int pontoCorte1, int pontoCorte2) {
