@@ -108,8 +108,8 @@ public class Populacao {
         var chanceAleatoriaDeOcorrerMutacao = getRandomizador().nextInt(100) + 1;
 
         if (chanceAleatoriaDeOcorrerMutacao <= getChanceFixaOcorrenciaMutacao()) {
-            filho1.realizarMutacao();
-            filho2.realizarMutacao();
+            filho1.realizarMutacaoSwap();
+            filho2.realizarMutacaoSwap();
 
             filho1.atualizarFitness();
             filho2.atualizarFitness();
