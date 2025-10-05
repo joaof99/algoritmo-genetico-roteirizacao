@@ -71,7 +71,7 @@ public class Cromossomo {
         calcularFitness();
     }
 
-    public List<Cromossomo> realizarCrossoverPmx(Cromossomo pai2) {
+    List<Cromossomo> realizarCrossoverPmx(Cromossomo pai2) {
         var pontosDeCorte = gerarPontosDeCorte();
         var pontoCorteInicio = pontosDeCorte[0];
         var pontoCorteFim = pontosDeCorte[1];
@@ -154,7 +154,7 @@ public class Cromossomo {
         return false;
     }
 
-    public void realizarMutacao() {
+    void realizarMutacao() {
         int indiceAleatorio1, indiceAleatorio2;
 
         do {
