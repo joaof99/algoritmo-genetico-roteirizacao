@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.StringJoiner;
 
 public class Cromossomo {
-    public static final int QTDE_MAXIMA_GENES = 10;
+    public static final int QTDE_MAXIMA_GENES = 20;
     public static final int VALOR_GENE_ORIGEM = 0;
     private static final int POSICAO_CORTE_INICIO = 0;
     private static final int POSICAO_CORTE_FIM = 1;
@@ -72,13 +72,14 @@ public class Cromossomo {
     }
 
     List<Cromossomo> realizarCrossoverPmx(Cromossomo pai2) {
-        var pontosDeCorte = gerarPontosDeCorte();
+        var tamanhoGenes = pai2.getGenes().length;
+
+        var pontosDeCorte = gerarPontosDeCorte(tamanhoGenes);
         var pontoCorteInicio = pontosDeCorte[0];
         var pontoCorteFim = pontosDeCorte[1];
 
         var genesPai1 = getGenes();
         var genesPai2 = pai2.getGenes();
-        var tamanhoGenes = genesPai1.length;
 
         var genesFilho1 = new int[tamanhoGenes];
         var genesFilho2 = new int[tamanhoGenes];
@@ -129,12 +130,12 @@ public class Cromossomo {
         return List.of(new Cromossomo(genesFilho1), new Cromossomo(genesFilho2));
     }
 
-    private int[] gerarPontosDeCorte() {
+    private int[] gerarPontosDeCorte(int tamanhoCromossomo) {
         int pontoCorte1, pontoCorte2;
 
         do {
-            pontoCorte1 = getRandomizador().nextInt(QTDE_MAXIMA_GENES);
-            pontoCorte2 = getRandomizador().nextInt(QTDE_MAXIMA_GENES);
+            pontoCorte1 = getRandomizador().nextInt(tamanhoCromossomo);
+            pontoCorte2 = getRandomizador().nextInt(tamanhoCromossomo);
         } while (pontosDeCorteSaoInvalidos(pontoCorte1, pontoCorte2));
 
         return new int[]{pontoCorte1, pontoCorte2};
