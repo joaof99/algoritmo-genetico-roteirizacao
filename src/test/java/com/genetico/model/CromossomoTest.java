@@ -185,7 +185,7 @@ public class CromossomoTest {
 
         var genesSemRepeticao = new HashSet<>();
 
-        for (int gene : cromossomo.getGenes()) {
+        for (var gene : cromossomo.getGenes()) {
             boolean foiAdicionado = genesSemRepeticao.add(gene);
 
             assertTrue(foiAdicionado);
@@ -208,6 +208,7 @@ public class CromossomoTest {
             String genesEsperadosFilho1,
             String genesEsperadosFilho2) {
         var distanciasFixas = inicializarDistanciasFixas();
+
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
             calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
                     .thenAnswer(invocation -> {

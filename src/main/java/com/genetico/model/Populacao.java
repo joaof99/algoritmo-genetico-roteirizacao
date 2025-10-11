@@ -8,9 +8,9 @@ import java.util.Random;
 public class Populacao {
     private final List<Cromossomo> cromossomos;
     private final int tamanhoPopulacao;
-    private final Random randomizador;
     private final int chanceFixaOcorrenciaCrossover;
     private final int chanceFixaOcorrenciaMutacao;
+    private final Random randomizador;
 
     public Populacao(int tamanhoPopulacao, int chanceFixaOcorrenciaCrossover, int chanceFixaOcorrenciaMutacao) {
         this.tamanhoPopulacao = tamanhoPopulacao;

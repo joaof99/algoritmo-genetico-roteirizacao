@@ -30,6 +30,7 @@ public class PopulacaoTest {
     @DisplayName(value = "deve ordenar os fitness dos cromossomos em ordem crescente")
     public void deveOrdenarOsFitnessDosCromossomosEmOrdemCrescente() {
         var distanciasFixas = inicializarDistanciasFixas();
+
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
             calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
                     .thenAnswer(invocation -> {
@@ -77,6 +78,7 @@ public class PopulacaoTest {
     @MethodSource("casosDeTesteParaSelecacaoRoleta")
     public void deveSelecionarCorretamenteOPaiNaRoleta(int numeroAleatorio, String formatacaoGenesEsperado) {
         var distanciasFixas = inicializarDistanciasFixas();
+
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
             calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
                     .thenAnswer(invocation -> {
