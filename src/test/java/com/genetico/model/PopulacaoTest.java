@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,18 +22,22 @@ public class PopulacaoTest {
     @Test
     @DisplayName("Tamanho da população deve ser inicializado corretamente")
     public void tamanhoDaPopulacaoDeveSerInicializadoCorretamente() {
-        var populacao = new Populacao();
-
-        assertEquals(Populacao.TAMANHO_POPULACAO, populacao.getCromossomos().size());
+        var populacao = new Populacao(30, 50, 50);
+        assertEquals(30, populacao.getTamanhoPopulacao());
     }
 
     @Test
     @DisplayName(value = "deve ordenar os fitness dos cromossomos em ordem crescente")
     public void deveOrdenarOsFitnessDosCromossomosEmOrdemCrescente() {
+        var distanciasFixas = inicializarDistanciasFixas();
+
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias
-                    .when(CalculadorDistancias::getDistancias)
-                    .thenReturn(inicializarDistanciasFixas());
+            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
+                    .thenAnswer(invocation -> {
+                        int indiceCidadeOrigem = invocation.getArgument(0);
+                        int indiceCidadeDestino = invocation.getArgument(1);
+                        return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
+                    });
 
             var populacao = inicializarPopulacaoTeste();
 
@@ -44,18 +49,49 @@ public class PopulacaoTest {
         }
     }
 
+    private Populacao inicializarPopulacaoTeste() {
+        var genes1 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        var genes2 = new int[]{0, 1, 2, 3, 4, 5, 7, 6, 8, 9};
+        var genes3 = new int[]{0, 1, 2, 4, 3, 5, 6, 7, 8, 9};
+        var genes4 = new int[]{0, 5, 4, 3, 2, 6, 7, 8, 1, 9};
+        var genes5 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+
+        var cromossomo1 = new Cromossomo(genes1);
+        var cromossomo2 = new Cromossomo(genes2);
+        var cromossomo3 = new Cromossomo(genes3);
+        var cromossomo4 = new Cromossomo(genes4);
+        var cromossomo5 = new Cromossomo(genes5);
+
+        var cromossomos = new ArrayList<Cromossomo>();
+
+        cromossomos.add(cromossomo1);
+        cromossomos.add(cromossomo2);
+        cromossomos.add(cromossomo3);
+        cromossomos.add(cromossomo4);
+        cromossomos.add(cromossomo5);
+
+        return new Populacao(cromossomos, 50, 50);
+    }
+
     @ParameterizedTest
     @DisplayName("Deve selecionar corretamente o pai na roleta")
     @MethodSource("casosDeTesteParaSelecacaoRoleta")
     public void deveSelecionarCorretamenteOPaiNaRoleta(int numeroAleatorio, String formatacaoGenesEsperado) {
+        var distanciasFixas = inicializarDistanciasFixas();
+
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias
-                    .when(CalculadorDistancias::getDistancias)
-                    .thenReturn(inicializarDistanciasFixas());
+            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
+                    .thenAnswer(invocation -> {
+                        int indiceCidadeOrigem = invocation.getArgument(0);
+                        int indiceCidadeDestino = invocation.getArgument(1);
+                        return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
+                    });
 
             var populacao = spy(inicializarPopulacaoTeste());
 
-            doReturn(numeroAleatorio).when(populacao).gerarNumeroAleatorio(anyInt());
+            var random = mock(Random.class);
+            when(random.nextInt(anyInt())).thenReturn(numeroAleatorio);
+            doReturn(random).when(populacao).getRandomizador();
 
             var cromossomoPai = populacao.selecionarCromossomoPaiPorRoleta();
             assertEquals(formatacaoGenesEsperado, cromossomoPai.formatarGenes());
@@ -183,18 +219,30 @@ public class PopulacaoTest {
         );
     }
 
-    private Populacao inicializarPopulacaoTeste() {
+    @Test
+    @DisplayName("População filha deve ser gerada com o tamanho correto")
+    public void populacaoFilhaDeveSerGeradaComOTamanhoCorreto() {
         var genes1 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         var genes2 = new int[]{0, 1, 2, 3, 4, 5, 7, 6, 8, 9};
         var genes3 = new int[]{0, 1, 2, 4, 3, 5, 6, 7, 8, 9};
         var genes4 = new int[]{0, 5, 4, 3, 2, 6, 7, 8, 1, 9};
         var genes5 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        var genes6 = new int[]{2, 0, 1, 4, 3, 6, 5, 9, 7, 8};
+        var genes7 = new int[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+        var genes8 = new int[]{1, 3, 5, 7, 9, 8, 6, 4, 2, 0};
+        var genes9 = new int[]{4, 0, 2, 6, 8, 1, 3, 5, 7, 9};
+        var genes10 = new int[]{3, 6, 9, 0, 2, 5, 1, 8, 4, 7};
 
         var cromossomo1 = new Cromossomo(genes1);
         var cromossomo2 = new Cromossomo(genes2);
         var cromossomo3 = new Cromossomo(genes3);
         var cromossomo4 = new Cromossomo(genes4);
         var cromossomo5 = new Cromossomo(genes5);
+        var cromossomo6 = new Cromossomo(genes6);
+        var cromossomo7 = new Cromossomo(genes7);
+        var cromossomo8 = new Cromossomo(genes8);
+        var cromossomo9 = new Cromossomo(genes9);
+        var cromossomo10 = new Cromossomo(genes10);
 
         var cromossomos = new ArrayList<Cromossomo>();
 
@@ -203,7 +251,14 @@ public class PopulacaoTest {
         cromossomos.add(cromossomo3);
         cromossomos.add(cromossomo4);
         cromossomos.add(cromossomo5);
+        cromossomos.add(cromossomo6);
+        cromossomos.add(cromossomo7);
+        cromossomos.add(cromossomo8);
+        cromossomos.add(cromossomo9);
+        cromossomos.add(cromossomo10);
 
-        return new Populacao(cromossomos);
+        var populacaoFilha = new Populacao(cromossomos, 50, 50).gerarPopulacaoFilha();
+
+        assertEquals(10, populacaoFilha.getCromossomos().size());
     }
 }

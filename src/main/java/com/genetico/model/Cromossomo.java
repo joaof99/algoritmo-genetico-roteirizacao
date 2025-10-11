@@ -7,16 +7,18 @@ import java.util.Random;
 import java.util.StringJoiner;
 
 public class Cromossomo {
-    public static final int QTDE_MAXIMA_GENES = 10;
+    public static final int QTDE_MAXIMA_GENES = 20;
     public static final int VALOR_GENE_ORIGEM = 0;
     private static final int POSICAO_CORTE_INICIO = 0;
     private static final int POSICAO_CORTE_FIM = 1;
     private final int[] genes;
+    private Random randomizador;
     private int fitness;
 
     public Cromossomo() {
-        this.genes = inicializarGenes();
+        this.genes = inicializarGenesPosicoesAleatorias();
         this.fitness = calcularFitness();
+        this.randomizador = new Random();
     }
 
     public Cromossomo(int[] genes) {
@@ -26,9 +28,10 @@ public class Cromossomo {
 
         this.genes = genes;
         this.fitness = calcularFitness();
+        this.randomizador = new Random();
     }
 
-    private int[] inicializarGenes() {
+    private int[] inicializarGenesPosicoesAleatorias() {
         var genes = new int[QTDE_MAXIMA_GENES];
         genes[0] = VALOR_GENE_ORIGEM;
 
@@ -54,20 +57,28 @@ public class Cromossomo {
         var fitness = 0;
 
         for (int indice = 0; indice < this.genes.length - 1; indice++) {
-            var cidadeOrigem = this.genes[indice];
-            var cidadeDestino = this.genes[indice + 1];
+            var indiceCidadeOrigem = this.genes[indice];
+            var indiceCidadeDestino = this.genes[indice + 1];
 
-            fitness += CalculadorDistancias.getDistancias()[cidadeOrigem][cidadeDestino];
+            fitness += CalculadorDistancias.obterDistanciaEntreDuasCidades(indiceCidadeOrigem, indiceCidadeDestino);
         }
 
         return fitness;
     }
 
-    public List<Cromossomo> realizarCrossoverPmx(Cromossomo pai2, Random random) {
-        var pontosDeCorte = gerarPontosDeCorte(random);
+    public void atualizarFitness() {
+        calcularFitness();
+    }
+
+    List<Cromossomo> realizarCrossoverPmx(Cromossomo pai2) {
+        var tamanhoGenes = pai2.getGenes().length;
+
+        var pontosDeCorte = gerarPontosDeCorte(tamanhoGenes);
+        var pontoCorteInicio = pontosDeCorte[0];
+        var pontoCorteFim = pontosDeCorte[1];
+
         var genesPai1 = getGenes();
         var genesPai2 = pai2.getGenes();
-        var tamanhoGenes = genesPai1.length;
 
         var genesFilho1 = new int[tamanhoGenes];
         var genesFilho2 = new int[tamanhoGenes];
@@ -75,7 +86,7 @@ public class Cromossomo {
         Arrays.fill(genesFilho1, -1);
         Arrays.fill(genesFilho2, -1);
 
-        for (int indice = pontosDeCorte[0] + 1; indice <= pontosDeCorte[1]; indice++) {
+        for (int indice = pontoCorteInicio + 1; indice <= pontoCorteFim; indice++) {
             genesFilho1[indice] = genesPai2[indice];
             genesFilho2[indice] = genesPai1[indice];
         }
@@ -118,6 +129,17 @@ public class Cromossomo {
         return List.of(new Cromossomo(genesFilho1), new Cromossomo(genesFilho2));
     }
 
+    private int[] gerarPontosDeCorte(int tamanhoCromossomo) {
+        int pontoCorte1, pontoCorte2;
+
+        do {
+            pontoCorte1 = getRandomizador().nextInt(tamanhoCromossomo);
+            pontoCorte2 = getRandomizador().nextInt(tamanhoCromossomo);
+        } while (pontosDeCorteSaoInvalidos(pontoCorte1, pontoCorte2));
+
+        return new int[]{pontoCorte1, pontoCorte2};
+    }
+
     private boolean indiceEstaNaRegiaoDeCorte(int indice, int[] pontosDeCorte) {
         return (indice > pontosDeCorte[POSICAO_CORTE_INICIO] && indice <= pontosDeCorte[POSICAO_CORTE_FIM]);
     }
@@ -132,15 +154,19 @@ public class Cromossomo {
         return false;
     }
 
-    private int[] gerarPontosDeCorte(Random random) {
-        int pontoCorte1, pontoCorte2;
+    void realizarMutacaoSwap() {
+        int indiceAleatorioGene1, indiceAleatorioGene2;
 
         do {
-            pontoCorte1 = random.nextInt(QTDE_MAXIMA_GENES);
-            pontoCorte2 = random.nextInt(QTDE_MAXIMA_GENES);
-        } while (pontosDeCorteSaoInvalidos(pontoCorte1, pontoCorte2));
+            indiceAleatorioGene1 = getRandomizador().nextInt(1, getGenes().length);
+            indiceAleatorioGene2 = getRandomizador().nextInt(1, getGenes().length);
+        } while (indiceAleatorioGene1 == indiceAleatorioGene2);
 
-        return new int[]{pontoCorte1, pontoCorte2};
+        var genesAtuais = getGenes();
+        var valorGeneAnteriorIndice1 = genesAtuais[indiceAleatorioGene1];
+
+        genesAtuais[indiceAleatorioGene1] = genesAtuais[indiceAleatorioGene2];
+        genesAtuais[indiceAleatorioGene2] = valorGeneAnteriorIndice1;
     }
 
     private boolean pontosDeCorteSaoInvalidos(int pontoCorte1, int pontoCorte2) {
@@ -165,5 +191,9 @@ public class Cromossomo {
 
     public int getFitness() {
         return fitness;
+    }
+
+    public Random getRandomizador() {
+        return this.randomizador;
     }
 }
