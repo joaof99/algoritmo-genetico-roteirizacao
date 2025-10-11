@@ -155,18 +155,18 @@ public class Cromossomo {
     }
 
     void realizarMutacaoSwap() {
-        int indiceAleatorio1, indiceAleatorio2;
+        int indiceAleatorioGene1, indiceAleatorioGene2;
 
         do {
-            indiceAleatorio1 = getRandomizador().nextInt(getGenes().length);
-            indiceAleatorio2 = getRandomizador().nextInt(getGenes().length);
-        } while (indiceAleatorio1 == indiceAleatorio2);
+            indiceAleatorioGene1 = getRandomizador().nextInt(1, getGenes().length);
+            indiceAleatorioGene2 = getRandomizador().nextInt(1, getGenes().length);
+        } while (indiceAleatorioGene1 == indiceAleatorioGene2);
 
         var genesAtuais = getGenes();
-        var valorGeneAnteriorIndice1 = genesAtuais[indiceAleatorio1];
+        var valorGeneAnteriorIndice1 = genesAtuais[indiceAleatorioGene1];
 
-        genesAtuais[indiceAleatorio1] = genesAtuais[indiceAleatorio2];
-        genesAtuais[indiceAleatorio2] = valorGeneAnteriorIndice1;
+        genesAtuais[indiceAleatorioGene1] = genesAtuais[indiceAleatorioGene2];
+        genesAtuais[indiceAleatorioGene2] = valorGeneAnteriorIndice1;
     }
 
     private boolean pontosDeCorteSaoInvalidos(int pontoCorte1, int pontoCorte2) {

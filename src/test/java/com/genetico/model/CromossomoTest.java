@@ -257,7 +257,7 @@ public class CromossomoTest {
     @ParameterizedTest
     @MethodSource("casosDeTesteParaMutacaoSwap")
     @DisplayName("Deve realizar mutação swap corretamente com diferentes combinações de genes")
-    public void deveRealizarMutacaoSwapCorretamente(int[] genesCromossomoInicial, int indiceAleatorio1, int indiceAleatorio2, String formatacaoEsperadaCromossomo) {
+    public void deveRealizarMutacaoSwapCorretamente(int[] genesCromossomoInicial, int indiceAleatorioGene1, int indiceAleatorioGene2, String formatacaoEsperadaCromossomo) {
         var random = mock(Random.class);
 
         var cromossomo = new Cromossomo(genesCromossomoInicial) {
@@ -272,9 +272,9 @@ public class CromossomoTest {
             }
         };
 
-        when(random.nextInt(anyInt()))
-                .thenReturn(indiceAleatorio1)
-                .thenReturn(indiceAleatorio2);
+        when(random.nextInt(eq(1), anyInt()))
+                .thenReturn(indiceAleatorioGene1)
+                .thenReturn(indiceAleatorioGene2);
 
         cromossomo.realizarMutacaoSwap();
         assertEquals(formatacaoEsperadaCromossomo, cromossomo.formatarGenes());
