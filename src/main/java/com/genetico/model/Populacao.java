@@ -73,17 +73,24 @@ public class Populacao {
 
         } while (contadorIndice < getTamanhoPopulacao());
 
-        var tamanhoTotal = getCromossomos().length + cromossomosFilhos.length;
-
-        var todosOsCromossomos = new Cromossomo[tamanhoTotal];
-        System.arraycopy(this.getCromossomos(), 0, todosOsCromossomos, 0, this.getCromossomos().length);
-        System.arraycopy(cromossomosFilhos, 0, todosOsCromossomos, this.getCromossomos().length, cromossomosFilhos.length);
+        var todosOsCromossomos = unirCromossomosPaisEFilhos(cromossomosFilhos);
 
         var populacaoPaiComFilhos = new Populacao(todosOsCromossomos, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao());
 
         var melhoresCromosomosNovaPopulacao = Arrays.copyOfRange(populacaoPaiComFilhos.getCromossomos(), 0, getTamanhoPopulacao());
 
         return new Populacao(melhoresCromosomosNovaPopulacao, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao());
+    }
+
+    private Cromossomo[] unirCromossomosPaisEFilhos(Cromossomo[] cromossomosFilhos) {
+        var tamanhoTotal = getCromossomos().length + cromossomosFilhos.length;
+
+        var todosOsCromossomos = new Cromossomo[tamanhoTotal];
+
+        System.arraycopy(this.getCromossomos(), 0, todosOsCromossomos, 0, this.getCromossomos().length);
+        System.arraycopy(cromossomosFilhos, 0, todosOsCromossomos, this.getCromossomos().length, cromossomosFilhos.length);
+
+        return todosOsCromossomos;
     }
 
     private Cromossomo[] realizarCrossover(Cromossomo pai1, Cromossomo pai2) {
