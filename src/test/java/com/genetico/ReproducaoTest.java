@@ -5,10 +5,10 @@ import com.genetico.model.Populacao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Comparator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ReproducaoTest {
 
@@ -22,16 +22,15 @@ public class ReproducaoTest {
         var populacaoFinal = reproducao.reproduzir();
 
         var cromossomosPopulacaoFinal = populacaoFinal.getCromossomos();
-        var cromossomosEsperados = cromossomosPopulacaoFinal
-                .stream()
-                .sorted(Comparator.comparingInt(Cromossomo::getFitness))
-                .toList();
 
-        var melhorFitnessPopulacaoInicial = populacaoInicial.getCromossomos().getFirst().getFitness();
-        var melhorFitnessPopulacaoFinal = populacaoFinal.getCromossomos().getFirst().getFitness();
+        var cromossomosEsperados = Arrays.copyOf(cromossomosPopulacaoFinal, cromossomosPopulacaoFinal.length);
+        Arrays.sort(cromossomosPopulacaoFinal, Comparator.comparingInt(Cromossomo::getFitness));
+
+        var melhorFitnessPopulacaoInicial = populacaoInicial.getCromossomos()[0].getFitness();
+        var melhorFitnessPopulacaoFinal = populacaoFinal.getCromossomos()[0].getFitness();
 
         assertTrue(melhorFitnessPopulacaoFinal < melhorFitnessPopulacaoInicial, "População não evoluiu");
-        assertEquals(30, populacaoFinal.getCromossomos().size());
-        assertEquals(cromossomosEsperados, populacaoFinal.getCromossomos());
+        assertEquals(30, populacaoFinal.getCromossomos().length);
+        assertArrayEquals(cromossomosEsperados, populacaoFinal.getCromossomos());
     }
 }

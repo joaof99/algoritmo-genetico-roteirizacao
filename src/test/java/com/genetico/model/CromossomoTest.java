@@ -132,8 +132,8 @@ public class CromossomoTest {
 
             var filhos = pai1.realizarCrossoverPmx(pai2);
 
-            assertEquals(genesEsperadosFilho1, filhos.getFirst().formatarGenes());
-            assertEquals(genesEsperadosFilho2, filhos.getLast().formatarGenes());
+            assertEquals(genesEsperadosFilho1, filhos[0].formatarGenes());
+            assertEquals(genesEsperadosFilho2, filhos[filhos.length-1].formatarGenes());
         }
     }
 
