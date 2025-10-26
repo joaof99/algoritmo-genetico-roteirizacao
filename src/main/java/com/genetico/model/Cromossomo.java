@@ -1,6 +1,7 @@
 package com.genetico.model;
 
 import com.genetico.CalculadorDistancias;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -70,7 +71,7 @@ public class Cromossomo {
         calcularFitness();
     }
 
-    List<Cromossomo> realizarCrossoverPmx(Cromossomo pai2) {
+    Cromossomo[] realizarCrossoverPmx(Cromossomo pai2) {
         var tamanhoGenes = pai2.getGenes().length;
 
         var pontosDeCorte = gerarPontosDeCorte(tamanhoGenes);
@@ -126,7 +127,7 @@ public class Cromossomo {
             genesFilho2[indice] = gene;
         }
 
-        return List.of(new Cromossomo(genesFilho1), new Cromossomo(genesFilho2));
+        return new Cromossomo[]{new Cromossomo(genesFilho1), new Cromossomo(genesFilho2)};
     }
 
     private int[] gerarPontosDeCorte(int tamanhoCromossomo) {
