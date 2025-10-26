@@ -37,7 +37,6 @@ public class Populacao {
 
     private Cromossomo[] avaliarPopulacao(Cromossomo[] cromossomos) {
         var cromossomoOrdenado = Arrays.copyOf(cromossomos, cromossomos.length);
-
         Arrays.sort(cromossomoOrdenado, Comparator.comparingInt(Cromossomo::getFitness));
 
         return cromossomoOrdenado;
@@ -68,10 +67,12 @@ public class Populacao {
 
             cromossomosFilhos[contadorIndice] = new Cromossomo(filho1.getGenes());
             contadorIndice++;
+
             cromossomosFilhos[contadorIndice] = new Cromossomo(filho2.getGenes());
             contadorIndice++;
 
         } while (contadorIndice < getTamanhoPopulacao());
+
         var tamanhoTotal = getCromossomos().length + cromossomosFilhos.length;
 
         var todosOsCromossomos = new Cromossomo[tamanhoTotal];
@@ -80,10 +81,7 @@ public class Populacao {
 
         var populacaoPaiComFilhos = new Populacao(todosOsCromossomos, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao());
 
-        var melhoresCromosomosNovaPopulacao = Arrays
-                .copyOfRange(populacaoPaiComFilhos.getCromossomos(),
-                        0,
-                        getTamanhoPopulacao());
+        var melhoresCromosomosNovaPopulacao = Arrays.copyOfRange(populacaoPaiComFilhos.getCromossomos(), 0, getTamanhoPopulacao());
 
         return new Populacao(melhoresCromosomosNovaPopulacao, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao());
     }

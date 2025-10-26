@@ -3,7 +3,6 @@ package com.genetico.model;
 import com.genetico.CalculadorDistancias;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.StringJoiner;
 
