@@ -1,14 +1,12 @@
 package com.genetico;
 
+import static org.junit.jupiter.api.Assertions.*;
 import com.genetico.model.Cromossomo;
 import com.genetico.model.Populacao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import java.util.Arrays;
 import java.util.Comparator;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class ReproducaoTest {
 
