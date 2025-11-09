@@ -82,15 +82,28 @@ public class Populacao {
         return new Populacao(melhoresCromosomosNovaPopulacao, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao());
     }
 
-    private Cromossomo[] unirCromossomosPaisEFilhos(Cromossomo[] cromossomosFilhos) {
-        var tamanhoTotal = getCromossomos().length + cromossomosFilhos.length;
+    public Cromossomo selecionarCromossomoPaiPorRoleta() {
+        var indicePaiEscolhido = 0;
+        var fitnessTotalPopulacao = calcularSomaFitnessTotalDaPopulacao();
 
-        var todosOsCromossomos = new Cromossomo[tamanhoTotal];
+        var somaTotalFitnessIteracoes = 0;
 
-        System.arraycopy(this.getCromossomos(), 0, todosOsCromossomos, 0, this.getCromossomos().length);
-        System.arraycopy(cromossomosFilhos, 0, todosOsCromossomos, this.getCromossomos().length, cromossomosFilhos.length);
+        var numeroAleatorioMaximoFitness = gerarNumeroAleatorioMaximoFitness(fitnessTotalPopulacao);
 
-        return todosOsCromossomos;
+        for (int indice = 0; indice < getTamanhoPopulacao(); indice++) {
+            somaTotalFitnessIteracoes += this.cromossomos[indice].getFitness();
+
+            if (somaTotalFitnessIteracoes >= numeroAleatorioMaximoFitness) {
+                indicePaiEscolhido = indice;
+                break;
+            }
+        }
+
+        return this.cromossomos[indicePaiEscolhido];
+    }
+
+    private int gerarNumeroAleatorioMaximoFitness(int fitnessTotalPopulacao) {
+        return getRandomizador().nextInt(fitnessTotalPopulacao);
     }
 
     private Cromossomo[] realizarCrossover(Cromossomo pai1, Cromossomo pai2) {
@@ -125,28 +138,15 @@ public class Populacao {
         }
     }
 
-    public Cromossomo selecionarCromossomoPaiPorRoleta() {
-        var indicePaiEscolhido = 0;
-        var fitnessTotalPopulacao = calcularSomaFitnessTotalDaPopulacao();
+    private Cromossomo[] unirCromossomosPaisEFilhos(Cromossomo[] cromossomosFilhos) {
+        var tamanhoTotal = getCromossomos().length + cromossomosFilhos.length;
 
-        var somaTotalFitnessIteracoes = 0;
+        var todosOsCromossomos = new Cromossomo[tamanhoTotal];
 
-        var numeroAleatorioMaximoFitness = gerarNumeroAleatorioMaximoFitness(fitnessTotalPopulacao);
+        System.arraycopy(this.getCromossomos(), 0, todosOsCromossomos, 0, this.getCromossomos().length);
+        System.arraycopy(cromossomosFilhos, 0, todosOsCromossomos, this.getCromossomos().length, cromossomosFilhos.length);
 
-        for (int indice = 0; indice < getTamanhoPopulacao(); indice++) {
-            somaTotalFitnessIteracoes += this.cromossomos[indice].getFitness();
-
-            if (somaTotalFitnessIteracoes >= numeroAleatorioMaximoFitness) {
-                indicePaiEscolhido = indice;
-                break;
-            }
-        }
-
-        return this.cromossomos[indicePaiEscolhido];
-    }
-
-    private int gerarNumeroAleatorioMaximoFitness(int fitnessTotalPopulacao) {
-        return getRandomizador().nextInt(fitnessTotalPopulacao);
+        return todosOsCromossomos;
     }
 
     private int calcularSomaFitnessTotalDaPopulacao() {
