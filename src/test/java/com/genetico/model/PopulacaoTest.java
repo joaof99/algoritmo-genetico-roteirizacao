@@ -1,15 +1,12 @@
-package model;
+package com.genetico.model;
 
 import com.genetico.CalculadorDistancias;
-import com.genetico.model.Cromossomo;
-import com.genetico.model.Populacao;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -41,11 +38,11 @@ public class PopulacaoTest {
 
             var populacao = inicializarPopulacaoTeste();
 
-            assertEquals(70, populacao.getCromossomos().get(0).getFitness());
-            assertEquals(70, populacao.getCromossomos().get(1).getFitness());
-            assertEquals(90, populacao.getCromossomos().get(2).getFitness());
-            assertEquals(100, populacao.getCromossomos().get(3).getFitness());
-            assertEquals(220, populacao.getCromossomos().get(4).getFitness());
+            assertEquals(70, populacao.getCromossomos()[0].getFitness());
+            assertEquals(70, populacao.getCromossomos()[1].getFitness());
+            assertEquals(90, populacao.getCromossomos()[2].getFitness());
+            assertEquals(100, populacao.getCromossomos()[3].getFitness());
+            assertEquals(220, populacao.getCromossomos()[4].getFitness());
         }
     }
 
@@ -62,13 +59,13 @@ public class PopulacaoTest {
         var cromossomo4 = new Cromossomo(genes4);
         var cromossomo5 = new Cromossomo(genes5);
 
-        var cromossomos = new ArrayList<Cromossomo>();
+        var cromossomos = new Cromossomo[5];
 
-        cromossomos.add(cromossomo1);
-        cromossomos.add(cromossomo2);
-        cromossomos.add(cromossomo3);
-        cromossomos.add(cromossomo4);
-        cromossomos.add(cromossomo5);
+        cromossomos[0] = cromossomo1;
+        cromossomos[1] = cromossomo2;
+        cromossomos[2] = cromossomo3;
+        cromossomos[3] = cromossomo4;
+        cromossomos[4] = cromossomo5;
 
         return new Populacao(cromossomos, 50, 50);
     }
@@ -244,21 +241,21 @@ public class PopulacaoTest {
         var cromossomo9 = new Cromossomo(genes9);
         var cromossomo10 = new Cromossomo(genes10);
 
-        var cromossomos = new ArrayList<Cromossomo>();
+        var cromossomos = new Cromossomo[10];
 
-        cromossomos.add(cromossomo1);
-        cromossomos.add(cromossomo2);
-        cromossomos.add(cromossomo3);
-        cromossomos.add(cromossomo4);
-        cromossomos.add(cromossomo5);
-        cromossomos.add(cromossomo6);
-        cromossomos.add(cromossomo7);
-        cromossomos.add(cromossomo8);
-        cromossomos.add(cromossomo9);
-        cromossomos.add(cromossomo10);
+        cromossomos[0] = cromossomo1;
+        cromossomos[1] = cromossomo2;
+        cromossomos[2] = cromossomo3;
+        cromossomos[3] = cromossomo4;
+        cromossomos[4] = cromossomo5;
+        cromossomos[5] = cromossomo6;
+        cromossomos[6] = cromossomo7;
+        cromossomos[7] = cromossomo8;
+        cromossomos[8] = cromossomo9;
+        cromossomos[9] = cromossomo10;
 
         var populacaoFilha = new Populacao(cromossomos, 50, 50).gerarPopulacaoFilha();
 
-        assertEquals(10, populacaoFilha.getCromossomos().size());
+        assertEquals(10, populacaoFilha.getCromossomos().length);
     }
 }

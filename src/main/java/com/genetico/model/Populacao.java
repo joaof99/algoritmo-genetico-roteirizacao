@@ -1,12 +1,11 @@
 package com.genetico.model;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Random;
 
 public class Populacao {
-    private final List<Cromossomo> cromossomos;
+    private final Cromossomo[] cromossomos;
     private final int tamanhoPopulacao;
     private final int chanceFixaOcorrenciaCrossover;
     private final int chanceFixaOcorrenciaMutacao;
@@ -20,29 +19,27 @@ public class Populacao {
         this.chanceFixaOcorrenciaMutacao = chanceFixaOcorrenciaMutacao;
     }
 
-    public Populacao(List<Cromossomo> cromossomos, int chanceFixaOcorrenciaCrossover, int chanceFixaOcorrenciaMutacao) {
-        this.tamanhoPopulacao = cromossomos.size();
+    public Populacao(Cromossomo[] cromossomos, int chanceFixaOcorrenciaCrossover, int chanceFixaOcorrenciaMutacao) {
+        this.tamanhoPopulacao = cromossomos.length;
         this.cromossomos = avaliarPopulacao(cromossomos);
         this.randomizador = new Random();
         this.chanceFixaOcorrenciaCrossover = chanceFixaOcorrenciaCrossover;
         this.chanceFixaOcorrenciaMutacao = chanceFixaOcorrenciaMutacao;
     }
 
-    private List<Cromossomo> iniciarCromossomosPopulacaoAleatoriamente() {
-        var cromossomos = new ArrayList<Cromossomo>();
+    private Cromossomo[] iniciarCromossomosPopulacaoAleatoriamente() {
+        var cromossomos = new Cromossomo[getTamanhoPopulacao()];
 
         for (int indice = 0; indice < getTamanhoPopulacao(); indice++) {
-            var cromossomo = new Cromossomo();
-
-            cromossomos.add(cromossomo);
+            cromossomos[indice] = new Cromossomo();
         }
 
         return cromossomos;
     }
 
-    private List<Cromossomo> avaliarPopulacao(List<Cromossomo> cromossomos) {
-        var cromossomoOrdenado = new ArrayList<>(cromossomos);
-        cromossomoOrdenado.sort(Comparator.comparingInt(Cromossomo::getFitness));
+    private Cromossomo[] avaliarPopulacao(Cromossomo[] cromossomos) {
+        var cromossomoOrdenado = Arrays.copyOf(cromossomos, cromossomos.length);
+        Arrays.sort(cromossomoOrdenado, Comparator.comparingInt(Cromossomo::getFitness));
 
         return cromossomoOrdenado;
     }
@@ -52,7 +49,8 @@ public class Populacao {
     }
 
     public Populacao gerarPopulacaoFilha() {
-        var cromossomosFilhos = new ArrayList<Cromossomo>();
+        var cromossomosFilhos = new Cromossomo[getTamanhoPopulacao()];
+        var contadorIndice = 0;
 
         do {
             var pai1 = selecionarCromossomoPaiPorRoleta();
@@ -60,31 +58,57 @@ public class Populacao {
 
             var filhos = realizarCrossover(pai1, pai2);
 
-            if (filhos.size() != 2) {
-                throw new IllegalStateException("Após um crossover deve ter exatamente 2 filhos. Encontrado: " + filhos.size());
+            if (filhos.length != 2) {
+                throw new IllegalStateException("Após um crossover deve ter exatamente 2 filhos. Encontrado: " + filhos.length);
             }
 
-            var filho1 = filhos.getFirst();
-            var filho2 = filhos.getLast();
+            var filho1 = filhos[0];
+            var filho2 = filhos[1];
 
             realizarMutacao(filho1, filho2);
 
-            cromossomosFilhos.add(filho1);
-            cromossomosFilhos.add(filho2);
+            cromossomosFilhos[contadorIndice] = new Cromossomo(filho1.getGenes());
+            contadorIndice++;
 
-        } while (cromossomosFilhos.size() < getTamanhoPopulacao());
+            cromossomosFilhos[contadorIndice] = new Cromossomo(filho2.getGenes());
+            contadorIndice++;
 
-        var todosOsCromossomos = new ArrayList<>(this.getCromossomos());
-        todosOsCromossomos.addAll(cromossomosFilhos);
+        } while (contadorIndice < getTamanhoPopulacao());
+
+        var todosOsCromossomos = unirCromossomosPaisEFilhos(cromossomosFilhos);
 
         var populacaoPaiComFilhos = new Populacao(todosOsCromossomos, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao());
 
-        var melhoresCromosomosNovaPopulacao = new ArrayList<>(populacaoPaiComFilhos.getCromossomos().subList(0, getTamanhoPopulacao()));
+        var melhoresCromosomosNovaPopulacao = Arrays.copyOfRange(populacaoPaiComFilhos.getCromossomos(), 0, getTamanhoPopulacao());
 
         return new Populacao(melhoresCromosomosNovaPopulacao, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao());
     }
 
-    private List<Cromossomo> realizarCrossover(Cromossomo pai1, Cromossomo pai2) {
+    Cromossomo selecionarCromossomoPaiPorRoleta() {
+        var indicePaiEscolhido = 0;
+        var fitnessTotalPopulacao = calcularSomaFitnessTotalDaPopulacao();
+
+        var somaTotalFitnessIteracoes = 0;
+
+        var numeroAleatorioMaximoFitness = gerarNumeroAleatorioMaximoFitness(fitnessTotalPopulacao);
+
+        for (int indice = 0; indice < getTamanhoPopulacao(); indice++) {
+            somaTotalFitnessIteracoes += this.cromossomos[indice].getFitness();
+
+            if (somaTotalFitnessIteracoes >= numeroAleatorioMaximoFitness) {
+                indicePaiEscolhido = indice;
+                break;
+            }
+        }
+
+        return this.cromossomos[indicePaiEscolhido];
+    }
+
+    private int gerarNumeroAleatorioMaximoFitness(int fitnessTotalPopulacao) {
+        return getRandomizador().nextInt(fitnessTotalPopulacao);
+    }
+
+    private Cromossomo[] realizarCrossover(Cromossomo pai1, Cromossomo pai2) {
         Cromossomo filho1;
         Cromossomo filho2;
 
@@ -92,15 +116,15 @@ public class Populacao {
 
         if (chanceAleatoriaDeOcorrerCrossover <= getChanceFixaOcorrenciaCrossover()) {
             var filhosCrossover = pai1.realizarCrossoverPmx(pai2);
-            filho1 = filhosCrossover.getFirst();
-            filho2 = filhosCrossover.getLast();
+            filho1 = filhosCrossover[0];
+            filho2 = filhosCrossover[1];
 
             filho1.atualizarFitness();
             filho2.atualizarFitness();
 
-            return List.of(filho1, filho2);
+            return new Cromossomo[]{new Cromossomo(filho1.getGenes()), new Cromossomo(filho2.getGenes())};
         } else {
-            return List.of(pai1, pai2);
+            return new Cromossomo[]{pai1, pai2};
         }
     }
 
@@ -116,28 +140,15 @@ public class Populacao {
         }
     }
 
-    public Cromossomo selecionarCromossomoPaiPorRoleta() {
-        var indicePaiEscolhido = 0;
-        var fitnessTotalPopulacao = calcularSomaFitnessTotalDaPopulacao();
+    private Cromossomo[] unirCromossomosPaisEFilhos(Cromossomo[] cromossomosFilhos) {
+        var tamanhoTotal = getCromossomos().length + cromossomosFilhos.length;
 
-        var somaTotalFitnessIteracoes = 0;
+        var todosOsCromossomos = new Cromossomo[tamanhoTotal];
 
-        var numeroAleatorioMaximoFitness = gerarNumeroAleatorioMaximoFitness(fitnessTotalPopulacao);
+        System.arraycopy(this.getCromossomos(), 0, todosOsCromossomos, 0, this.getCromossomos().length);
+        System.arraycopy(cromossomosFilhos, 0, todosOsCromossomos, this.getCromossomos().length, cromossomosFilhos.length);
 
-        for (int indice = 0; indice < getTamanhoPopulacao(); indice++) {
-            somaTotalFitnessIteracoes += this.cromossomos.get(indice).getFitness();
-
-            if (somaTotalFitnessIteracoes >= numeroAleatorioMaximoFitness) {
-                indicePaiEscolhido = indice;
-                break;
-            }
-        }
-
-        return this.cromossomos.get(indicePaiEscolhido);
-    }
-
-    private int gerarNumeroAleatorioMaximoFitness(int fitnessTotalPopulacao) {
-        return getRandomizador().nextInt(fitnessTotalPopulacao);
+        return todosOsCromossomos;
     }
 
     private int calcularSomaFitnessTotalDaPopulacao() {
@@ -150,7 +161,7 @@ public class Populacao {
         return fitnessTotalCromosssomos;
     }
 
-    public List<Cromossomo> getCromossomos() {
+    public Cromossomo[] getCromossomos() {
         return this.cromossomos;
     }
 
