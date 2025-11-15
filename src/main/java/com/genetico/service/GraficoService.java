@@ -1,0 +1,38 @@
+package com.genetico.service;
+
+import org.knowm.xchart.BitmapEncoder;
+import org.knowm.xchart.SwingWrapper;
+import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.style.markers.SeriesMarkers;
+
+import java.io.IOException;
+
+public class GraficoService {
+
+    public void gerarGraficoEvolucaoFitness(double[] geracoes, double[] valoresFitness) {
+        if (geracoes.length != valoresFitness.length) {
+            throw new IllegalArgumentException(String.format("A quantidade de gerações deve ser iguais a quantidade de valores de fitness." +
+                    " Há %d gerações e %d valores de fitness", geracoes.length, valoresFitness.length));
+        }
+
+        var chart = new XYChartBuilder()
+                .width(800)
+                .height(600)
+                .title("Evolução do Melhor Fitness")
+                .xAxisTitle("Geração")
+                .yAxisTitle("Fitness")
+                .build();
+
+        try {
+            chart.addSeries("Melhor Fitness", geracoes, valoresFitness).setMarker(SeriesMarkers.CIRCLE);
+            BitmapEncoder.saveBitmap(chart, "evolucao_fitness.png", BitmapEncoder.BitmapFormat.PNG);
+        } catch (IOException e) {
+            System.out.println("Houve um erro de entrada e saída " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("Gráfico gerado com XChart!");
+
+        new SwingWrapper<>(chart).displayChart();
+    }
+}
