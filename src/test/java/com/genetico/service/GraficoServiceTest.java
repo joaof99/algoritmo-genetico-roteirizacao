@@ -31,7 +31,7 @@ public class GraficoServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lancar execao caso seja fornecido parâmetros inválidos")
+    @DisplayName("Deve lancar exceção caso seja fornecido parâmetros inválidos")
     public void deveLancarExecaoCasoSejaFornecidoParametrosInvalidos() {
         var geracoes = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         var valoresFitness = new double[]{70, 40, 25, 20, 19, 17, 16, 15};
