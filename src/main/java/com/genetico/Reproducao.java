@@ -1,6 +1,7 @@
 package com.genetico;
 
 import com.genetico.model.Populacao;
+import com.genetico.service.GraficoService;
 
 public class Reproducao {
     private final int qtdeGeracoes;
@@ -12,9 +13,16 @@ public class Reproducao {
     }
 
     public Populacao reproduzir() {
+        var geracoes = new double[qtdeGeracoes];
+        var valoresFitness = new double[qtdeGeracoes];
+
         var contadorGeracoes = 0;
 
         while (contadorGeracoes < qtdeGeracoes) {
+            geracoes[contadorGeracoes] = contadorGeracoes;
+            var melhorFitnessPopulacao = populacao.getCromossomos()[0].getFitness();
+            valoresFitness[contadorGeracoes] = melhorFitnessPopulacao;
+
             var novaPopulacao = populacao.gerarPopulacaoFilha();
             populacao = new Populacao(novaPopulacao.getCromossomos(),
                     populacao.getChanceFixaOcorrenciaCrossover(),
@@ -22,6 +30,8 @@ public class Reproducao {
 
             contadorGeracoes++;
         }
+
+        new GraficoService().gerarGraficoEvolucaoFitness(geracoes, valoresFitness);
 
         return populacao;
     }
