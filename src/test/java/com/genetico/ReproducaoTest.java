@@ -2,11 +2,16 @@ package com.genetico;
 
 import com.genetico.model.Cromossomo;
 import com.genetico.model.Populacao;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,5 +37,29 @@ public class ReproducaoTest {
         assertTrue(melhorFitnessPopulacaoFinal < melhorFitnessPopulacaoInicial, "População não evoluiu");
         assertEquals(30, populacaoFinal.getCromossomos().length);
         assertArrayEquals(cromossomosEsperados, populacaoFinal.getCromossomos());
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        limparDiretoriosTeste();
+    }
+
+    private static void limparDiretoriosTeste() {
+        File diretorioGraficos = null;
+
+        try {
+            diretorioGraficos = new File("graficos");
+
+            if (diretorioGraficos.exists() && diretorioGraficos.isDirectory()) {
+                for (var arquivo : Objects.requireNonNull(diretorioGraficos.listFiles())) {
+                    Files.delete(arquivo.toPath());
+                }
+
+                Files.delete(diretorioGraficos.toPath());
+            }
+        } catch (IOException e) {
+            System.out.println("Houve um erro de entrada e saída ao deletar " + diretorioGraficos.getPath());
+            throw new RuntimeException(e);
+        }
     }
 }

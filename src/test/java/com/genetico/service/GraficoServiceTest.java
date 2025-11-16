@@ -25,7 +25,7 @@ public class GraficoServiceTest {
 
         graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness);
 
-        var arquivoGrafico = new File("evolucao_fitness.png");
+        var arquivoGrafico = new File("graficos/evolucao_fitness.png");
         assertTrue(arquivoGrafico.exists());
         assertTrue(arquivoGrafico.delete());
     }
