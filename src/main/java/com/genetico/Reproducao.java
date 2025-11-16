@@ -20,8 +20,8 @@ public class Reproducao {
 
         while (contadorGeracoes < qtdeGeracoes) {
             indicesGeracoes[contadorGeracoes] = contadorGeracoes;
-            var melhorFitnessPopulacao = populacao.getCromossomos()[0].getFitness();
-            valoresFitness[contadorGeracoes] = melhorFitnessPopulacao;
+            var melhorFitnessPopulacaoAtual = populacao.getCromossomos()[0].getFitness();
+            valoresFitness[contadorGeracoes] = melhorFitnessPopulacaoAtual;
 
             var novaPopulacao = populacao.gerarPopulacaoFilha();
             populacao = new Populacao(novaPopulacao.getCromossomos(),
