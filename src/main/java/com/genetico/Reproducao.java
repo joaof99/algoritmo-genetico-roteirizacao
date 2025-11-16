@@ -23,11 +23,7 @@ public class Reproducao {
             var melhorFitnessPopulacaoAtual = populacao.getCromossomos()[0].getFitness();
             valoresFitness[contadorGeracoes] = melhorFitnessPopulacaoAtual;
 
-            var novaPopulacao = populacao.gerarPopulacaoFilha();
-            populacao = new Populacao(novaPopulacao.getCromossomos(),
-                    populacao.getChanceFixaOcorrenciaCrossover(),
-                    populacao.getChanceFixaOcorrenciaMutacao());
-
+            populacao = populacao.gerarPopulacaoFilha();
             contadorGeracoes++;
         }
 
