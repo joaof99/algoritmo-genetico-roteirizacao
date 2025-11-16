@@ -9,10 +9,10 @@ import java.io.IOException;
 
 public class GraficoService {
 
-    public void gerarGraficoEvolucaoFitness(double[] geracoes, double[] valoresFitness) {
-        if (geracoes.length != valoresFitness.length) {
+    public void gerarGraficoEvolucaoFitness(double[] indicesGeracoes, double[] valoresFitness) {
+        if (indicesGeracoes.length != valoresFitness.length) {
             throw new IllegalArgumentException(String.format("A quantidade de gerações deve ser iguais a quantidade de valores de fitness." +
-                    " Há %d gerações e %d valores de fitness", geracoes.length, valoresFitness.length));
+                    " Há %d gerações e %d valores de fitness", indicesGeracoes.length, valoresFitness.length));
         }
 
         var chart = new XYChartBuilder()
@@ -24,7 +24,7 @@ public class GraficoService {
                 .build();
 
         try {
-            chart.addSeries("Melhor Fitness", geracoes, valoresFitness).setMarker(SeriesMarkers.CIRCLE);
+            chart.addSeries("Melhor Fitness", indicesGeracoes, valoresFitness).setMarker(SeriesMarkers.CIRCLE);
             BitmapEncoder.saveBitmap(chart, "evolucao_fitness.png", BitmapEncoder.BitmapFormat.PNG);
         } catch (IOException e) {
             System.out.println("Houve um erro de entrada e saída " + e.getMessage());

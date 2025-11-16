@@ -13,13 +13,13 @@ public class Reproducao {
     }
 
     public Populacao reproduzir() {
-        var geracoes = new double[qtdeGeracoes];
+        var indicesGeracoes = new double[qtdeGeracoes];
         var valoresFitness = new double[qtdeGeracoes];
 
         var contadorGeracoes = 0;
 
         while (contadorGeracoes < qtdeGeracoes) {
-            geracoes[contadorGeracoes] = contadorGeracoes;
+            indicesGeracoes[contadorGeracoes] = contadorGeracoes;
             var melhorFitnessPopulacao = populacao.getCromossomos()[0].getFitness();
             valoresFitness[contadorGeracoes] = melhorFitnessPopulacao;
 
@@ -31,7 +31,7 @@ public class Reproducao {
             contadorGeracoes++;
         }
 
-        new GraficoService().gerarGraficoEvolucaoFitness(geracoes, valoresFitness);
+        new GraficoService().gerarGraficoEvolucaoFitness(indicesGeracoes, valoresFitness);
 
         return populacao;
     }
