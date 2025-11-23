@@ -30,15 +30,7 @@ public class GraficoService {
                     " Há %d gerações e %d valores de fitness", indicesGeracoes.length, melhoresFitnessPopulacoes.length));
         }
 
-        for (int indice = 0; indice < indicesGeracoes.length; indice++) {
-            if (indicesGeracoes[indice] != indice) {
-                var mensagemExcecao = String
-                        .format("Índice %d com valor %.0f não está na ordem. Aqui deveria ser: %d",
-                                indice, indicesGeracoes[indice], indice);
-
-                throw new IllegalArgumentException(mensagemExcecao);
-            }
-        }
+        checarIndicesGeracoesRepetidos(indicesGeracoes);
 
         var chart = new XYChartBuilder()
                 .width(800)
@@ -59,7 +51,18 @@ public class GraficoService {
             throw new RuntimeException(e);
         }
 
-
         new SwingWrapper<>(chart).displayChart();
+    }
+
+    private void checarIndicesGeracoesRepetidos(double[] indicesGeracoes) {
+        for (int indice = 0; indice < indicesGeracoes.length; indice++) {
+            if (indicesGeracoes[indice] != indice) {
+                var mensagemExcecao = String
+                        .format("Índice %d com valor %.0f não está na ordem. Aqui deveria ser: %d",
+                                indice, indicesGeracoes[indice], indice);
+
+                throw new IllegalArgumentException(mensagemExcecao);
+            }
+        }
     }
 }
