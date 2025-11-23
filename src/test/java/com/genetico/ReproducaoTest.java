@@ -41,10 +41,10 @@ public class ReproducaoTest {
 
     @AfterAll
     public static void afterAll() {
-        limparDiretoriosTeste();
+        excluirDiretoriosTeste();
     }
 
-    private static void limparDiretoriosTeste() {
+    private static void excluirDiretoriosTeste() {
         File diretorioGraficos = null;
 
         try {
