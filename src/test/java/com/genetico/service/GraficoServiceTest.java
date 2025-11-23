@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GraficoServiceTest {
-    GraficoService graficoService;
+    private GraficoService graficoService;
 
     @BeforeEach
     void beforeEach() {
