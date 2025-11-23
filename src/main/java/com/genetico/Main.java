@@ -1,6 +1,7 @@
 package com.genetico;
 
 import com.genetico.model.Populacao;
+import com.genetico.service.GraficoService;
 
 public class Main {
     public static void main(String[] args) {
@@ -9,7 +10,7 @@ public class Main {
         populacaoInicial.imprimirPopulacao();
 
         System.out.println("População final");
-        var populacaoFinal = new Reproducao(50, populacaoInicial).reproduzir();
+        var populacaoFinal = new Reproducao(50, populacaoInicial, new GraficoService("graficos_fitness", "evolucao_fitness.png")).reproduzir();
         populacaoFinal.imprimirPopulacao();
     }
 }

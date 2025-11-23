@@ -2,6 +2,7 @@ package com.genetico;
 
 import com.genetico.model.Cromossomo;
 import com.genetico.model.Populacao;
+import com.genetico.service.GraficoService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class ReproducaoTest {
     public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() {
         var populacaoInicial = new Populacao(30, 80, 80);
 
-        var reproducao = new Reproducao(50, populacaoInicial);
+        var reproducao = new Reproducao(50, populacaoInicial, new GraficoService("graficos_fitness_teste", "evolucao_fitness_teste.png"));
 
         var populacaoFinal = reproducao.reproduzir();
 
@@ -48,7 +49,7 @@ public class ReproducaoTest {
         File diretorioGraficos = null;
 
         try {
-            diretorioGraficos = new File("graficos_fitness");
+            diretorioGraficos = new File("graficos_fitness_teste");
 
             if (diretorioGraficos.exists() && diretorioGraficos.isDirectory()) {
                 for (var arquivo : Objects.requireNonNull(diretorioGraficos.listFiles())) {

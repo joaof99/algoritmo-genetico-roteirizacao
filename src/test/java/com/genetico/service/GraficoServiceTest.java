@@ -11,11 +11,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GraficoServiceTest {
     private GraficoService graficoService;
+    private final String nomePastaGraficosTeste = "graficos_fitness_teste";
     private final String nomeArquivoGraficoTeste = "evolucao_fitness_teste.png";
 
     @BeforeEach
     void beforeEach() {
-        graficoService = new GraficoService();
+        graficoService = new GraficoService(nomePastaGraficosTeste, nomeArquivoGraficoTeste);
     }
 
     @Test
@@ -24,7 +25,7 @@ public class GraficoServiceTest {
         var geracoes = new double[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         var valoresFitness = new double[]{100, 80, 70, 40, 25, 20, 19, 17, 16, 15};
 
-        graficoService.gerarGraficoEvolucaoFitness(nomeArquivoGraficoTeste, geracoes, valoresFitness);
+        graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness);
 
         var arquivoGrafico = new File(graficoService.getNomePastaGraficos() + "/" + nomeArquivoGraficoTeste);
         assertTrue(arquivoGrafico.exists());
@@ -37,11 +38,9 @@ public class GraficoServiceTest {
         var geracoes = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         var valoresFitness = new double[]{70, 40, 25, 20, 19, 17, 16, 15};
 
-        var excecao = assertThrows(IllegalArgumentException.class,
-                () -> graficoService.gerarGraficoEvolucaoFitness(nomeArquivoGraficoTeste, geracoes, valoresFitness));
+        var excecao = assertThrows(IllegalArgumentException.class, () -> graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness));
 
-        var mensagemExecaoEsperada = "A quantidade de gerações deve ser iguais a quantidade de valores de fitness." +
-                " Há 10 gerações e 8 valores de fitness";
+        var mensagemExecaoEsperada = "A quantidade de gerações deve ser iguais a quantidade de valores de fitness." + " Há 10 gerações e 8 valores de fitness";
 
         assertTrue(excecao.getMessage().contains(mensagemExecaoEsperada));
     }
@@ -52,8 +51,7 @@ public class GraficoServiceTest {
         var geracoes = new double[]{4, 4, 2, 1, 5, 5, 6, 7, 8, 9};
         var valoresFitness = new double[]{70, 40, 25, 20, 19, 17, 16, 15, 10, 20};
 
-        var excecao = assertThrows(IllegalArgumentException.class,
-                () -> graficoService.gerarGraficoEvolucaoFitness("evolucao_fitness_teste.png", geracoes, valoresFitness));
+        var excecao = assertThrows(IllegalArgumentException.class, () -> graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness));
 
         assertTrue(excecao.getMessage().contains("Índice 0 com valor 4 não está na ordem. Aqui deveria ser: 0"));
     }

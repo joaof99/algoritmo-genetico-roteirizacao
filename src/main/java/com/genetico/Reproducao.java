@@ -6,10 +6,12 @@ import com.genetico.service.GraficoService;
 public class Reproducao {
     private final int qtdeGeracoes;
     private Populacao populacao;
+    private GraficoService graficoService;
 
-    public Reproducao(int qtdeGeracoes, Populacao populacao) {
+    public Reproducao(int qtdeGeracoes, Populacao populacao, GraficoService graficoService) {
         this.qtdeGeracoes = qtdeGeracoes;
         this.populacao = populacao;
+        this.graficoService = graficoService;
     }
 
     public Populacao reproduzir() {
@@ -22,7 +24,7 @@ public class Reproducao {
             populacao = populacao.gerarPopulacaoFilha();
         }
 
-        new GraficoService().gerarGraficoEvolucaoFitness("evolucao_fitness.png", indicesGeracoes, melhoresFitnessPopulacoes);
+        graficoService.gerarGraficoEvolucaoFitness(indicesGeracoes, melhoresFitnessPopulacoes);
 
         return populacao;
     }
