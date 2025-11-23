@@ -14,21 +14,22 @@ public class Reproducao {
 
     public Populacao reproduzir() {
         var indicesGeracoes = new double[qtdeGeracoes];
-        var valoresFitness = new double[qtdeGeracoes];
+        var melhoresFitnessPopulacoes = new double[qtdeGeracoes];
 
-        var contadorGeracoes = 0;
-
-        while (contadorGeracoes < qtdeGeracoes) {
-            indicesGeracoes[contadorGeracoes] = contadorGeracoes;
-            var melhorFitnessPopulacaoAtual = populacao.getCromossomos()[0].getFitness();
-            valoresFitness[contadorGeracoes] = melhorFitnessPopulacaoAtual;
+        for (int indiceGeracao = 0; indiceGeracao < qtdeGeracoes; indiceGeracao++) {
+            preencherValoresGraficoFitness(indicesGeracoes, indiceGeracao, melhoresFitnessPopulacoes);
 
             populacao = populacao.gerarPopulacaoFilha();
-            contadorGeracoes++;
         }
 
-        new GraficoService().gerarGraficoEvolucaoFitness(indicesGeracoes, valoresFitness);
+        new GraficoService().gerarGraficoEvolucaoFitness(indicesGeracoes, melhoresFitnessPopulacoes);
 
         return populacao;
+    }
+
+    private void preencherValoresGraficoFitness(double[] indicesGeracoes, int indiceGeracao, double[] melhoresFitnessPopulacoes) {
+        indicesGeracoes[indiceGeracao] = indiceGeracao;
+        var melhorFitnessPopulacaoAtual = populacao.getCromossomos()[0].getFitness();
+        melhoresFitnessPopulacoes[indiceGeracao] = melhorFitnessPopulacaoAtual;
     }
 }
