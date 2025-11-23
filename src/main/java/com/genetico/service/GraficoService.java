@@ -15,6 +15,7 @@ public class GraficoService {
     private final String tituloGraficoFitness = "Evolução do Melhor Fitness";
     private final String tituloEixoX = "Geração";
     private final String tituloEixoY = "Fitness";
+    private final String nomePastaGraficos = "graficos_fitness";
     private final XYChart chart;
 
     public GraficoService() {
@@ -24,7 +25,7 @@ public class GraficoService {
     }
 
     private void criarPastaGraficos() {
-        var pastaGraficos = new File("graficos");
+        var pastaGraficos = new File(nomePastaGraficos);
 
         if (!pastaGraficos.exists()) {
             if (!pastaGraficos.mkdirs()) {
@@ -77,7 +78,7 @@ public class GraficoService {
 
     private void criarImagemGrafico(String nomeArquivoGrafico, double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
         try {
-            var diretorioGraficoFitness = "graficos/" + nomeArquivoGrafico;
+            var diretorioGraficoFitness = getNomePastaGraficos() + "/" + nomeArquivoGrafico;
 
             chart.addSeries("Melhor Fitness", indicesGeracoes, melhoresFitnessPopulacoes).setMarker(SeriesMarkers.CIRCLE);
             BitmapEncoder.saveBitmap(chart, diretorioGraficoFitness, BitmapEncoder.BitmapFormat.PNG);
@@ -85,5 +86,9 @@ public class GraficoService {
             System.out.println("Houve um erro de entrada e saída " + ioException.getMessage());
             throw new RuntimeException(ioException);
         }
+    }
+
+    public String getNomePastaGraficos() {
+        return nomePastaGraficos;
     }
 }

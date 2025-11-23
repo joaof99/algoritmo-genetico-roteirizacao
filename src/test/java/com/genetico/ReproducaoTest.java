@@ -48,7 +48,7 @@ public class ReproducaoTest {
         File diretorioGraficos = null;
 
         try {
-            diretorioGraficos = new File("graficos");
+            diretorioGraficos = new File("graficos_fitness");
 
             if (diretorioGraficos.exists() && diretorioGraficos.isDirectory()) {
                 for (var arquivo : Objects.requireNonNull(diretorioGraficos.listFiles())) {

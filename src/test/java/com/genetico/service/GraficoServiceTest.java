@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class GraficoServiceTest {
     private GraficoService graficoService;
+    private final String nomeArquivoGraficoTeste = "evolucao_fitness_teste.png";
 
     @BeforeEach
     void beforeEach() {
@@ -23,9 +24,9 @@ public class GraficoServiceTest {
         var geracoes = new double[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         var valoresFitness = new double[]{100, 80, 70, 40, 25, 20, 19, 17, 16, 15};
 
-        graficoService.gerarGraficoEvolucaoFitness("evolucao_fitness_teste.png", geracoes, valoresFitness);
+        graficoService.gerarGraficoEvolucaoFitness(nomeArquivoGraficoTeste, geracoes, valoresFitness);
 
-        var arquivoGrafico = new File("graficos/evolucao_fitness_teste.png");
+        var arquivoGrafico = new File(graficoService.getNomePastaGraficos() + "/" + nomeArquivoGraficoTeste);
         assertTrue(arquivoGrafico.exists());
         assertTrue(arquivoGrafico.delete());
     }
@@ -37,7 +38,7 @@ public class GraficoServiceTest {
         var valoresFitness = new double[]{70, 40, 25, 20, 19, 17, 16, 15};
 
         var excecao = assertThrows(IllegalArgumentException.class,
-                () -> graficoService.gerarGraficoEvolucaoFitness("evolucao_fitness_teste.png", geracoes, valoresFitness));
+                () -> graficoService.gerarGraficoEvolucaoFitness(nomeArquivoGraficoTeste, geracoes, valoresFitness));
 
         var mensagemExecaoEsperada = "A quantidade de gerações deve ser iguais a quantidade de valores de fitness." +
                 " Há 10 gerações e 8 valores de fitness";
