@@ -14,6 +14,16 @@ public class GraficoService {
         criarPastaGraficos();
     }
 
+    private void criarPastaGraficos() {
+        var pastaGraficos = new File("graficos");
+
+        if (!pastaGraficos.exists()) {
+            if (!pastaGraficos.mkdirs()) {
+                throw new RuntimeException("Diretório " + pastaGraficos + " não conseguiu ser criado");
+            }
+        }
+    }
+
     public void gerarGraficoEvolucaoFitness(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
         if (indicesGeracoes.length != melhoresFitnessPopulacoes.length) {
             throw new IllegalArgumentException(String.format("A quantidade de gerações deve ser iguais a quantidade de valores de fitness." +
@@ -51,15 +61,5 @@ public class GraficoService {
 
 
         new SwingWrapper<>(chart).displayChart();
-    }
-
-    private void criarPastaGraficos() {
-        var pastaGraficos = new File("graficos");
-
-        if (!pastaGraficos.exists()) {
-            if (!pastaGraficos.mkdirs()) {
-                throw new RuntimeException("Diretório " + pastaGraficos + " não conseguiu ser criado");
-            }
-        }
     }
 }
