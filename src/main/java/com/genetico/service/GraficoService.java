@@ -14,10 +14,10 @@ public class GraficoService {
         criarPastaGraficos();
     }
 
-    public void gerarGraficoEvolucaoFitness(double[] indicesGeracoes, double[] valoresFitness) {
-        if (indicesGeracoes.length != valoresFitness.length) {
+    public void gerarGraficoEvolucaoFitness(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
+        if (indicesGeracoes.length != melhoresFitnessPopulacoes.length) {
             throw new IllegalArgumentException(String.format("A quantidade de gerações deve ser iguais a quantidade de valores de fitness." +
-                    " Há %d gerações e %d valores de fitness", indicesGeracoes.length, valoresFitness.length));
+                    " Há %d gerações e %d valores de fitness", indicesGeracoes.length, melhoresFitnessPopulacoes.length));
         }
 
         for (int indice = 0; indice < indicesGeracoes.length; indice++) {
@@ -40,7 +40,7 @@ public class GraficoService {
 
         try {
             var diretorioGraficoFitness = "graficos/evolucao_fitness.png";
-            chart.addSeries("Melhor Fitness", indicesGeracoes, valoresFitness).setMarker(SeriesMarkers.CIRCLE);
+            chart.addSeries("Melhor Fitness", indicesGeracoes, melhoresFitnessPopulacoes).setMarker(SeriesMarkers.CIRCLE);
             BitmapEncoder.saveBitmap(chart, diretorioGraficoFitness, BitmapEncoder.BitmapFormat.PNG);
 
             System.out.println("Gráfico gerado com XChart em: " + diretorioGraficoFitness);
