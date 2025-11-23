@@ -2,6 +2,7 @@ package com.genetico.service;
 
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.SwingWrapper;
+import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
@@ -9,9 +10,18 @@ import java.io.File;
 import java.io.IOException;
 
 public class GraficoService {
+    private final int larguraGraficoFitness = 800;
+    private final int alturaGraficoFitness = 600;
+    private final String tituloGraficoFitness = "Evolução do Melhor Fitness";
+    private final String tituloEixoX = "Geração";
+    private final String tituloEixoY = "Fitness";
+    private final String nomePadraoArquivoGrafico = "evolucao_fitness.png";
+    private final XYChart chart;
 
     public GraficoService() {
         criarPastaGraficos();
+
+        chart = configurarChart();
     }
 
     private void criarPastaGraficos() {
@@ -24,6 +34,24 @@ public class GraficoService {
         }
     }
 
+    private XYChart configurarChart() {
+        var chart = new XYChartBuilder()
+                .width(larguraGraficoFitness)
+                .height(alturaGraficoFitness)
+                .title(tituloGraficoFitness)
+                .xAxisTitle(tituloEixoX)
+                .yAxisTitle(tituloEixoY)
+                .build();
+
+        chart.getStyler().setLegendVisible(true);
+        chart.getStyler().setMarkerSize(6);
+        chart.getStyler().setChartTitleVisible(true);
+        chart.getStyler().setXAxisDecimalPattern("#0");
+        chart.getStyler().setYAxisDecimalPattern("#0.00");
+
+        return chart;
+    }
+
     public void gerarGraficoEvolucaoFitness(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
         if (indicesGeracoes.length != melhoresFitnessPopulacoes.length) {
             throw new IllegalArgumentException(String.format("A quantidade de gerações deve ser iguais a quantidade de valores de fitness." +
@@ -32,25 +60,7 @@ public class GraficoService {
 
         checarIndicesGeracoesRepetidos(indicesGeracoes);
 
-        var chart = new XYChartBuilder()
-                .width(800)
-                .height(600)
-                .title("Evolução do Melhor Fitness")
-                .xAxisTitle("Geração")
-                .yAxisTitle("Fitness")
-                .build();
-
-        try {
-            var diretorioGraficoFitness = "graficos/evolucao_fitness.png";
-            chart.addSeries("Melhor Fitness", indicesGeracoes, melhoresFitnessPopulacoes).setMarker(SeriesMarkers.CIRCLE);
-            BitmapEncoder.saveBitmap(chart, diretorioGraficoFitness, BitmapEncoder.BitmapFormat.PNG);
-
-            System.out.println("Gráfico gerado com XChart em: " + diretorioGraficoFitness);
-        } catch (IOException e) {
-            System.out.println("Houve um erro de entrada e saída " + e.getMessage());
-            throw new RuntimeException(e);
-        }
-
+        criarImagemGrafico(indicesGeracoes, melhoresFitnessPopulacoes);
         new SwingWrapper<>(chart).displayChart();
     }
 
@@ -63,6 +73,18 @@ public class GraficoService {
 
                 throw new IllegalArgumentException(mensagemExcecao);
             }
+        }
+    }
+
+    private void criarImagemGrafico(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
+        try {
+            var diretorioGraficoFitness = "graficos/"+nomePadraoArquivoGrafico;
+
+            chart.addSeries("Melhor Fitness", indicesGeracoes, melhoresFitnessPopulacoes).setMarker(SeriesMarkers.CIRCLE);
+            BitmapEncoder.saveBitmap(chart, diretorioGraficoFitness, BitmapEncoder.BitmapFormat.PNG);
+        } catch (IOException ioException) {
+            System.out.println("Houve um erro de entrada e saída " + ioException.getMessage());
+            throw new RuntimeException(ioException);
         }
     }
 }
