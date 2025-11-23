@@ -15,7 +15,6 @@ public class GraficoService {
     private final String tituloGraficoFitness = "Evolução do Melhor Fitness";
     private final String tituloEixoX = "Geração";
     private final String tituloEixoY = "Fitness";
-    private final String nomePadraoArquivoGrafico = "evolucao_fitness.png";
     private final XYChart chart;
 
     public GraficoService() {
@@ -52,7 +51,7 @@ public class GraficoService {
         return chart;
     }
 
-    public void gerarGraficoEvolucaoFitness(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
+    public void gerarGraficoEvolucaoFitness(String nomeArquivoGrafico, double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
         if (indicesGeracoes.length != melhoresFitnessPopulacoes.length) {
             throw new IllegalArgumentException(String.format("A quantidade de gerações deve ser iguais a quantidade de valores de fitness." +
                     " Há %d gerações e %d valores de fitness", indicesGeracoes.length, melhoresFitnessPopulacoes.length));
@@ -60,7 +59,7 @@ public class GraficoService {
 
         checarIndicesGeracoesRepetidos(indicesGeracoes);
 
-        criarImagemGrafico(indicesGeracoes, melhoresFitnessPopulacoes);
+        criarImagemGrafico(nomeArquivoGrafico, indicesGeracoes, melhoresFitnessPopulacoes);
         new SwingWrapper<>(chart).displayChart();
     }
 
@@ -76,9 +75,9 @@ public class GraficoService {
         }
     }
 
-    private void criarImagemGrafico(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
+    private void criarImagemGrafico(String nomeArquivoGrafico, double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
         try {
-            var diretorioGraficoFitness = "graficos/" + nomePadraoArquivoGrafico;
+            var diretorioGraficoFitness = "graficos/" + nomeArquivoGrafico;
 
             chart.addSeries("Melhor Fitness", indicesGeracoes, melhoresFitnessPopulacoes).setMarker(SeriesMarkers.CIRCLE);
             BitmapEncoder.saveBitmap(chart, diretorioGraficoFitness, BitmapEncoder.BitmapFormat.PNG);

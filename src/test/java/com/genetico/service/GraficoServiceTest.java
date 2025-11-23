@@ -23,9 +23,9 @@ public class GraficoServiceTest {
         var geracoes = new double[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
         var valoresFitness = new double[]{100, 80, 70, 40, 25, 20, 19, 17, 16, 15};
 
-        graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness);
+        graficoService.gerarGraficoEvolucaoFitness("evolucao_fitness_teste.png", geracoes, valoresFitness);
 
-        var arquivoGrafico = new File("graficos/evolucao_fitness.png");
+        var arquivoGrafico = new File("graficos/evolucao_fitness_teste.png");
         assertTrue(arquivoGrafico.exists());
         assertTrue(arquivoGrafico.delete());
     }
@@ -37,7 +37,7 @@ public class GraficoServiceTest {
         var valoresFitness = new double[]{70, 40, 25, 20, 19, 17, 16, 15};
 
         var excecao = assertThrows(IllegalArgumentException.class,
-                () -> graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness));
+                () -> graficoService.gerarGraficoEvolucaoFitness("evolucao_fitness_teste.png", geracoes, valoresFitness));
 
         var mensagemExecaoEsperada = "A quantidade de gerações deve ser iguais a quantidade de valores de fitness." +
                 " Há 10 gerações e 8 valores de fitness";
@@ -52,7 +52,7 @@ public class GraficoServiceTest {
         var valoresFitness = new double[]{70, 40, 25, 20, 19, 17, 16, 15, 10, 20};
 
         var excecao = assertThrows(IllegalArgumentException.class,
-                () -> graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness));
+                () -> graficoService.gerarGraficoEvolucaoFitness("evolucao_fitness_teste.png", geracoes, valoresFitness));
 
         assertTrue(excecao.getMessage().contains("Índice 0 com valor 4 não está na ordem. Aqui deveria ser: 0"));
     }

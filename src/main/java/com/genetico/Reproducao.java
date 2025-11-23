@@ -22,7 +22,7 @@ public class Reproducao {
             populacao = populacao.gerarPopulacaoFilha();
         }
 
-        new GraficoService().gerarGraficoEvolucaoFitness(indicesGeracoes, melhoresFitnessPopulacoes);
+        new GraficoService().gerarGraficoEvolucaoFitness("evolucao_fitness.png", indicesGeracoes, melhoresFitnessPopulacoes);
 
         return populacao;
     }
