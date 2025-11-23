@@ -78,7 +78,7 @@ public class GraficoService {
 
     private void criarImagemGrafico(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
         try {
-            var diretorioGraficoFitness = "graficos/"+nomePadraoArquivoGrafico;
+            var diretorioGraficoFitness = "graficos/" + nomePadraoArquivoGrafico;
 
             chart.addSeries("Melhor Fitness", indicesGeracoes, melhoresFitnessPopulacoes).setMarker(SeriesMarkers.CIRCLE);
             BitmapEncoder.saveBitmap(chart, diretorioGraficoFitness, BitmapEncoder.BitmapFormat.PNG);
