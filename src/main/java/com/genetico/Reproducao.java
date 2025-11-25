@@ -6,7 +6,7 @@ import com.genetico.service.GraficoService;
 public class Reproducao {
     private final int qtdeGeracoes;
     private Populacao populacao;
-    private GraficoService graficoService;
+    private final GraficoService graficoService;
 
     public Reproducao(int qtdeGeracoes, Populacao populacao, GraficoService graficoService) {
         this.qtdeGeracoes = qtdeGeracoes;
