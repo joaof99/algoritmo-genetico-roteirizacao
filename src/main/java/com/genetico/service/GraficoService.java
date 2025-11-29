@@ -10,11 +10,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class GraficoService {
-    private final int larguraGraficoFitness = 800;
-    private final int alturaGraficoFitness = 600;
-    private final String tituloGraficoFitness = "Evolução do Melhor Fitness";
-    private final String tituloEixoX = "Geração";
-    private final String tituloEixoY = "Fitness";
     private final String nomePastaGraficos;
     private final String nomeArquivoGrafico;
     private final XYChart chart;
@@ -39,11 +34,11 @@ public class GraficoService {
 
     private XYChart configurarChart() {
         var chart = new XYChartBuilder()
-                .width(larguraGraficoFitness)
-                .height(alturaGraficoFitness)
-                .title(tituloGraficoFitness)
-                .xAxisTitle(tituloEixoX)
-                .yAxisTitle(tituloEixoY)
+                .width(800)
+                .height(600)
+                .title("Evolução do Melhor Fitness")
+                .xAxisTitle("Geração")
+                .yAxisTitle("Fitness")
                 .build();
 
         chart.getStyler().setLegendVisible(true);
