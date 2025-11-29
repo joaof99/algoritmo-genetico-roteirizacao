@@ -12,11 +12,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class GraficoServiceTest {
     private GraficoService graficoService;
     private final String nomePastaGraficosTeste = "graficos_fitness_teste";
-    private final String nomeArquivoGraficoTeste = "evolucao_fitness_teste.png";
+    private final String nomeArquivoGraficoTeste = "evolucao_fitness_teste";
 
     @BeforeEach
     void beforeEach() {
-        graficoService = new GraficoService(nomePastaGraficosTeste, nomeArquivoGraficoTeste);
+        graficoService = new GraficoService(nomePastaGraficosTeste, nomeArquivoGraficoTeste) {
+            @Override
+            String obterDataAtualFormatada() {
+                return "29_11_2025_16_05_03";
+            }
+        };
     }
 
     @Test
@@ -27,7 +32,8 @@ public class GraficoServiceTest {
 
         graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness);
 
-        var arquivoGrafico = new File(graficoService.getNomePastaGraficos() + "/" + nomeArquivoGraficoTeste);
+        var nomeArquivoEsperado = graficoService.getNomePastaGraficos() + "/" + nomeArquivoGraficoTeste + "29_11_2025_16_05_03.png";
+        var arquivoGrafico = new File(nomeArquivoEsperado);
         assertTrue(arquivoGrafico.exists());
         assertTrue(arquivoGrafico.delete());
     }

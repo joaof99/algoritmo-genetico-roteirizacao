@@ -15,6 +15,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 public class ReproducaoTest {
 
@@ -23,7 +24,7 @@ public class ReproducaoTest {
     public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() {
         var populacaoInicial = new Populacao(30, 80, 80);
 
-        var reproducao = new Reproducao(50, populacaoInicial, new GraficoService("graficos_fitness_teste", "evolucao_fitness_teste.png"));
+        var reproducao = new Reproducao(50, populacaoInicial, mock(GraficoService.class));
 
         var populacaoFinal = reproducao.reproduzir();
 

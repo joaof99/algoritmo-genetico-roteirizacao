@@ -10,7 +10,7 @@ public class Main {
         populacaoInicial.imprimirPopulacao();
 
         System.out.println("População final");
-        var populacaoFinal = new Reproducao(50, populacaoInicial, new GraficoService("graficos_fitness", "evolucao_fitness.png")).reproduzir();
+        var populacaoFinal = new Reproducao(50, populacaoInicial, new GraficoService("graficos_fitness", "evolucao_fitness")).reproduzir();
         populacaoFinal.imprimirPopulacao();
     }
 }

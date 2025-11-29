@@ -8,6 +8,8 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class GraficoService {
     private final String nomePastaGraficos;
@@ -15,8 +17,11 @@ public class GraficoService {
     private final XYChart chart;
 
     public GraficoService(String nomePastaGraficos, String nomeArquivoGrafico) {
+        if (nomeArquivoGrafico.contains(".")) {
+            throw new IllegalArgumentException("Nome do arquivo não deve possuir extensão, por padrão será .png");
+        }
         this.nomePastaGraficos = nomePastaGraficos;
-        this.nomeArquivoGrafico = nomeArquivoGrafico;
+        this.nomeArquivoGrafico = nomeArquivoGrafico + obterDataAtualFormatada() + ".png";
         criarPastaGraficos();
 
         chart = configurarChart();
@@ -48,6 +53,12 @@ public class GraficoService {
         chart.getStyler().setYAxisDecimalPattern("#0.00");
 
         return chart;
+    }
+
+    String obterDataAtualFormatada() {
+        var formatador = DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss");
+
+        return LocalDateTime.now().format(formatador);
     }
 
     public void gerarGraficoEvolucaoFitness(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
