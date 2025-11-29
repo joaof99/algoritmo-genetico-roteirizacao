@@ -5,8 +5,8 @@ import com.genetico.service.GraficoService;
 
 public class Reproducao {
     private final int qtdeGeracoes;
-    private Populacao populacao;
     private final GraficoService graficoService;
+    private Populacao populacao;
 
     public Reproducao(int qtdeGeracoes, Populacao populacao, GraficoService graficoService) {
         this.qtdeGeracoes = qtdeGeracoes;
@@ -31,6 +31,7 @@ public class Reproducao {
 
     private void preencherValoresGraficoFitness(double[] indicesGeracoes, int indiceGeracao, double[] melhoresFitnessPopulacoes) {
         indicesGeracoes[indiceGeracao] = indiceGeracao;
+
         var melhorFitnessPopulacaoAtual = populacao.getCromossomos()[0].getFitness();
         melhoresFitnessPopulacoes[indiceGeracao] = melhorFitnessPopulacaoAtual;
     }
