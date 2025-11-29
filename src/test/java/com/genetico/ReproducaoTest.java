@@ -53,10 +53,6 @@ public class ReproducaoTest {
             diretorioGraficos = new File("graficos_fitness_teste");
 
             if (diretorioGraficos.exists() && diretorioGraficos.isDirectory()) {
-                for (var arquivo : Objects.requireNonNull(diretorioGraficos.listFiles())) {
-                    Files.delete(arquivo.toPath());
-                }
-
                 Files.delete(diretorioGraficos.toPath());
             }
         } catch (IOException e) {
