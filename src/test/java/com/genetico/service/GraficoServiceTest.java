@@ -56,6 +56,13 @@ public class GraficoServiceTest {
     }
 
     @Test
+    @DisplayName("Deve lancar exceção caso seja fornecido nome de arquivo inválido")
+    public void deveLancarExecaoCasoSejaFornecidoNomeDeArquivoInvalido() {
+        var excecao = assertThrows(IllegalArgumentException.class, () -> new GraficoService("graficos_fitness_teste", "arquivo.txt"));
+        assertTrue(excecao.getMessage().contains("Nome do arquivo não deve possuir extensão, por padrão será .png"));
+    }
+
+    @Test
     @DisplayName("Índices das gerações devem estar em ordem crescente")
     public void indicesDasGeracoesDeveEstarEmOrdemCrescente() {
         var geracoes = new double[]{4, 4, 2, 1, 5, 5, 6, 7, 8, 9};
