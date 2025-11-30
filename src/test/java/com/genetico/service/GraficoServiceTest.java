@@ -3,11 +3,14 @@ package com.genetico.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import java.io.File;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mockStatic;
 
 public class GraficoServiceTest {
     private GraficoService graficoService;
@@ -16,12 +19,13 @@ public class GraficoServiceTest {
 
     @BeforeEach
     void beforeEach() {
-        graficoService = new GraficoService(nomePastaGraficosTeste, nomeArquivoGraficoTeste) {
-            @Override
-            String obterDataAtualFormatada() {
-                return "29_11_2025_16_05_03";
-            }
-        };
+        var dataAtualFixa = LocalDateTime.of(2025, 11, 29, 16, 5, 3);
+
+        try (MockedStatic<LocalDateTime> dataTeste = mockStatic(LocalDateTime.class)) {
+            dataTeste.when(LocalDateTime::now).thenReturn(dataAtualFixa);
+
+            graficoService = new GraficoService(nomePastaGraficosTeste, nomeArquivoGraficoTeste);
+        }
     }
 
     @Test

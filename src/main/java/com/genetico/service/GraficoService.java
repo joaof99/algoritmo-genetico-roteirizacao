@@ -21,7 +21,10 @@ public class GraficoService {
             throw new IllegalArgumentException("Nome do arquivo não deve possuir extensão, por padrão será .png");
         }
         this.nomePastaGraficos = nomePastaGraficos;
-        this.nomeArquivoGrafico = nomeArquivoGrafico + obterDataAtualFormatada() + ".png";
+
+        var dataAtualFormatada = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss"));
+        this.nomeArquivoGrafico = nomeArquivoGrafico + dataAtualFormatada + ".png";
+
         criarPastaGraficos();
 
         chart = configurarChart();
@@ -53,12 +56,6 @@ public class GraficoService {
         chart.getStyler().setYAxisDecimalPattern("#0.00");
 
         return chart;
-    }
-
-    String obterDataAtualFormatada() {
-        var formatador = DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss");
-
-        return LocalDateTime.now().format(formatador);
     }
 
     public void gerarGraficoEvolucaoFitness(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
