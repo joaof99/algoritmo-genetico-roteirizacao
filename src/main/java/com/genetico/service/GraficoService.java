@@ -20,6 +20,7 @@ public class GraficoService {
         if (nomeArquivoGrafico.contains(".")) {
             throw new IllegalArgumentException("Nome do arquivo não deve possuir extensão, por padrão será .png");
         }
+
         this.nomePastaGraficos = nomePastaGraficos;
 
         var dataAtualFormatada = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss"));
