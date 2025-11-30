@@ -43,16 +43,13 @@ public class GraficoServiceTest {
     }
 
     @Test
-    @DisplayName("Deve lancar exceção caso seja fornecido parâmetros inválidos")
-    public void deveLancarExecaoCasoSejaFornecidoParametrosInvalidos() {
+    @DisplayName("Deve lancar exceção caso seja fornecido quantidades inválidas de gerações e fitness")
+    public void deveLancarExecaoCasoSejaFornecidoQuantidadesInvalidasDeGeracoesEFitness() {
         var geracoes = new double[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         var valoresFitness = new double[]{70, 40, 25, 20, 19, 17, 16, 15};
 
         var excecao = assertThrows(IllegalArgumentException.class, () -> graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness));
-
-        var mensagemExecaoEsperada = "A quantidade de gerações deve ser iguais a quantidade de valores de fitness." + " Há 10 gerações e 8 valores de fitness";
-
-        assertTrue(excecao.getMessage().contains(mensagemExecaoEsperada));
+        assertTrue(excecao.getMessage().contains("A quantidade de gerações deve ser iguais a quantidade de valores de fitness. Há 10 gerações e 8 valores de fitness"));
     }
 
     @Test
