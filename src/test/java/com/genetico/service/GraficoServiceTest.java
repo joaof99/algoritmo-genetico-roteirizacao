@@ -1,15 +1,20 @@
 package com.genetico.service;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.MockedStatic;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
 
 public class GraficoServiceTest {
@@ -36,8 +41,9 @@ public class GraficoServiceTest {
 
         graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness);
 
-        var nomeArquivoEsperado = graficoService.getNomePastaGraficos() + "/" + nomeArquivoGraficoTeste + "29_11_2025_16_05_03.png";
-        var arquivoGrafico = new File(nomeArquivoEsperado);
+        var diretorioArquivo = graficoService.getNomePastaGraficos() + "/" + nomeArquivoGraficoTeste + "_29_11_2025_16_05_03.png";
+        var arquivoGrafico = new File(diretorioArquivo);
+
         assertTrue(arquivoGrafico.exists());
         assertTrue(arquivoGrafico.delete());
     }
@@ -70,4 +76,49 @@ public class GraficoServiceTest {
         assertTrue(excecao.getMessage().contains("Índice 0 com valor 4 não está na ordem. Aqui deveria ser: 0"));
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"evolucao_fitness", "evolucao", "ultimas_evolucoes"})
+    @DisplayName("Nomes de arquivos devem ser montados corretamente")
+    public void nomeDeArquivosDevemSerMontadosCorretamente(String nomeArquivoGraficoTeste) {
+        var dataAtualFixa = LocalDateTime.of(2025, 11, 29, 16, 5, 3);
+
+        var geracoes = new double[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        var valoresFitness = new double[]{70, 40, 25, 20, 19, 17, 16, 15, 10, 20};
+
+        try (MockedStatic<LocalDateTime> dataTeste = mockStatic(LocalDateTime.class)) {
+            dataTeste.when(LocalDateTime::now).thenReturn(dataAtualFixa);
+
+            var graficoService = new GraficoService(nomePastaGraficosTeste, nomeArquivoGraficoTeste);
+            graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness);
+
+            var diretorioArquivo = graficoService.getNomePastaGraficos() + "/" + nomeArquivoGraficoTeste + "_29_11_2025_16_05_03.png";
+
+            var arquivoGrafico = new File(diretorioArquivo);
+
+            var nomeArquivoEsperado = nomeArquivoGraficoTeste + "_" + dataAtualFixa.format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss")) + ".png";
+
+            assertEquals(nomeArquivoEsperado, arquivoGrafico.getName());
+            assertTrue(arquivoGrafico.delete());
+        }
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        excluirDiretoriosTeste();
+    }
+
+    private static void excluirDiretoriosTeste() {
+        File diretorioGraficos = null;
+
+        try {
+            diretorioGraficos = new File("graficos_fitness_teste");
+
+            if (diretorioGraficos.exists() && diretorioGraficos.isDirectory()) {
+                Files.delete(diretorioGraficos.toPath());
+            }
+        } catch (IOException e) {
+            System.out.println("Houve um erro de entrada e saída ao deletar " + diretorioGraficos.getPath());
+            throw new RuntimeException(e);
+        }
+    }
 }

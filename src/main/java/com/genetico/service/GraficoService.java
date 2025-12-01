@@ -24,7 +24,7 @@ public class GraficoService {
         this.nomePastaGraficos = nomePastaGraficos;
 
         var dataAtualFormatada = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss"));
-        this.nomeArquivoGrafico = nomeArquivoGrafico + dataAtualFormatada + ".png";
+        this.nomeArquivoGrafico = nomeArquivoGrafico + "_" + dataAtualFormatada + ".png";
 
         criarPastaGraficos();
 
