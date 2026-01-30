@@ -61,7 +61,7 @@ public class GraficoService {
 
     public void gerarGraficoEvolucaoFitness(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
         if (indicesGeracoes.length != melhoresFitnessPopulacoes.length) {
-            throw new IllegalArgumentException(String.format("A quantidade de gerações deve ser iguais a quantidade de valores de fitness." +
+            throw new IllegalArgumentException(String.format("A quantidade de gerações devem ser iguais a quantidade de valores de fitness." +
                     " Há %d gerações e %d valores de fitness", indicesGeracoes.length, melhoresFitnessPopulacoes.length));
         }
 
