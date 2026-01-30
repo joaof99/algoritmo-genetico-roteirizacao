@@ -55,7 +55,8 @@ public class GraficoServiceTest {
         var valoresFitness = new double[]{70, 40, 25, 20, 19, 17, 16, 15};
 
         var excecao = assertThrows(IllegalArgumentException.class, () -> graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness));
-        assertTrue(excecao.getMessage().contains("A quantidade de gerações deve ser iguais a quantidade de valores de fitness. Há 10 gerações e 8 valores de fitness"));
+
+        assertEquals("A quantidade de gerações devem ser iguais a quantidade de valores de fitness. Há 10 gerações e 8 valores de fitness", excecao.getMessage());
     }
 
     @Test
