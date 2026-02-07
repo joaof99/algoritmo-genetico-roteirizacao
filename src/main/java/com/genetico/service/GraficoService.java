@@ -28,7 +28,7 @@ public class GraficoService {
 
         criarPastaGraficos();
 
-        chart = configurarChart();
+        this.chart = configurarChart();
     }
 
     private void criarPastaGraficos() {
