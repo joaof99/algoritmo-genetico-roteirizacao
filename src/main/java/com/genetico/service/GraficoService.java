@@ -12,27 +12,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class GraficoService {
-    private final String nomePastaGraficos;
-    private final String nomeArquivoGrafico;
     private final XYChart chart;
 
-    public GraficoService(String nomePastaGraficos, String nomeArquivoGrafico) {
-        if (nomeArquivoGrafico.contains(".")) {
-            throw new IllegalArgumentException("Nome do arquivo não deve possuir extensão, por padrão será .png");
-        }
-
-        this.nomePastaGraficos = nomePastaGraficos;
-
-        var dataAtualFormatada = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss"));
-        this.nomeArquivoGrafico = nomeArquivoGrafico + "_" + dataAtualFormatada + ".png";
-
-        criarPastaGraficos();
-
+    public GraficoService() {
         this.chart = configurarChart();
+        criarPastaGraficos();
     }
 
     private void criarPastaGraficos() {
-        var pastaGraficos = new File(getNomePastaGraficos());
+        var pastaGraficos = new File("graficos_fitness");
 
         if (!pastaGraficos.exists()) {
             if (!pastaGraficos.mkdirs()) {
@@ -65,13 +53,13 @@ public class GraficoService {
                     " Há %d gerações e %d valores de fitness", indicesGeracoes.length, melhoresFitnessPopulacoes.length));
         }
 
-        checarIndicesGeracoesRepetidos(indicesGeracoes);
+        checarSeHaIndicesGeracoesRepetidos(indicesGeracoes);
 
         criarImagemGrafico(indicesGeracoes, melhoresFitnessPopulacoes);
         new SwingWrapper<>(chart).displayChart();
     }
 
-    private void checarIndicesGeracoesRepetidos(double[] indicesGeracoes) {
+    private void checarSeHaIndicesGeracoesRepetidos(double[] indicesGeracoes) {
         for (int indice = 0; indice < indicesGeracoes.length; indice++) {
             if (indicesGeracoes[indice] != indice) {
                 var mensagemExcecao = String
@@ -85,21 +73,14 @@ public class GraficoService {
 
     private void criarImagemGrafico(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
         try {
-            var diretorioGraficoFitness = getNomePastaGraficos() + "/" + getNomeArquivoGrafico();
+            var dataAtualFormatada = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss"));
+            var diretorioCompletoGraficoFitness = "graficos_fitness" + "/" + "evolucao_fitness_" + dataAtualFormatada;
 
             chart.addSeries("Melhor Fitness", indicesGeracoes, melhoresFitnessPopulacoes).setMarker(SeriesMarkers.CIRCLE);
-            BitmapEncoder.saveBitmap(chart, diretorioGraficoFitness, BitmapEncoder.BitmapFormat.PNG);
+            BitmapEncoder.saveBitmap(chart, diretorioCompletoGraficoFitness, BitmapEncoder.BitmapFormat.PNG);
         } catch (IOException ioException) {
             System.out.println("Houve um erro de entrada e saída " + ioException.getMessage());
             throw new RuntimeException(ioException);
         }
-    }
-
-    public String getNomePastaGraficos() {
-        return this.nomePastaGraficos;
-    }
-
-    public String getNomeArquivoGrafico() {
-        return this.nomeArquivoGrafico;
     }
 }
