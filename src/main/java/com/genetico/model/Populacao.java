@@ -90,7 +90,7 @@ public class Populacao {
 
         var somaTotalFitnessIteracoes = 0;
 
-        var numeroAleatorioMaximoFitness = gerarNumeroAleatorioMaximoFitness(fitnessTotalPopulacao);
+        var numeroAleatorioMaximoFitness = getRandomizador().nextInt(fitnessTotalPopulacao);
 
         for (int indice = 0; indice < getTamanhoPopulacao(); indice++) {
             somaTotalFitnessIteracoes += this.cromossomos[indice].getFitness();
@@ -102,10 +102,6 @@ public class Populacao {
         }
 
         return this.cromossomos[indicePaiEscolhido];
-    }
-
-    private int gerarNumeroAleatorioMaximoFitness(int fitnessTotalPopulacao) {
-        return getRandomizador().nextInt(fitnessTotalPopulacao);
     }
 
     private Cromossomo[] realizarCrossover(Cromossomo pai1, Cromossomo pai2) {

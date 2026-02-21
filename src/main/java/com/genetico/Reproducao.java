@@ -1,9 +1,12 @@
 package com.genetico;
 
 import com.genetico.model.Populacao;
+import com.genetico.service.GraficoService;
+import com.genetico.service.GraficoServiceFactory;
 
 public class Reproducao {
     private final int qtdeGeracoes;
+    private final GraficoService graficoService = GraficoServiceFactory.getGraficoService();
     private Populacao populacao;
 
     public Reproducao(int qtdeGeracoes, Populacao populacao) {
@@ -12,17 +15,26 @@ public class Reproducao {
     }
 
     public Populacao reproduzir() {
-        var contadorGeracoes = 0;
+        var indicesGeracoes = new double[qtdeGeracoes];
+        var melhoresFitnessPopulacoes = new double[qtdeGeracoes];
 
-        while (contadorGeracoes < qtdeGeracoes) {
-            var novaPopulacao = populacao.gerarPopulacaoFilha();
-            populacao = new Populacao(novaPopulacao.getCromossomos(),
-                    populacao.getChanceFixaOcorrenciaCrossover(),
-                    populacao.getChanceFixaOcorrenciaMutacao());
+        for (int indiceGeracao = 0; indiceGeracao < qtdeGeracoes; indiceGeracao++) {
+            preencherValoresGraficoFitness(indicesGeracoes, indiceGeracao, melhoresFitnessPopulacoes);
 
-            contadorGeracoes++;
+            populacao = populacao.gerarPopulacaoFilha();
         }
 
+        graficoService.gerarGraficoEvolucaoFitness(indicesGeracoes, melhoresFitnessPopulacoes);
+
         return populacao;
+    }
+
+    private void preencherValoresGraficoFitness(double[] indicesGeracoes, int indiceGeracao, double[] melhoresFitnessPopulacoes) {
+        indicesGeracoes[indiceGeracao] = indiceGeracao;
+
+        var cromossomoComMelhorFitness = populacao.getCromossomos()[0];
+
+        var melhorFitnessPopulacaoAtual = cromossomoComMelhorFitness.getFitness();
+        melhoresFitnessPopulacoes[indiceGeracao] = melhorFitnessPopulacaoAtual;
     }
 }
