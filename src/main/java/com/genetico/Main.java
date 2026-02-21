@@ -14,7 +14,7 @@ public class Main {
 
         System.out.println("População final");
         var qtdeGeracoes = 50;
-        var populacaoFinal = new Reproducao(qtdeGeracoes, populacaoInicial, new GraficoService()).reproduzir();
+        var populacaoFinal = new Reproducao(qtdeGeracoes, populacaoInicial).reproduzir();
         populacaoFinal.imprimirPopulacao();
     }
 }

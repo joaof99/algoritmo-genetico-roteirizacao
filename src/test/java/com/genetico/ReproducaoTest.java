@@ -3,6 +3,7 @@ package com.genetico;
 import com.genetico.model.Cromossomo;
 import com.genetico.model.Populacao;
 import com.genetico.service.GraficoService;
+import com.genetico.service.GraficoServiceFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,28 +12,38 @@ import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 
 public class ReproducaoTest {
 
     @Test
     @DisplayName("Reprodução deve gerar população de tamanho fixo, ordenada e com fitness melhorado")
     public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() {
-        var populacaoInicial = new Populacao(30, 80, 80);
+        try (var graficoServiceFactory = mockStatic(GraficoServiceFactory.class)) {
+            graficoServiceFactory.when(GraficoServiceFactory::getInstance)
+                    .thenReturn(mock(GraficoService.class));
 
-        var reproducao = new Reproducao(50, populacaoInicial, mock(GraficoService.class));
+            var populacaoInicial = new Populacao(30, 80, 80);
+            var reproducao = new Reproducao(50, populacaoInicial);
 
-        var populacaoFinal = reproducao.reproduzir();
+            var populacaoFinal = reproducao.reproduzir();
 
-        var cromossomosPopulacaoFinal = populacaoFinal.getCromossomos();
+            var cromossomosPopulacaoFinal = populacaoFinal.getCromossomos();
 
-        var cromossomosEsperados = Arrays.copyOf(cromossomosPopulacaoFinal, cromossomosPopulacaoFinal.length);
-        Arrays.sort(cromossomosPopulacaoFinal, Comparator.comparingInt(Cromossomo::getFitness));
+            var cromossomosEsperados = Arrays.copyOf(cromossomosPopulacaoFinal, cromossomosPopulacaoFinal.length);
+            Arrays.sort(cromossomosPopulacaoFinal, Comparator.comparingInt(Cromossomo::getFitness));
 
-        var melhorFitnessPopulacaoInicial = populacaoInicial.getCromossomos()[0].getFitness();
-        var melhorFitnessPopulacaoFinal = populacaoFinal.getCromossomos()[0].getFitness();
 
-        assertTrue(melhorFitnessPopulacaoFinal < melhorFitnessPopulacaoInicial, "População não evoluiu");
-        assertEquals(30, populacaoFinal.getCromossomos().length);
-        assertArrayEquals(cromossomosEsperados, populacaoFinal.getCromossomos());
+            var melhorCromossomoPopulacaoInicial = populacaoInicial.getCromossomos()[0];
+            var melhorCromossomoPopulacaoFinal = populacaoFinal.getCromossomos()[0];
+
+            var melhorFitnessPopulacaoInicial = melhorCromossomoPopulacaoInicial.getFitness();
+            var melhorFitnessPopulacaoFinal = melhorCromossomoPopulacaoFinal.getFitness();
+
+            assertTrue(melhorFitnessPopulacaoFinal < melhorFitnessPopulacaoInicial, "População não evoluiu");
+            assertEquals(30, populacaoFinal.getCromossomos().length);
+            assertArrayEquals(cromossomosEsperados, populacaoFinal.getCromossomos());
+        }
+
     }
 }

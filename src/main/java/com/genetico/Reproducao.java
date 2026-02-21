@@ -2,16 +2,16 @@ package com.genetico;
 
 import com.genetico.model.Populacao;
 import com.genetico.service.GraficoService;
+import com.genetico.service.GraficoServiceFactory;
 
 public class Reproducao {
     private final int qtdeGeracoes;
-    private final GraficoService graficoService;
+    private final GraficoService graficoService = GraficoServiceFactory.getInstance();
     private Populacao populacao;
 
-    public Reproducao(int qtdeGeracoes, Populacao populacao, GraficoService graficoService) {
+    public Reproducao(int qtdeGeracoes, Populacao populacao) {
         this.qtdeGeracoes = qtdeGeracoes;
         this.populacao = populacao;
-        this.graficoService = graficoService;
     }
 
     public Populacao reproduzir() {
