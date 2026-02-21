@@ -32,7 +32,9 @@ public class Reproducao {
     private void preencherValoresGraficoFitness(double[] indicesGeracoes, int indiceGeracao, double[] melhoresFitnessPopulacoes) {
         indicesGeracoes[indiceGeracao] = indiceGeracao;
 
-        var melhorFitnessPopulacaoAtual = populacao.getCromossomos()[0].getFitness();
+        var cromossomoComMelhorFitness = populacao.getCromossomos()[0];
+
+        var melhorFitnessPopulacaoAtual = cromossomoComMelhorFitness.getFitness();
         melhoresFitnessPopulacoes[indiceGeracao] = melhorFitnessPopulacaoAtual;
     }
 }
