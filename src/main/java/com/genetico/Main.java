@@ -6,11 +6,15 @@ import com.genetico.service.GraficoService;
 public class Main {
     public static void main(String[] args) {
         System.out.println("População inicial");
-        var populacaoInicial = new Populacao(30, 50, 50);
+        var tamanhoPopulacao = 30;
+        var chanceFixaOcorrenciaCrossover = 50;
+        var chanceFixaOcorrenciaMutacao = 50;
+        var populacaoInicial = new Populacao(tamanhoPopulacao, chanceFixaOcorrenciaCrossover, chanceFixaOcorrenciaMutacao);
         populacaoInicial.imprimirPopulacao();
 
         System.out.println("População final");
-        var populacaoFinal = new Reproducao(50, populacaoInicial, new GraficoService()).reproduzir();
+        var qtdeGeracoes = 50;
+        var populacaoFinal = new Reproducao(qtdeGeracoes, populacaoInicial, new GraficoService()).reproduzir();
         populacaoFinal.imprimirPopulacao();
     }
 }
