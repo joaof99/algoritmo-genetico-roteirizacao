@@ -20,7 +20,7 @@ public class ReproducaoTest {
     @DisplayName("Reprodução deve gerar população de tamanho fixo, ordenada e com fitness melhorado")
     public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() {
         try (var graficoServiceFactory = mockStatic(GraficoServiceFactory.class)) {
-            graficoServiceFactory.when(GraficoServiceFactory::getInstance)
+            graficoServiceFactory.when(GraficoServiceFactory::getGraficoService)
                     .thenReturn(mock(GraficoService.class));
 
             var populacaoInicial = new Populacao(30, 80, 80);

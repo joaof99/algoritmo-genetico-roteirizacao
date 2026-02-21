@@ -6,7 +6,7 @@ import com.genetico.service.GraficoServiceFactory;
 
 public class Reproducao {
     private final int qtdeGeracoes;
-    private final GraficoService graficoService = GraficoServiceFactory.getInstance();
+    private final GraficoService graficoService = GraficoServiceFactory.getGraficoService();
     private Populacao populacao;
 
     public Reproducao(int qtdeGeracoes, Populacao populacao) {

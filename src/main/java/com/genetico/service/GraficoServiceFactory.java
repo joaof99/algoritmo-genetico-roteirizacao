@@ -1,18 +1,18 @@
 package com.genetico.service;
 
 public class GraficoServiceFactory {
-    private static GraficoService instance;
+    private static GraficoService graficoService;
 
     private GraficoServiceFactory() {
 
     }
 
-    public static GraficoService getInstance() {
-        if (instance == null) {
-            instance = new GraficoService();
+    public static GraficoService getGraficoService() {
+        if (graficoService == null) {
+            graficoService = new GraficoService();
         }
 
-        return instance;
+        return graficoService;
     }
 
 }
