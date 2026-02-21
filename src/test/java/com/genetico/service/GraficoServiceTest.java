@@ -1,6 +1,5 @@
 package com.genetico.service;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,25 +69,5 @@ public class GraficoServiceTest {
         var excecao = assertThrows(IllegalArgumentException.class, () -> graficoService.gerarGraficoEvolucaoFitness(geracoes, valoresFitness));
 
         assertTrue(excecao.getMessage().contains("Índice 0 com valor 4 não está na ordem. Aqui deveria ser: 0"));
-    }
-
-    @AfterAll
-    public static void afterAll() {
-//        excluirDiretoriosTeste();
-    }
-
-    private static void excluirDiretoriosTeste() {
-//        File diretorioGraficos = null;
-//
-//        try {
-//            diretorioGraficos = new File("graficos_fitness_teste");
-//
-//            if (diretorioGraficos.exists() && diretorioGraficos.isDirectory()) {
-//                Files.delete(diretorioGraficos.toPath());
-//            }
-//        } catch (IOException e) {
-//            System.out.println("Houve um erro de entrada e saída ao deletar " + diretorioGraficos.getPath());
-//            throw new RuntimeException(e);
-//        }
     }
 }
