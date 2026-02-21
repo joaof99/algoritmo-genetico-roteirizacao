@@ -8,6 +8,8 @@ import org.knowm.xchart.style.markers.SeriesMarkers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -20,12 +22,10 @@ public class GraficoService {
     }
 
     private void criarPastaGraficos() {
-        var pastaGraficos = new File("graficos_fitness");
-
-        if (!pastaGraficos.exists()) {
-            if (!pastaGraficos.mkdirs()) {
-                throw new RuntimeException("Diretório " + pastaGraficos + " não conseguiu ser criado");
-            }
+        try {
+            Files.createDirectories(Paths.get("graficos_fitness"));
+        } catch (IOException e) {
+            throw new RuntimeException("Não foi possível criar o diretório.", e);
         }
     }
 
