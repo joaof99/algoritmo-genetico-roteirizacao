@@ -75,7 +75,7 @@ public class GraficoService {
 
     private void criarImagemGrafico(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
         var dataAtualFormatada = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss"));
-        var diretorioCompletoGraficoFitness = "graficos_fitness" + "/" + "evolucao_fitness_" + dataAtualFormatada;
+        var diretorioCompletoGraficoFitness = "graficos_fitness/evolucao_fitness_" + dataAtualFormatada;
         chart.addSeries("Melhor Fitness", indicesGeracoes, melhoresFitnessPopulacoes).setMarker(SeriesMarkers.CIRCLE);
 
         try {
