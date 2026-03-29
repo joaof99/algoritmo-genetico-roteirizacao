@@ -1,10 +1,15 @@
 package com.genetico.model;
 
+import com.genetico.service.GraficoService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
 
 public class Populacao {
+    private static final Logger log = LogManager.getLogger(GraficoService.class);
     private final Cromossomo[] cromossomos;
     private final int tamanhoPopulacao;
     private final int chanceFixaOcorrenciaCrossover;
@@ -45,7 +50,9 @@ public class Populacao {
     }
 
     public void imprimirPopulacao() {
-        for (var cromossomo : cromossomos) System.out.println(cromossomo.formatarGenes());
+        for (var cromossomo : cromossomos) {
+            log.info(cromossomo.formatarGenes());
+        }
     }
 
     public Populacao gerarPopulacaoFilha() {
