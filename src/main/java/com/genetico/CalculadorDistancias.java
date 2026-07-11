@@ -34,7 +34,6 @@ public class CalculadorDistancias {
         double longitude1 = origem.longitude();
         double longitude2 = destino.longitude();
 
-
         var dLat = Math.toRadians(latitude2 - latitude1);
         var dLon = Math.toRadians(longitude2 - longitude1);
 
