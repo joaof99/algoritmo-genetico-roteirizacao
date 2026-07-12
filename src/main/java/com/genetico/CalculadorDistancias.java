@@ -10,7 +10,7 @@ public class CalculadorDistancias {
     private static final int[][] distancias = inicializarDistanciasAleatoriamente();
     private static final double RAIO_TERRA_KM = 6371.0;
 
-    public static int[][] inicializarDistanciasAleatoriamente() {
+    private static int[][] inicializarDistanciasAleatoriamente() {
         var distancias = new int[Cromossomo.QTDE_MAXIMA_GENES][Cromossomo.QTDE_MAXIMA_GENES];
         var randomizadorNumeros = new Random();
 
