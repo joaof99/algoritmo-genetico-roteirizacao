@@ -2,13 +2,24 @@ package com.genetico;
 
 import com.genetico.model.Cromossomo;
 import com.genetico.model.Endereco;
+import com.genetico.model.MatrizDistancias;
+import com.genetico.service.RotaClient;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 
 public class CalculadorDistancias {
 
     private static final int[][] distancias = inicializarDistanciasAleatoriamente();
     private static final double RAIO_TERRA_KM = 6371.0;
+    private final RotaClient rotaClient;
+    private final MatrizDistancias matrizDistancias;
+
+    public CalculadorDistancias(RotaClient rotaClient) {
+        this.rotaClient = rotaClient;
+        this.matrizDistancias = inicializarDistancias();
+    }
 
     private static int[][] inicializarDistanciasAleatoriamente() {
         var distancias = new int[Cromossomo.QTDE_MAXIMA_GENES][Cromossomo.QTDE_MAXIMA_GENES];
@@ -23,8 +34,29 @@ public class CalculadorDistancias {
         return distancias;
     }
 
+    public MatrizDistancias inicializarDistancias() {
+        List<Endereco> todosEnderecosRotas;
+
+        try {
+            todosEnderecosRotas = rotaClient.buscarTodasRotas().stream()
+                    .flatMap(rota -> rota.enderecos().stream())
+                    .distinct()
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao buscar as rotas no banco de dados", e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Erro de interrupção", e);
+        }
+
+        return new MatrizDistancias();
+    }
+
     public static int obterDistanciaEntreDuasCidades(int indiceCidadeOrigem, int indiceCidadeDestino) {
         return distancias[indiceCidadeOrigem][indiceCidadeDestino];
+    }
+
+    double obterDistancia(long idOrigem, int idDestino) {
+        return matrizDistancias.obterDistancia(idOrigem, idDestino);
     }
 
     public static double calcularDistanciaHaversine(Endereco origem, Endereco destino) {
