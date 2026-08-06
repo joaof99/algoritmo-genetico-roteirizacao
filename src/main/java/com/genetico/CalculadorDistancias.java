@@ -6,7 +6,7 @@ import com.genetico.model.MatrizDistancias;
 import com.genetico.service.RotaClient;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class CalculadorDistancias {
@@ -18,7 +18,7 @@ public class CalculadorDistancias {
 
     public CalculadorDistancias(RotaClient rotaClient) {
         this.rotaClient = rotaClient;
-        this.matrizDistancias = inicializarDistancias();
+        this.matrizDistancias = inicializarDistanciasHaversine();
     }
 
     private static int[][] inicializarDistanciasAleatoriamente() {
@@ -34,21 +34,37 @@ public class CalculadorDistancias {
         return distancias;
     }
 
-    public MatrizDistancias inicializarDistancias() {
-        List<Endereco> todosEnderecosRotas;
-
+    public MatrizDistancias inicializarDistanciasHaversine() {
         try {
-            todosEnderecosRotas = rotaClient.buscarTodasRotas().stream()
+            var todosEnderecosRotas = rotaClient.buscarTodasRotas().stream()
                     .flatMap(rota -> rota.enderecos().stream())
                     .distinct()
                     .toList();
+
+            if (todosEnderecosRotas.isEmpty()) {
+                throw new RuntimeException("Endereços está vazio");
+            }
+
+            var matrizDistancias = new MatrizDistancias();
+
+            for (int i = 0; i < todosEnderecosRotas.size(); i++) {
+                for (int j = 0; j < todosEnderecosRotas.size(); j++) {
+                    var origem = todosEnderecosRotas.get(i);
+                    var destino = todosEnderecosRotas.get(j);
+
+                    if (!Objects.equals(origem.id(), destino.id())) {
+                        var distancia = calcularDistanciaHaversine(origem, destino);
+                        matrizDistancias.definirDistancia(origem.id(), destino.id(), distancia);
+                    }
+                }
+            }
+
+            return matrizDistancias;
         } catch (IOException e) {
             throw new RuntimeException("Erro ao buscar as rotas no banco de dados", e);
         } catch (InterruptedException e) {
             throw new RuntimeException("Erro de interrupção", e);
         }
-
-        return new MatrizDistancias();
     }
 
     public static int obterDistanciaEntreDuasCidades(int indiceCidadeOrigem, int indiceCidadeDestino) {
