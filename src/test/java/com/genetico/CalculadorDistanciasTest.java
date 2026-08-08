@@ -1,12 +1,10 @@
 package com.genetico;
 
 import com.genetico.model.Endereco;
-import com.genetico.model.Rota;
 import com.genetico.service.RotaClient;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,31 +14,26 @@ import static org.mockito.Mockito.when;
 class CalculadorDistanciasTest {
 
     @Test
-    @DisplayName("Deve calcular a distância de Haversine corretamente")
-    public void deveCalcularDistanciaHaversineCorretamente() {
-        var sp = new Endereco(1, -23.5505, -46.6333, "");
-        var rj = new Endereco(2, -22.9068, -43.1729, "");
-        assertEquals(360.74882490989955, CalculadorDistancias.calcularDistanciaHaversine(sp, rj));
-    }
-
-    @Test
     @DisplayName("Matriz de distâncias deve ser criada corretamente")
-    public void matrizDeDistanciasDeveSerCriadaCorretamente() throws IOException, InterruptedException {
+    public void matrizDeDistanciasDeveSerCriadaCorretamente() {
         var rotaClient = mock(RotaClient.class);
 
-        var hospital = new Endereco(1, -5.3, -8.2, "Hospital");
+        var hospitalSP = new Endereco(1, -5.3, -8.2, "Hospital SP");
         var barbearia = new Endereco(3, -90.3, -50.9, "Barbearia");
-        var shopping  = new Endereco(2, -90.3, -50.9, "Shopping");
+        var shoppingSP  = new Endereco(2, -90.3, -50.9, "Shopping SP");
         var padaria = new Endereco(4, -90.3, -50.9, "Padaria");
         var armazem = new Endereco(5, -90.3, -50.9, "Armazém");
+        var hospitalRJ = new Endereco(5, -90.3, -50.9, "Armazém");
+        var pizzaria = new Endereco(5, -90.3, -50.9, "Pizzaria");
+        var bar = new Endereco(5, -90.3, -50.9, "Bar");
+        var estadio = new Endereco(5, -90.3, -50.9, "Estádio");
+        var shoppingSC = new Endereco(5, -90.3, -50.9, "Shopping SC");
 
-        var enderecos = List.of(hospital, barbearia, shopping, padaria, armazem);
-        var rota = new Rota(enderecos);
+        var enderecos = List.of(hospitalSP, barbearia, shoppingSP, padaria, armazem, hospitalRJ, pizzaria, bar, estadio, shoppingSC);
+        when(rotaClient.buscarTodosEnderecos()).thenReturn(enderecos);
 
-        when(rotaClient.buscarTodasRotas()).thenReturn(List.of(rota));
+        var calculadorDistancias = new CalculadorDistancias(rotaClient, new Haversine());
 
-        var calculadorDistancias = new CalculadorDistancias(rotaClient);
-
-        assertEquals(20, calculadorDistancias.getMatrizDistancias().getQuantidadeDistancias());
+        assertEquals(21, calculadorDistancias.getMatrizDistancias().getQuantidadeDistancias());
     }
 }
