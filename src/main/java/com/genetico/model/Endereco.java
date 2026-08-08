@@ -2,7 +2,7 @@ package com.genetico.model;
 
 import java.util.Objects;
 
-public record Endereco(Long id, Double latitude, Double longitude, String descricao) {
+public record Endereco(int id, Double latitude, Double longitude, String descricao) {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
