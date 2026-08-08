@@ -18,8 +18,8 @@ class CalculadorDistanciasTest {
     @Test
     @DisplayName("Deve calcular a distância de Haversine corretamente")
     public void deveCalcularDistanciaHaversineCorretamente() {
-        var sp = new Endereco(1L, -23.5505, -46.6333, "");
-        var rj = new Endereco(2L, -22.9068, -43.1729, "");
+        var sp = new Endereco(1, -23.5505, -46.6333, "");
+        var rj = new Endereco(2, -22.9068, -43.1729, "");
         assertEquals(360.74882490989955, CalculadorDistancias.calcularDistanciaHaversine(sp, rj));
     }
 
@@ -27,12 +27,20 @@ class CalculadorDistanciasTest {
     @DisplayName("Matriz de distâncias deve ser criada corretamente")
     public void matrizDeDistanciasDeveSerCriadaCorretamente() throws IOException, InterruptedException {
         var rotaClient = mock(RotaClient.class);
-        var enderecos = List.of(new Endereco(1L, -3.2, -4.5, "Hospital"), new Endereco(3L, -90.3, -50.9, "Barbearia"));
+
+        var hospital = new Endereco(1, -5.3, -8.2, "Hospital");
+        var barbearia = new Endereco(3, -90.3, -50.9, "Barbearia");
+        var shopping  = new Endereco(2, -90.3, -50.9, "Shopping");
+        var padaria = new Endereco(4, -90.3, -50.9, "Padaria");
+        var armazem = new Endereco(5, -90.3, -50.9, "Armazém");
+
+        var enderecos = List.of(hospital, barbearia, shopping, padaria, armazem);
         var rota = new Rota(enderecos);
 
         when(rotaClient.buscarTodasRotas()).thenReturn(List.of(rota));
 
         var calculadorDistancias = new CalculadorDistancias(rotaClient);
-        calculadorDistancias.inicializarDistanciasHaversine();
+
+        assertEquals(20, calculadorDistancias.getMatrizDistancias().getQuantidadeDistancias());
     }
 }
