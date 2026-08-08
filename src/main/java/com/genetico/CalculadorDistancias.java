@@ -4,12 +4,14 @@ import com.genetico.model.Cromossomo;
 import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
 import com.genetico.service.RotaClient;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Random;
 
 public class CalculadorDistancias {
+    private static final Logger log = LogManager.getLogger(CalculadorDistancias.class);
 
     private static final int[][] distancias = inicializarDistanciasAleatoriamente();
     private static final double RAIO_TERRA_KM = 6371.0;
@@ -42,20 +44,23 @@ public class CalculadorDistancias {
                     .toList();
 
             if (todosEnderecosRotas.isEmpty()) {
-                throw new RuntimeException("Endereços está vazio");
+                throw new RuntimeException("Nenhum endereço encontrado. Impossível iniciar a roteirização");
+            }
+
+            if (todosEnderecosRotas.size() < 5) {
+                throw new RuntimeException(String.format("É necessário no mínimo 5 endereços para a roteirização. Encontrado %d", todosEnderecosRotas.size()));
             }
 
             var matrizDistancias = new MatrizDistancias();
 
             for (int i = 0; i < todosEnderecosRotas.size(); i++) {
-                for (int j = 0; j < todosEnderecosRotas.size(); j++) {
+                for (int j = i + 1; j < todosEnderecosRotas.size(); j++) {
                     var origem = todosEnderecosRotas.get(i);
                     var destino = todosEnderecosRotas.get(j);
 
-                    if (!Objects.equals(origem.id(), destino.id())) {
-                        var distancia = calcularDistanciaHaversine(origem, destino);
-                        matrizDistancias.definirDistancia(origem.id(), destino.id(), distancia);
-                    }
+                    var distancia = calcularDistanciaHaversine(origem, destino);
+                    matrizDistancias.definirDistancia(origem.id(), destino.id(), distancia);
+                    matrizDistancias.definirDistancia(destino.id(), origem.id(), distancia);
                 }
             }
 
@@ -69,10 +74,6 @@ public class CalculadorDistancias {
 
     public static int obterDistanciaEntreDuasCidades(int indiceCidadeOrigem, int indiceCidadeDestino) {
         return distancias[indiceCidadeOrigem][indiceCidadeDestino];
-    }
-
-    double obterDistancia(long idOrigem, int idDestino) {
-        return matrizDistancias.obterDistancia(idOrigem, idDestino);
     }
 
     public static double calcularDistanciaHaversine(Endereco origem, Endereco destino) {
@@ -91,6 +92,13 @@ public class CalculadorDistancias {
 
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-        return RAIO_TERRA_KM * c;
+        var distancia = RAIO_TERRA_KM * c;
+        log.info("Distância entre {} {} é igual a {}", origem.descricao(), destino.descricao(), distancia);
+
+        return distancia;
+    }
+
+    public MatrizDistancias getMatrizDistancias() {
+        return matrizDistancias;
     }
 }
