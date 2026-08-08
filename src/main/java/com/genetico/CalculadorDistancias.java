@@ -59,8 +59,8 @@ public class CalculadorDistancias {
                     var destino = todosEnderecosRotas.get(j);
 
                     var distancia = calcularDistanciaHaversine(origem, destino);
-                    matrizDistancias.definirDistancia(origem.id(), destino.id(), distancia);
-                    matrizDistancias.definirDistancia(destino.id(), origem.id(), distancia);
+                    matrizDistancias.setDistancia(origem.id(), destino.id(), distancia);
+                    matrizDistancias.setDistancia(destino.id(), origem.id(), distancia);
                 }
             }
 

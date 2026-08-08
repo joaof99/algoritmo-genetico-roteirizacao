@@ -9,12 +9,12 @@ public class MatrizDistancias {
     private static final Logger log = LogManager.getLogger(MatrizDistancias.class);
     private final LongObjectHashMap<LongDoubleHashMap> distancias = new LongObjectHashMap<>();
 
-    public void definirDistancia(long idOrigem, long idDestino, double distancia) {
+    public void setDistancia(long idOrigem, long idDestino, double distancia) {
         log.info("Definindo distância entre os pontos de ID {} e {}", idOrigem, idDestino);
         distancias.getIfAbsentPut(idOrigem, LongDoubleHashMap::new).put(idDestino, distancia);
     }
 
-    public double obterDistancia(long idOrigem, long idDestino) {
+    public double getDistancia(long idOrigem, long idDestino) {
         var linha = distancias.get(idOrigem);
 
         if (linha == null || !linha.containsKey(idDestino)) {
@@ -25,5 +25,12 @@ public class MatrizDistancias {
         }
 
         return linha.get(idDestino);
+    }
+
+    public int getQuantidadeDistancias(){
+        return distancias.values()
+                .stream()
+                .mapToInt(LongDoubleHashMap::size)
+                .sum();
     }
 }
