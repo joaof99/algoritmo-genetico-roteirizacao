@@ -1,5 +1,7 @@
 package com.genetico.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.genetico.model.Endereco;
 import com.genetico.model.Rota;
@@ -20,14 +22,25 @@ public class RotaClient {
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    public List<Rota> buscarTodasRotas() throws IOException, InterruptedException {
+    public List<Endereco> buscarTodosEnderecos() {
         var request = HttpRequest.newBuilder()
                 .uri(URI.create(URL_BASE + "/rotas/todas"))
                 .GET()
                 .build();
 
-        var response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-        var json = OBJECT_MAPPER.readTree(response.body());
+        HttpResponse<String> response;
+
+        try {
+            response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        JsonNode json;
+        try {
+            json = OBJECT_MAPPER.readTree(response.body());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
         var rotas = new ArrayList<Rota>();
 
@@ -46,7 +59,11 @@ public class RotaClient {
             rotas.add(new Rota(enderecos));
         });
 
-        return rotas;
+        return rotas
+                .stream()
+                .flatMap(rota -> rota.enderecos().stream())
+                .distinct()
+                .toList();
     }
 }
 
