@@ -35,7 +35,7 @@ public class RotaClient {
             var enderecos = new ArrayList<Endereco>();
 
             rota.get("enderecos").forEach(endereco -> {
-                var id = endereco.get("id").asLong();
+                var id = endereco.get("id").asInt();
                 var latitude = endereco.get("latitude").asDouble();
                 var longitude = endereco.get("longitude").asDouble();
                 var cidade = endereco.get("cidade").asText();
