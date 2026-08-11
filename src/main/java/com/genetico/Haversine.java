@@ -13,11 +13,11 @@ public class Haversine implements MetodoCalculoDistancia {
     @Override
     public MatrizDistancias inicializarDistancias(List<Endereco> enderecos) {
         if (enderecos.isEmpty()) {
-            throw new RuntimeException("Nenhum endereço encontrado. Impossível iniciar a roteirização");
+            throw new IllegalArgumentException("Nenhum endereço encontrado. Impossível iniciar a roteirização");
         }
 
-        if (enderecos.size() < 5) {
-            throw new RuntimeException(String.format("É necessário no mínimo 5 endereços para a roteirização. Encontrado %d", enderecos.size()));
+        if (enderecos.size() < 6) {
+            throw new IllegalArgumentException(String.format("É necessário no mínimo 6 endereços para a roteirização. Encontrado %d", enderecos.size()));
         }
 
         var matrizDistancias = new MatrizDistancias();
@@ -57,7 +57,7 @@ public class Haversine implements MetodoCalculoDistancia {
 
         var distancia = RAIO_TERRA_KM * c;
 
-        log.info("Distância entre {} {} é igual a {}", origem.descricao(), destino.descricao(), distancia);
+        log.info("Distância entre {} (ID: {}) e {} (ID: {}) é igual a {}", origem.descricao(), origem.id(), destino.descricao(), destino.id(), distancia);
 
         return distancia;
     }

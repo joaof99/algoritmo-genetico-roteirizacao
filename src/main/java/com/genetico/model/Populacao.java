@@ -1,6 +1,5 @@
 package com.genetico.model;
 
-import com.genetico.service.GraficoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,7 +8,7 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class Populacao {
-    private static final Logger log = LogManager.getLogger(GraficoService.class);
+    private static final Logger log = LogManager.getLogger();
     private final Cromossomo[] cromossomos;
     private final int tamanhoPopulacao;
     private final int chanceFixaOcorrenciaCrossover;
@@ -44,7 +43,7 @@ public class Populacao {
 
     private Cromossomo[] avaliarPopulacao(Cromossomo[] cromossomos) {
         var cromossomoOrdenado = Arrays.copyOf(cromossomos, cromossomos.length);
-        Arrays.sort(cromossomoOrdenado, Comparator.comparingInt(Cromossomo::getFitness));
+        Arrays.sort(cromossomoOrdenado, Comparator.comparingDouble(Cromossomo::getFitness));
 
         return cromossomoOrdenado;
     }
@@ -95,9 +94,9 @@ public class Populacao {
         var indicePaiEscolhido = 0;
         var fitnessTotalPopulacao = calcularSomaFitnessTotalDaPopulacao();
 
-        var somaTotalFitnessIteracoes = 0;
+        var somaTotalFitnessIteracoes = 0.0;
 
-        var numeroAleatorioMaximoFitness = getRandomizador().nextInt(fitnessTotalPopulacao);
+        var numeroAleatorioMaximoFitness = getRandomizador().nextDouble(fitnessTotalPopulacao);
 
         for (int indice = 0; indice < getTamanhoPopulacao(); indice++) {
             somaTotalFitnessIteracoes += this.cromossomos[indice].getFitness();
@@ -154,8 +153,8 @@ public class Populacao {
         return todosOsCromossomos;
     }
 
-    private int calcularSomaFitnessTotalDaPopulacao() {
-        var fitnessTotalCromosssomos = 0;
+    private double calcularSomaFitnessTotalDaPopulacao() {
+        var fitnessTotalCromosssomos = 0.0;
 
         for (var cromossomo : this.cromossomos) {
             fitnessTotalCromosssomos += cromossomo.getFitness();

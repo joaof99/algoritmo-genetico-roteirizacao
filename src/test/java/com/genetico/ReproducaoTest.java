@@ -4,46 +4,91 @@ import com.genetico.model.Cromossomo;
 import com.genetico.model.Populacao;
 import com.genetico.service.GraficoService;
 import com.genetico.service.GraficoServiceFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 
 public class ReproducaoTest {
+    private MockedStatic<CalculadorDistancias> calculadorDistancias;
+    private MockedStatic<GraficoServiceFactory> graficoServiceFactory;
+
+    @BeforeEach
+    void setUp() {
+        calculadorDistancias = Mockito.mockStatic(CalculadorDistancias.class);
+        graficoServiceFactory = Mockito.mockStatic(GraficoServiceFactory.class);
+    }
+
+    @AfterEach
+    void tearDown() {
+        calculadorDistancias.close();
+        graficoServiceFactory.close();
+    }
 
     @Test
     @DisplayName("Reprodução deve gerar população de tamanho fixo, ordenada e com fitness melhorado")
     public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() {
-        try (var graficoServiceFactory = mockStatic(GraficoServiceFactory.class)) {
-            graficoServiceFactory.when(GraficoServiceFactory::getGraficoService)
-                    .thenReturn(mock(GraficoService.class));
+        calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
 
-            var populacaoInicial = new Populacao(30, 80, 80);
-            var reproducao = new Reproducao(50, populacaoInicial);
+        var distanciasFixas = inicializarDistanciasFixas();
 
-            var populacaoFinal = reproducao.reproduzir();
+        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
-            var cromossomosPopulacaoFinal = populacaoFinal.getCromossomos();
+        calculadorDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
+                .thenAnswer(invocation -> {
+                    int indiceCidadeOrigem = invocation.getArgument(0);
+                    int indiceCidadeDestino = invocation.getArgument(1);
+                    return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
+                });
 
-            var cromossomosEsperados = Arrays.copyOf(cromossomosPopulacaoFinal, cromossomosPopulacaoFinal.length);
-            Arrays.sort(cromossomosPopulacaoFinal, Comparator.comparingInt(Cromossomo::getFitness));
+        graficoServiceFactory.when(GraficoServiceFactory::getGraficoService)
+                .thenReturn(mock(GraficoService.class));
+
+        var populacaoInicial = new Populacao(30, 80, 80);
+        var reproducao = new Reproducao(50, populacaoInicial);
+
+        var populacaoFinal = reproducao.reproduzir();
+
+        var cromossomosPopulacaoFinal = populacaoFinal.getCromossomos();
+
+        var cromossomosEsperados = Arrays.copyOf(cromossomosPopulacaoFinal, cromossomosPopulacaoFinal.length);
+        Arrays.sort(cromossomosPopulacaoFinal, Comparator.comparingDouble(Cromossomo::getFitness));
 
 
-            var melhorCromossomoPopulacaoInicial = populacaoInicial.getCromossomos()[0];
-            var melhorCromossomoPopulacaoFinal = populacaoFinal.getCromossomos()[0];
+        var melhorCromossomoPopulacaoInicial = populacaoInicial.getCromossomos()[0];
+        var melhorCromossomoPopulacaoFinal = populacaoFinal.getCromossomos()[0];
 
-            var melhorFitnessPopulacaoInicial = melhorCromossomoPopulacaoInicial.getFitness();
-            var melhorFitnessPopulacaoFinal = melhorCromossomoPopulacaoFinal.getFitness();
+        var melhorFitnessPopulacaoInicial = melhorCromossomoPopulacaoInicial.getFitness();
+        var melhorFitnessPopulacaoFinal = melhorCromossomoPopulacaoFinal.getFitness();
 
-            assertTrue(melhorFitnessPopulacaoFinal < melhorFitnessPopulacaoInicial, "População não evoluiu");
-            assertEquals(30, populacaoFinal.getCromossomos().length);
-            assertArrayEquals(cromossomosEsperados, populacaoFinal.getCromossomos());
-        }
+        assertTrue(melhorFitnessPopulacaoFinal < melhorFitnessPopulacaoInicial, "População não evoluiu");
+        assertEquals(30, populacaoFinal.getCromossomos().length);
+        assertArrayEquals(cromossomosEsperados, populacaoFinal.getCromossomos());
 
+    }
+
+    private static double[][] inicializarDistanciasFixas() {
+        return new double[][]{
+                {10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+                {15, 15, 15, 25, 35, 45, 55, 65, 75, 85},
+                {10, 10, 10, 30, 20, 30, 40, 50, 60, 70},
+                {5, 5, 5, 5, 5, 15, 25, 35, 45, 55},
+                {10, 10, 10, 10, 10, 10, 20, 30, 40, 50},
+                {5, 5, 5, 5, 5, 5, 5, 15, 25, 35},
+                {10, 10, 10, 10, 10, 10, 10, 10, 20, 30},
+                {5, 5, 5, 5, 5, 5, 5, 5, 5, 15},
+                {10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
+                {10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
+        };
     }
 }

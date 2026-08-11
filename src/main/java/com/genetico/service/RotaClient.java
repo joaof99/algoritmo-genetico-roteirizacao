@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.genetico.model.Endereco;
 import com.genetico.model.Rota;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URI;
@@ -15,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RotaClient {
+    private static final Logger log = LogManager.getLogger(RotaClient.class);
     private static final String URL_BASE = System.getenv("AG_ADMINISTRATIVO_URL") != null
             ? System.getenv("AG_ADMINISTRATIVO_URL")
             : "http://localhost:8080";
@@ -59,11 +62,14 @@ public class RotaClient {
             rotas.add(new Rota(enderecos));
         });
 
-        return rotas
+        var enderecos = rotas
                 .stream()
                 .flatMap(rota -> rota.enderecos().stream())
                 .distinct()
                 .toList();
+        log.info("Foram encontradas {} endereços", enderecos);
+
+        return enderecos;
     }
 }
 

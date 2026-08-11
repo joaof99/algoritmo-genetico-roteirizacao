@@ -1,37 +1,33 @@
 package com.genetico;
 
-import com.genetico.model.Cromossomo;
+import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
 import com.genetico.service.RotaClient;
 
-import java.util.Random;
+import java.util.List;
 
 public class CalculadorDistancias {
-    private static final int[][] distancias = inicializarDistanciasAleatoriamente();
-    private final MatrizDistancias matrizDistancias;
+    private static List<Endereco> enderecos = List.of();
+    private static MatrizDistancias matrizDistancias = null;
 
     public CalculadorDistancias(RotaClient rotaClient, MetodoCalculoDistancia metodoCalculoDistancia) {
-        this.matrizDistancias = metodoCalculoDistancia.inicializarDistancias(rotaClient.buscarTodosEnderecos());
+        enderecos = rotaClient.buscarTodosEnderecos();
+        matrizDistancias = metodoCalculoDistancia.inicializarDistancias(enderecos);
     }
 
-    private static int[][] inicializarDistanciasAleatoriamente() {
-        var distancias = new int[Cromossomo.QTDE_MAXIMA_GENES][Cromossomo.QTDE_MAXIMA_GENES];
-        var randomizadorNumeros = new Random();
-
-        for (int indiceTras = 0; indiceTras < Cromossomo.QTDE_MAXIMA_GENES; indiceTras++) {
-            for (int indiceFrente = 0; indiceFrente < Cromossomo.QTDE_MAXIMA_GENES; indiceFrente++) {
-                distancias[indiceTras][indiceFrente] = randomizadorNumeros.nextInt(5000);
-            }
-        }
-
-        return distancias;
+    public static double obterDistanciaEntreDuasCidades(int indiceCidadeOrigem, int indiceCidadeDestino) {
+        return matrizDistancias.getDistancia(indiceCidadeOrigem, indiceCidadeDestino);
     }
 
-    public static int obterDistanciaEntreDuasCidades(int indiceCidadeOrigem, int indiceCidadeDestino) {
-        return distancias[indiceCidadeOrigem][indiceCidadeDestino];
-    }
-
-    public MatrizDistancias getMatrizDistancias() {
+    public static MatrizDistancias getMatrizDistancias() {
         return matrizDistancias;
+    }
+
+    public static int getEnderecoId(int indice) {
+        return enderecos.get(indice).id();
+    }
+
+    public static int getQuantidadeEnderecos() {
+        return enderecos.size();
     }
 }

@@ -1,23 +1,24 @@
 package com.genetico.model;
 
 import com.genetico.CalculadorDistancias;
+
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.StringJoiner;
 
 public class Cromossomo {
-    public static final int QTDE_MAXIMA_GENES = 20;
-    public static final int VALOR_GENE_ORIGEM = 0;
+    public static final int QTDE_MAXIMA_GENES = CalculadorDistancias.getQuantidadeEnderecos();
     private static final int POSICAO_CORTE_INICIO = 0;
     private static final int POSICAO_CORTE_FIM = 1;
     private final int[] genes;
     private Random randomizador;
-    private int fitness;
+    private final double fitness;
 
     public Cromossomo() {
-        this.genes = inicializarGenesPosicoesAleatorias();
-        this.fitness = calcularFitness();
         this.randomizador = new Random();
+        this.genes = inicializarGenes();
+        this.fitness = calcularFitness();
     }
 
     public Cromossomo(int[] genes) {
@@ -30,30 +31,8 @@ public class Cromossomo {
         this.randomizador = new Random();
     }
 
-    private int[] inicializarGenesPosicoesAleatorias() {
-        var genes = new int[QTDE_MAXIMA_GENES];
-        genes[0] = VALOR_GENE_ORIGEM;
-
-        for (int indice = 1; indice < genes.length; indice++) {
-            genes[indice] = indice;
-        }
-
-        var random = new Random();
-
-        for (int indice = 1; indice < genes.length; indice++) {
-            int indiceAleatorio = random.nextInt(indice) + 1;
-
-            int valorGeneAtual = genes[indice];
-
-            genes[indice] = genes[indiceAleatorio];
-            genes[indiceAleatorio] = valorGeneAtual;
-        }
-
-        return genes;
-    }
-
-    private int calcularFitness() {
-        var fitness = 0;
+    private double calcularFitness() {
+        var fitness = 0.0;
 
         for (int indice = 0; indice < this.genes.length - 1; indice++) {
             var indiceCidadeOrigem = this.genes[indice];
@@ -63,6 +42,28 @@ public class Cromossomo {
         }
 
         return fitness;
+    }
+
+    private int[] inicializarGenes() {
+        var genes = new int[QTDE_MAXIMA_GENES];
+
+        for (int i = 0; i < genes.length; i++) {
+            genes[i] = CalculadorDistancias.getEnderecoId(i);
+        }
+
+        embaralharGenes(genes);
+
+        return genes;
+    }
+
+    private void embaralharGenes(int[] genes) {
+        for (int i = genes.length - 1; i > 0; i--) {
+            var indiceAleatorio = randomizador.nextInt(i + 1);
+
+            var temp = genes[i];
+            genes[i] = genes[indiceAleatorio];
+            genes[indiceAleatorio] = temp;
+        }
     }
 
     public void atualizarFitness() {
@@ -90,15 +91,12 @@ public class Cromossomo {
             genesFilho2[indice] = genesPai1[indice];
         }
 
-        var mapeamentoPai2ParaPai1 = new int[tamanhoGenes];
-        var mapeamentoPai1ParaPai2 = new int[tamanhoGenes];
+        var mapeamentoPai2ParaPai1 = new HashMap<Integer, Integer>();
+        var mapeamentoPai1ParaPai2 = new HashMap<Integer, Integer>();
 
-        Arrays.fill(mapeamentoPai2ParaPai1, -1);
-        Arrays.fill(mapeamentoPai1ParaPai2, -1);
-
-        for (int indice = pontosDeCorte[0] + 1; indice <= pontosDeCorte[1]; indice++) {
-            mapeamentoPai2ParaPai1[genesPai2[indice]] = genesPai1[indice];
-            mapeamentoPai1ParaPai2[genesPai1[indice]] = genesPai2[indice];
+        for (int i = pontoCorteInicio + 1; i <= pontoCorteFim; i++) {
+            mapeamentoPai2ParaPai1.put(genesPai2[i], genesPai1[i]);
+            mapeamentoPai1ParaPai2.put(genesPai1[i], genesPai2[i]);
         }
 
         for (int indice = 0; indice < tamanhoGenes; indice++) {
@@ -107,7 +105,7 @@ public class Cromossomo {
             var gene = genesPai1[indice];
 
             while (contemGeneRepetido(genesFilho1, gene)) {
-                gene = mapeamentoPai2ParaPai1[gene];
+                gene = mapeamentoPai2ParaPai1.get(gene);
             }
 
             genesFilho1[indice] = gene;
@@ -119,7 +117,7 @@ public class Cromossomo {
             var gene = genesPai2[indice];
 
             while (contemGeneRepetido(genesFilho2, gene)) {
-                gene = mapeamentoPai1ParaPai2[gene];
+                gene = mapeamentoPai1ParaPai2.get(gene);
             }
 
             genesFilho2[indice] = gene;
@@ -188,7 +186,7 @@ public class Cromossomo {
         return this.genes;
     }
 
-    public int getFitness() {
+    public double getFitness() {
         return fitness;
     }
 
