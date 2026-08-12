@@ -33,7 +33,7 @@ public class PopulacaoTest {
         var distanciasFixas = inicializarDistanciasFixas();
 
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
+            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
                     .thenAnswer(invocation -> {
                         int indiceCidadeOrigem = invocation.getArgument(0);
                         int indiceCidadeDestino = invocation.getArgument(1);
@@ -81,7 +81,7 @@ public class PopulacaoTest {
         var distanciasFixas = inicializarDistanciasFixas();
 
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
+            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
                     .thenAnswer(invocation -> {
                         int indiceCidadeOrigem = invocation.getArgument(0);
                         int indiceCidadeDestino = invocation.getArgument(1);
@@ -226,7 +226,7 @@ public class PopulacaoTest {
     @DisplayName("População filha deve ser gerada com o tamanho correto")
     public void populacaoFilhaDeveSerGeradaComOTamanhoCorreto() {
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
+            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
                     .thenAnswer(invocation -> 40.0);
 
             calculadorDeDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);

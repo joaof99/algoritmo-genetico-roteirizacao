@@ -19,8 +19,8 @@ public class CalculadorDistancias {
         matrizDistancias = metodoCalculoDistancia.inicializarDistancias(enderecos);
     }
 
-    public static double obterDistanciaEntreDuasCidades(int indiceCidadeOrigem, int indiceCidadeDestino) {
-        return matrizDistancias.getDistancia(indiceCidadeOrigem, indiceCidadeDestino);
+    public static double obterDistanciaEntreEnderecos(int indiceEnderecoOrigem, int indiceEnderecoDestino) {
+        return matrizDistancias.getDistancia(indiceEnderecoOrigem, indiceEnderecoDestino);
     }
 
     public static MatrizDistancias getMatrizDistancias() {

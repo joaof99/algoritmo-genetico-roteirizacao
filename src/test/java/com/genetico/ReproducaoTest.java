@@ -44,7 +44,7 @@ public class ReproducaoTest {
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        calculadorDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
+        calculadorDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
                 .thenAnswer(invocation -> {
                     int indiceCidadeOrigem = invocation.getArgument(0);
                     int indiceCidadeDestino = invocation.getArgument(1);
