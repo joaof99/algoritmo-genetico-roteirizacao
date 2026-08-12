@@ -31,19 +31,6 @@ public class Cromossomo {
         this.randomizador = new Random();
     }
 
-    private double calcularFitness() {
-        var fitness = 0.0;
-
-        for (int indice = 0; indice < this.genes.length - 1; indice++) {
-            var indiceCidadeOrigem = this.genes[indice];
-            var indiceCidadeDestino = this.genes[indice + 1];
-
-            fitness += CalculadorDistancias.obterDistanciaEntreDuasCidades(indiceCidadeOrigem, indiceCidadeDestino);
-        }
-
-        return fitness;
-    }
-
     private int[] inicializarGenes() {
         var genes = new int[QTDE_MAXIMA_GENES];
 
@@ -64,6 +51,19 @@ public class Cromossomo {
             genes[i] = genes[indiceAleatorio];
             genes[indiceAleatorio] = temp;
         }
+    }
+
+    private double calcularFitness() {
+        var fitness = 0.0;
+
+        for (int indice = 0; indice < this.genes.length - 1; indice++) {
+            var indiceCidadeOrigem = this.genes[indice];
+            var indiceCidadeDestino = this.genes[indice + 1];
+
+            fitness += CalculadorDistancias.obterDistanciaEntreDuasCidades(indiceCidadeOrigem, indiceCidadeDestino);
+        }
+
+        return fitness;
     }
 
     public void atualizarFitness() {
