@@ -183,7 +183,7 @@ public class Cromossomo {
     }
 
     public int[] getGenes() {
-        return this.genes;
+        return genes;
     }
 
     public double getFitness() {
@@ -191,6 +191,6 @@ public class Cromossomo {
     }
 
     public Random getRandomizador() {
-        return this.randomizador;
+        return randomizador;
     }
 }
