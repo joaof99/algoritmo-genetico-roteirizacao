@@ -23,7 +23,7 @@ public class Cromossomo {
 
     public Cromossomo(int[] genes) {
         if (genes.length > QTDE_MAXIMA_GENES) {
-            throw new IllegalArgumentException("A quantidade de genes não deve ultrapassar a capacidade máxima de: " + QTDE_MAXIMA_GENES);
+            throw new IllegalArgumentException(String.format("A quantidade de genes não deve ultrapassar a capacidade máxima de: %s", QTDE_MAXIMA_GENES));
         }
 
         this.genes = genes;
