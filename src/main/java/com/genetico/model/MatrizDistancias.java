@@ -6,11 +6,11 @@ import org.eclipse.collections.impl.map.mutable.primitive.LongDoubleHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 
 public class MatrizDistancias {
-    private static final Logger log = LogManager.getLogger(MatrizDistancias.class);
+    private static final Logger log = LogManager.getLogger();
     private final LongObjectHashMap<LongDoubleHashMap> distancias = new LongObjectHashMap<>();
 
     public void setDistancia(long idOrigem, long idDestino, double distancia) {
-        log.info("Definindo distância entre os pontos de ID {} e {}", idOrigem, idDestino);
+        log.info("Definindo distância entre os pontos de ID {} e ID {}", idOrigem, idDestino);
         distancias.getIfAbsentPut(idOrigem, LongDoubleHashMap::new).put(idDestino, distancia);
     }
 
