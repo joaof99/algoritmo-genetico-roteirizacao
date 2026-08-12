@@ -12,7 +12,7 @@ public class Cromossomo {
     private static final int POSICAO_CORTE_INICIO = 0;
     private static final int POSICAO_CORTE_FIM = 1;
     private final int[] genes;
-    private Random randomizador;
+    private final Random randomizador;
     private final double fitness;
 
     public Cromossomo() {
