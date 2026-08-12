@@ -32,8 +32,8 @@ class CalculadorDistanciasTest {
         var enderecos = List.of(hospitalSP, barbearia, shoppingSP, padaria, armazem, hospitalRJ, pizzaria, bar, estadio, shoppingSC);
         when(rotaClient.buscarTodosEnderecos()).thenReturn(enderecos);
 
-        var calculadorDistancias = new CalculadorDistancias(rotaClient, new Haversine());
+        CalculadorDistancias.inicializar(rotaClient, new Haversine());
 
-        assertEquals(21, calculadorDistancias.getMatrizDistancias().getQuantidadeDistancias());
+        assertEquals(21, CalculadorDistancias.getMatrizDistancias().getQuantidadeDistancias());
     }
 }

@@ -9,7 +9,7 @@ public class Main {
     private static final Logger log = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-        new CalculadorDistancias(new RotaClient(), new Haversine());
+        CalculadorDistancias.inicializar(new RotaClient(), new Haversine());
         log.info("População inicial");
         var tamanhoPopulacao = 30;
         var chanceFixaOcorrenciaCrossover = 50;

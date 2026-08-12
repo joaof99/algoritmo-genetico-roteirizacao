@@ -7,10 +7,14 @@ import com.genetico.service.RotaClient;
 import java.util.List;
 
 public class CalculadorDistancias {
-    private static List<Endereco> enderecos = List.of();
-    private static MatrizDistancias matrizDistancias = null;
+    private static List<Endereco> enderecos;
+    private static MatrizDistancias matrizDistancias;
 
-    public CalculadorDistancias(RotaClient rotaClient, MetodoCalculoDistancia metodoCalculoDistancia) {
+    private  CalculadorDistancias(){
+
+    }
+
+    public static void inicializar(RotaClient rotaClient, MetodoCalculoDistancia metodoCalculoDistancia) {
         enderecos = rotaClient.buscarTodosEnderecos();
         matrizDistancias = metodoCalculoDistancia.inicializarDistancias(enderecos);
     }
