@@ -16,9 +16,9 @@ public class Cromossomo {
     private final double fitness;
 
     public Cromossomo() {
-        this.randomizador = new Random();
-        this.genes = inicializarGenes();
-        this.fitness = calcularFitness();
+        randomizador = new Random();
+        genes = inicializarGenes();
+        fitness = calcularFitness();
     }
 
     public Cromossomo(int[] genes) {
@@ -27,8 +27,8 @@ public class Cromossomo {
         }
 
         this.genes = genes;
-        this.fitness = calcularFitness();
-        this.randomizador = new Random();
+        fitness = calcularFitness();
+        randomizador = new Random();
     }
 
     private int[] inicializarGenes() {
