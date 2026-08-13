@@ -13,11 +13,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RotaClient {
-    private static final Logger log = LogManager.getLogger(RotaClient.class);
+    private static final Logger log = LogManager.getLogger();
     private static final String URL_BASE = System.getenv("AG_ADMINISTRATIVO_URL") != null
             ? System.getenv("AG_ADMINISTRATIVO_URL")
             : "http://localhost:8080";
@@ -26,23 +27,37 @@ public class RotaClient {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public List<Endereco> buscarTodosEnderecos() {
-        var request = HttpRequest.newBuilder()
-                .uri(URI.create(URL_BASE + "/rotas/todas"))
-                .GET()
-                .build();
-
         HttpResponse<String> response;
 
         try {
+            var uri = URI.create(URL_BASE + "/rotas/todas");
+            log.info("Buscando rotas em {} ", uri.toString());
+
+            var request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .timeout(Duration.ofSeconds(10))
+                    .GET()
+                    .build();
+
             response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.warn("Thread interrompida ao buscar rotas em {}", URL_BASE, e);
+
+            throw new RuntimeException("Busca de rotas interrompida", e);
+        } catch (IOException e) {
+            log.error("Erro de I/O ao buscar rotas em {}", URL_BASE, e);
+
+            throw new RuntimeException("Não foi possível buscar as rotas", e);
         }
+
         JsonNode json;
         try {
             json = OBJECT_MAPPER.readTree(response.body());
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            log.error("Resposta inválida do serviço de rotas. HTTP status: {}", response.statusCode(), e);
+
+            throw new RuntimeException("Resposta inválida do serviço de rotas", e);
         }
 
         var rotas = new ArrayList<Rota>();
@@ -67,7 +82,8 @@ public class RotaClient {
                 .flatMap(rota -> rota.enderecos().stream())
                 .distinct()
                 .toList();
-        log.info("Foram encontradas {} endereços", enderecos);
+
+        log.info("Foram encontradas {} endereços", enderecos.size());
 
         return enderecos;
     }
