@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 
-public class ReproducaoTest {
+public class AlgoritmoGeneticoTest {
     private MockedStatic<CalculadorDistancias> calculadorDistancias;
     private MockedStatic<GraficoServiceFactory> graficoServiceFactory;
 
@@ -55,9 +55,9 @@ public class ReproducaoTest {
                 .thenReturn(mock(GraficoService.class));
 
         var populacaoInicial = new Populacao(30, 80, 80);
-        var reproducao = new Reproducao(50, populacaoInicial);
+        var algoritmoGenetico = new AlgoritmoGenetico(50, populacaoInicial);
 
-        var populacaoFinal = reproducao.reproduzir();
+        var populacaoFinal = algoritmoGenetico.reproduzir();
 
         var cromossomosPopulacaoFinal = populacaoFinal.getCromossomos();
 

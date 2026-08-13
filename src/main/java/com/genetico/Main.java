@@ -19,7 +19,7 @@ public class Main {
 
         log.info("População final");
         var qtdeGeracoes = 50;
-        var populacaoFinal = new Reproducao(qtdeGeracoes, populacaoInicial).reproduzir();
+        var populacaoFinal = new AlgoritmoGenetico(qtdeGeracoes, populacaoInicial).reproduzir();
         populacaoFinal.imprimirPopulacao();
     }
 }

@@ -4,12 +4,12 @@ import com.genetico.model.Populacao;
 import com.genetico.service.GraficoService;
 import com.genetico.service.GraficoServiceFactory;
 
-public class Reproducao {
+public class AlgoritmoGenetico {
     private final int qtdeGeracoes;
     private final GraficoService graficoService = GraficoServiceFactory.getGraficoService();
     private Populacao populacao;
 
-    public Reproducao(int qtdeGeracoes, Populacao populacao) {
+    public AlgoritmoGenetico(int qtdeGeracoes, Populacao populacao) {
         this.qtdeGeracoes = qtdeGeracoes;
         this.populacao = populacao;
     }
