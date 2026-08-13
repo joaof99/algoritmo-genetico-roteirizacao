@@ -24,7 +24,10 @@ public class RotaClient {
             ? System.getenv("AG_ADMINISTRATIVO_URL")
             : "http://localhost:8080";
 
-    private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
+    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(5))
+            .build();
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public List<Endereco> buscarTodosEnderecos() {
@@ -36,7 +39,7 @@ public class RotaClient {
 
         var json = parsearResposta(response);
 
-        return extraitEnderecos(json);
+        return extrairEnderecos(json);
     }
 
     private HttpResponse<String> buscarRotas() {
@@ -67,7 +70,7 @@ public class RotaClient {
         }
     }
 
-    private static List<Endereco> extraitEnderecos(JsonNode json) {
+    private static List<Endereco> extrairEnderecos(JsonNode json) {
         var rotas = new ArrayList<Rota>();
 
         json.forEach(rota -> {
