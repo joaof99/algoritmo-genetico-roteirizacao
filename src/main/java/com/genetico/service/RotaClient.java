@@ -3,6 +3,7 @@ package com.genetico.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.genetico.exception.RotaClientException;
 import com.genetico.model.Endereco;
 import com.genetico.model.Rota;
 import org.apache.logging.log4j.LogManager;
@@ -27,11 +28,21 @@ public class RotaClient {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     public List<Endereco> buscarTodosEnderecos() {
-        HttpResponse<String> response;
+        var response = buscarRotas();
 
+        if (response.statusCode() < 200 || response.statusCode() >= 300) {
+            throw new RotaClientException(String.format("AG administrativo retornou HTTP %d", response.statusCode()));
+        }
+
+        var json = parsearResposta(response);
+
+        return extraitEnderecos(json);
+    }
+
+    private HttpResponse<String> buscarRotas() {
         try {
             var uri = URI.create(URL_BASE + "/rotas/todas");
-            log.info("Buscando rotas em {} ", uri.toString());
+            log.info("Buscando rotas em {} ", uri);
 
             var request = HttpRequest.newBuilder()
                     .uri(uri)
@@ -39,27 +50,24 @@ public class RotaClient {
                     .GET()
                     .build();
 
-            response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            return HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            log.warn("Thread interrompida ao buscar rotas em {}", URL_BASE, e);
-
-            throw new RuntimeException("Busca de rotas interrompida", e);
+            throw new RotaClientException(String.format("Thread interrompida ao buscar rotas em %s", URL_BASE), e);
         } catch (IOException e) {
-            log.error("Erro de I/O ao buscar rotas em {}", URL_BASE, e);
-
-            throw new RuntimeException("Não foi possível buscar as rotas", e);
+            throw new RotaClientException(String.format("Não foi possível conectar ao AG administrativo em %s", URL_BASE), e);
         }
+    }
 
-        JsonNode json;
+    private JsonNode parsearResposta(HttpResponse<String> response) {
         try {
-            json = OBJECT_MAPPER.readTree(response.body());
+            return OBJECT_MAPPER.readTree(response.body());
         } catch (JsonProcessingException e) {
-            log.error("Resposta inválida do serviço de rotas. HTTP status: {}", response.statusCode(), e);
-
-            throw new RuntimeException("Resposta inválida do serviço de rotas", e);
+            throw new RotaClientException(String.format("Resposta inválida do AG Administrativo %d", response.statusCode()), e);
         }
+    }
 
+    private static List<Endereco> extraitEnderecos(JsonNode json) {
         var rotas = new ArrayList<Rota>();
 
         json.forEach(rota -> {
@@ -84,7 +92,6 @@ public class RotaClient {
                 .toList();
 
         log.info("Foram encontradas {} endereços", enderecos.size());
-
         return enderecos;
     }
 }
