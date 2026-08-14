@@ -10,7 +10,7 @@ public class CalculadorDistancias {
     private static List<Endereco> enderecos;
     private static MatrizDistancias matrizDistancias;
 
-    private  CalculadorDistancias(){
+    private CalculadorDistancias() {
 
     }
 
