@@ -8,13 +8,12 @@ public class Main {
     private static final Logger log = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-        CalculadorDistancias.inicializar(new RotaClient(), new Haversine());
-
         var algoritmoGenetico = new AlgoritmoGenetico.Builder()
                 .tamanhoPopulacao(30)
                 .qtdeGeracoes(50)
                 .chanceOcorrenciaMutacao(50)
                 .chanceOcorrenciaMutacao(50)
+                .metodoCalculoDistancia(new Haversine())
                 .build();
 
         var populacaoFinal = algoritmoGenetico.reproduzir();

@@ -2,7 +2,7 @@ package com.genetico;
 
 import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
-import com.genetico.service.RotaClient;
+import com.genetico.service.RotaClientFactory;
 
 import java.util.List;
 
@@ -14,8 +14,8 @@ public class CalculadorDistancias {
 
     }
 
-    public static void inicializar(RotaClient rotaClient, MetodoCalculoDistancia metodoCalculoDistancia) {
-        enderecos = rotaClient.buscarTodosEnderecos();
+    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia) {
+        enderecos = RotaClientFactory.getRotaClient().buscarTodosEnderecos();
         matrizDistancias = metodoCalculoDistancia.inicializarDistancias(enderecos);
     }
 

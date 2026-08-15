@@ -2,8 +2,13 @@ package com.genetico;
 
 import com.genetico.model.Endereco;
 import com.genetico.service.RotaClient;
+import com.genetico.service.RotaClientFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.util.List;
 
@@ -12,6 +17,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class CalculadorDistanciasTest {
+    private MockedStatic<RotaClientFactory> rotaClientFactory;
+
+    @BeforeEach
+    void setUp() {
+        rotaClientFactory = Mockito.mockStatic(RotaClientFactory.class);
+    }
+
+    @AfterEach
+    void tearDown() {
+        rotaClientFactory.close();
+    }
 
     @Test
     @DisplayName("Matriz de distâncias deve ser criada corretamente")
@@ -30,9 +46,12 @@ class CalculadorDistanciasTest {
         var enderecos = List.of(hospitalSP, barbearia, shoppingSP, padaria, armazem, hospitalRJ, pizzaria, bar, estadio, shoppingSC);
 
         var rotaClient = mock(RotaClient.class);
+        rotaClientFactory.when(RotaClientFactory::getRotaClient)
+                .thenReturn(rotaClient);
+
         when(rotaClient.buscarTodosEnderecos()).thenReturn(enderecos);
 
-        CalculadorDistancias.inicializar(rotaClient, new Haversine());
+        CalculadorDistancias.inicializar(new Haversine());
 
         assertEquals(21, CalculadorDistancias.getMatrizDistancias().getQuantidadeDistancias());
     }
