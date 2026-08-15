@@ -1,4 +1,6 @@
-package com.genetico.service;
+package com.genetico.factory;
+
+import com.genetico.client.RotaClient;
 
 public class RotaClientFactory {
     private static RotaClient rotaClient;

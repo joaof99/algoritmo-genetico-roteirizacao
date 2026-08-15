@@ -1,9 +1,11 @@
 package com.genetico;
 
+import com.genetico.distancia.CalculadorDistancias;
+import com.genetico.distancia.MetodoCalculoDistancia;
 import com.genetico.exception.RotaClientException;
 import com.genetico.model.Populacao;
 import com.genetico.service.GraficoService;
-import com.genetico.service.GraficoServiceFactory;
+import com.genetico.factory.GraficoServiceFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

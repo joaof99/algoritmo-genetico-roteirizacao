@@ -1,9 +1,10 @@
 package com.genetico;
 
+import com.genetico.distancia.CalculadorDistancias;
 import com.genetico.exception.RotaClientException;
 import com.genetico.model.Cromossomo;
 import com.genetico.service.GraficoService;
-import com.genetico.service.GraficoServiceFactory;
+import com.genetico.factory.GraficoServiceFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

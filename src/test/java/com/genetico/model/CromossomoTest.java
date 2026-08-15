@@ -1,6 +1,6 @@
 package com.genetico.model;
 
-import com.genetico.CalculadorDistancias;
+import com.genetico.distancia.CalculadorDistancias;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,4 +1,4 @@
-package com.genetico;
+package com.genetico.distancia;
 
 import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;

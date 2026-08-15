@@ -1,6 +1,6 @@
 package com.genetico.model;
 
-import com.genetico.CalculadorDistancias;
+import com.genetico.distancia.CalculadorDistancias;
 
 import java.util.Arrays;
 import java.util.HashMap;

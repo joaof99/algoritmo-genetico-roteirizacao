@@ -1,5 +1,6 @@
 package com.genetico;
 
+import com.genetico.distancia.Haversine;
 import com.genetico.exception.RotaClientException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

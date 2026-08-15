@@ -1,9 +1,11 @@
 package com.genetico;
 
+import com.genetico.distancia.CalculadorDistancias;
+import com.genetico.distancia.Haversine;
 import com.genetico.exception.RotaClientException;
 import com.genetico.model.Endereco;
-import com.genetico.service.RotaClient;
-import com.genetico.service.RotaClientFactory;
+import com.genetico.client.RotaClient;
+import com.genetico.factory.RotaClientFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
