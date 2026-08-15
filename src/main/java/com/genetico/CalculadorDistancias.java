@@ -1,5 +1,6 @@
 package com.genetico;
 
+import com.genetico.exception.RotaClientException;
 import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
 import com.genetico.service.RotaClientFactory;
@@ -14,7 +15,7 @@ public class CalculadorDistancias {
 
     }
 
-    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia) {
+    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia) throws RotaClientException {
         enderecos = RotaClientFactory.getRotaClient().buscarTodosEnderecos();
         matrizDistancias = metodoCalculoDistancia.inicializarDistancias(enderecos);
     }

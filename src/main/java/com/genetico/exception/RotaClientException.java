@@ -1,6 +1,6 @@
 package com.genetico.exception;
 
-public class RotaClientException extends RuntimeException{
+public class RotaClientException extends Exception{
     public RotaClientException(String message) {
         super(message);
     }

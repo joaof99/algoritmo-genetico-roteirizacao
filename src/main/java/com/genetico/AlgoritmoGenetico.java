@@ -1,5 +1,6 @@
 package com.genetico;
 
+import com.genetico.exception.RotaClientException;
 import com.genetico.model.Populacao;
 import com.genetico.service.GraficoService;
 import com.genetico.service.GraficoServiceFactory;
@@ -16,7 +17,7 @@ public class AlgoritmoGenetico {
     private final GraficoService graficoService = GraficoServiceFactory.getGraficoService();
     private Populacao populacao;
 
-    private AlgoritmoGenetico(Builder builder) {
+    private AlgoritmoGenetico(Builder builder) throws RotaClientException {
         this.tamanhoPopulacao = builder.tamanhoPopulacao;
         this.qtdeGeracoes = builder.qtdeGeracoes;
         this.chanceOcorrenciaCrossover = builder.chanceOcorrenciaCrossover;
@@ -86,7 +87,7 @@ public class AlgoritmoGenetico {
             return this;
         }
 
-        public AlgoritmoGenetico build(){
+        public AlgoritmoGenetico build() throws RotaClientException {
             return new AlgoritmoGenetico(this);
         }
     }

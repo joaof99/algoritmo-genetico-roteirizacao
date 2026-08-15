@@ -30,7 +30,7 @@ public class RotaClient {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    public List<Endereco> buscarTodosEnderecos() {
+    public List<Endereco> buscarTodosEnderecos() throws RotaClientException {
         var response = buscarRotas();
 
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
@@ -42,7 +42,7 @@ public class RotaClient {
         return extrairEnderecos(json);
     }
 
-    private HttpResponse<String> buscarRotas() {
+    private HttpResponse<String> buscarRotas() throws RotaClientException {
         try {
             var uri = URI.create(URL_BASE + "/rotas/todas");
             log.info("Buscando rotas em {} ", uri);
@@ -62,7 +62,7 @@ public class RotaClient {
         }
     }
 
-    private JsonNode parsearResposta(HttpResponse<String> response) {
+    private JsonNode parsearResposta(HttpResponse<String> response) throws RotaClientException {
         try {
             return OBJECT_MAPPER.readTree(response.body());
         } catch (JsonProcessingException e) {
