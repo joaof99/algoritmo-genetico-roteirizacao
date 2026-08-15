@@ -57,7 +57,14 @@ public class AlgoritmoGeneticoTest {
 
         var melhoresFitnessCaptor = ArgumentCaptor.forClass(double[].class);
 
-        var algoritmoGenetico = new AlgoritmoGenetico(30, 50, 80, 80);
+        var algoritmoGenetico = new AlgoritmoGenetico
+                .Builder()
+                .qtdeGeracoes(50)
+                .tamanhoPopulacao(30)
+                .chanceOcorrenciaMutacao(80)
+                .chanceOcorrenciaCrossover(80)
+                .build();
+
         var populacaoFinal = algoritmoGenetico.reproduzir();
 
         verify(graficoService).gerarGraficoEvolucaoFitness(

@@ -15,11 +15,11 @@ public class AlgoritmoGenetico {
     private final GraficoService graficoService = GraficoServiceFactory.getGraficoService();
     private Populacao populacao;
 
-    public AlgoritmoGenetico(int tamanhoPopulacao, int qtdeGeracoes,int chanceOcorrenciaCrossover, int chanceOcorrenciaMutacao) {
-        this.tamanhoPopulacao = tamanhoPopulacao;
-        this.qtdeGeracoes = qtdeGeracoes;
-        this.chanceOcorrenciaCrossover = chanceOcorrenciaCrossover;
-        this.chanceOcorrenciaMutacao = chanceOcorrenciaMutacao;
+    private AlgoritmoGenetico(Builder builder) {
+        this.tamanhoPopulacao = builder.tamanhoPopulacao;
+        this.qtdeGeracoes = builder.qtdeGeracoes;
+        this.chanceOcorrenciaCrossover = builder.chanceOcorrenciaCrossover;
+        this.chanceOcorrenciaMutacao = builder.chanceOcorrenciaMutacao;
     }
 
     public Populacao reproduzir() {
@@ -48,5 +48,36 @@ public class AlgoritmoGenetico {
 
         var melhorFitnessPopulacaoAtual = cromossomoComMelhorFitness.getFitness();
         melhoresFitnessPopulacoes[indiceGeracao] = melhorFitnessPopulacaoAtual;
+    }
+
+    public static class Builder {
+        private int tamanhoPopulacao;
+        private int qtdeGeracoes;
+        private int chanceOcorrenciaCrossover;
+        private int chanceOcorrenciaMutacao;
+
+        public Builder tamanhoPopulacao(int tamanhoPopulacao) {
+            this.tamanhoPopulacao = tamanhoPopulacao;
+            return this;
+        }
+
+        public Builder qtdeGeracoes(int qtdeGeracoes) {
+            this.qtdeGeracoes = qtdeGeracoes;
+            return this;
+        }
+
+        public Builder chanceOcorrenciaCrossover(int chanceOcorrenciaCrossover) {
+            this.chanceOcorrenciaCrossover = chanceOcorrenciaCrossover;
+            return this;
+        }
+
+        public Builder chanceOcorrenciaMutacao(int chanceOcorrenciaMutacao) {
+            this.chanceOcorrenciaMutacao = chanceOcorrenciaMutacao;
+            return this;
+        }
+
+        public AlgoritmoGenetico build(){
+            return new AlgoritmoGenetico(this);
+        }
     }
 }

@@ -9,7 +9,15 @@ public class Main {
 
     public static void main(String[] args) {
         CalculadorDistancias.inicializar(new RotaClient(), new Haversine());
-        var populacaoFinal = new AlgoritmoGenetico(30, 50, 50, 50).reproduzir();
+
+        var algoritmoGenetico = new AlgoritmoGenetico.Builder()
+                .tamanhoPopulacao(30)
+                .qtdeGeracoes(50)
+                .chanceOcorrenciaMutacao(50)
+                .chanceOcorrenciaMutacao(50)
+                .build();
+
+        var populacaoFinal = algoritmoGenetico.reproduzir();
         log.info("População final: ");
         populacaoFinal.imprimirPopulacao();
     }
