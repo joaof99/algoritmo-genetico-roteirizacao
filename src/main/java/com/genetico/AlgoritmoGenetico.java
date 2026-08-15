@@ -3,18 +3,30 @@ package com.genetico;
 import com.genetico.model.Populacao;
 import com.genetico.service.GraficoService;
 import com.genetico.service.GraficoServiceFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class AlgoritmoGenetico {
+    private static final Logger log = LogManager.getLogger();
     private final int qtdeGeracoes;
+    private int tamanhoPopulacao;
+    private int chanceOcorrenciaCrossover;
+    private int chanceOcorrenciaMutacao;
     private final GraficoService graficoService = GraficoServiceFactory.getGraficoService();
     private Populacao populacao;
 
-    public AlgoritmoGenetico(int qtdeGeracoes, Populacao populacao) {
+    public AlgoritmoGenetico(int tamanhoPopulacao, int qtdeGeracoes,int chanceOcorrenciaCrossover, int chanceOcorrenciaMutacao) {
+        this.tamanhoPopulacao = tamanhoPopulacao;
         this.qtdeGeracoes = qtdeGeracoes;
-        this.populacao = populacao;
+        this.chanceOcorrenciaCrossover = chanceOcorrenciaCrossover;
+        this.chanceOcorrenciaMutacao = chanceOcorrenciaMutacao;
     }
 
     public Populacao reproduzir() {
+        populacao = new Populacao(tamanhoPopulacao, chanceOcorrenciaCrossover, chanceOcorrenciaMutacao);
+        log.info("População inicial");
+        populacao.imprimirPopulacao();
+
         var indicesGeracoes = new double[qtdeGeracoes];
         var melhoresFitnessPopulacoes = new double[qtdeGeracoes];
 

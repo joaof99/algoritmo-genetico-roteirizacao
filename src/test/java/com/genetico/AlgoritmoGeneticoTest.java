@@ -1,13 +1,13 @@
 package com.genetico;
 
 import com.genetico.model.Cromossomo;
-import com.genetico.model.Populacao;
 import com.genetico.service.GraficoService;
 import com.genetico.service.GraficoServiceFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
@@ -16,7 +16,7 @@ import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 public class AlgoritmoGeneticoTest {
     private MockedStatic<CalculadorDistancias> calculadorDistancias;
@@ -38,11 +38,10 @@ public class AlgoritmoGeneticoTest {
     @DisplayName("Reprodução deve gerar população de tamanho fixo, ordenada e com fitness melhorado")
     public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() {
         calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
-
-        var distanciasFixas = inicializarDistanciasFixas();
-
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+
+        var distanciasFixas = inicializarDistanciasFixas();
 
         calculadorDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
                 .thenAnswer(invocation -> {
@@ -51,30 +50,37 @@ public class AlgoritmoGeneticoTest {
                     return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
                 });
 
+        var graficoService = mock(GraficoService.class);
+
         graficoServiceFactory.when(GraficoServiceFactory::getGraficoService)
-                .thenReturn(mock(GraficoService.class));
+                .thenReturn(graficoService);
 
-        var populacaoInicial = new Populacao(30, 80, 80);
-        var algoritmoGenetico = new AlgoritmoGenetico(50, populacaoInicial);
+        var melhoresFitnessCaptor = ArgumentCaptor.forClass(double[].class);
 
+        var algoritmoGenetico = new AlgoritmoGenetico(30, 50, 80, 80);
         var populacaoFinal = algoritmoGenetico.reproduzir();
+
+        verify(graficoService).gerarGraficoEvolucaoFitness(
+                any(),
+                melhoresFitnessCaptor.capture()
+        );
+
 
         var cromossomosPopulacaoFinal = populacaoFinal.getCromossomos();
 
-        var cromossomosEsperados = Arrays.copyOf(cromossomosPopulacaoFinal, cromossomosPopulacaoFinal.length);
-        Arrays.sort(cromossomosPopulacaoFinal, Comparator.comparingDouble(Cromossomo::getFitness));
+        var cromossomosOrdenados = Arrays.copyOf(cromossomosPopulacaoFinal, cromossomosPopulacaoFinal.length);
+        Arrays.sort(cromossomosOrdenados, Comparator.comparingDouble(Cromossomo::getFitness));
 
+        var melhoresFitness = melhoresFitnessCaptor.getValue();
+        var melhorFitnessPopulacaoInicial = melhoresFitness[0];
 
-        var melhorCromossomoPopulacaoInicial = populacaoInicial.getCromossomos()[0];
-        var melhorCromossomoPopulacaoFinal = populacaoFinal.getCromossomos()[0];
+        var melhorFitnessEncontrado = Arrays.stream(melhoresFitness)
+                .min()
+                .orElseThrow();
 
-        var melhorFitnessPopulacaoInicial = melhorCromossomoPopulacaoInicial.getFitness();
-        var melhorFitnessPopulacaoFinal = melhorCromossomoPopulacaoFinal.getFitness();
-
-        assertTrue(melhorFitnessPopulacaoFinal < melhorFitnessPopulacaoInicial, "População não evoluiu");
+        assertTrue(melhorFitnessEncontrado < melhorFitnessPopulacaoInicial, "Não houve evolução no algoritmo genético");
         assertEquals(30, populacaoFinal.getCromossomos().length);
-        assertArrayEquals(cromossomosEsperados, populacaoFinal.getCromossomos());
-
+        assertArrayEquals(cromossomosOrdenados, populacaoFinal.getCromossomos());
     }
 
     private static double[][] inicializarDistanciasFixas() {
