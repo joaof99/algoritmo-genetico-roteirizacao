@@ -1,5 +1,6 @@
 package com.genetico;
 
+import com.genetico.exception.RotaClientException;
 import com.genetico.model.Endereco;
 import com.genetico.service.RotaClient;
 import com.genetico.service.RotaClientFactory;
@@ -31,7 +32,7 @@ class CalculadorDistanciasTest {
 
     @Test
     @DisplayName("Matriz de distâncias deve ser criada corretamente")
-    public void matrizDeDistanciasDeveSerCriadaCorretamente() {
+    public void matrizDeDistanciasDeveSerCriadaCorretamente() throws RotaClientException {
         var hospitalSP = new Endereco(1, -5.3, -8.2, "Hospital SP");
         var barbearia = new Endereco(3, -90.3, -50.9, "Barbearia");
         var shoppingSP  = new Endereco(2, -90.3, -50.9, "Shopping SP");
