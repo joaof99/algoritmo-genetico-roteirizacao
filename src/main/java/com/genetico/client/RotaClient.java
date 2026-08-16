@@ -20,7 +20,7 @@ import java.util.List;
 
 public class RotaClient {
     private static final Logger log = LogManager.getLogger();
-    private static final String URL_BASE = System.getenv("AG_ADMINISTRATIVO_URL") != null
+    private final String URL_BASE = System.getenv("AG_ADMINISTRATIVO_URL") != null
             ? System.getenv("AG_ADMINISTRATIVO_URL")
             : "http://localhost:8080";
 
