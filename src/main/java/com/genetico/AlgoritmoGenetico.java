@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 public class AlgoritmoGenetico {
     private static final Logger log = LogManager.getLogger();
-    private MetodoCalculoDistancia metodoCalculoDistancia;
     private final int qtdeGeracoes;
     private final int tamanhoPopulacao;
     private final int chanceOcorrenciaCrossover;
@@ -19,14 +18,11 @@ public class AlgoritmoGenetico {
     private final GraficoService graficoService = GraficoServiceFactory.getGraficoService();
     private Populacao populacao;
 
-    private AlgoritmoGenetico(Builder builder) throws RotaClientException {
+    private AlgoritmoGenetico(Builder builder) {
         this.tamanhoPopulacao = builder.tamanhoPopulacao;
         this.qtdeGeracoes = builder.qtdeGeracoes;
         this.chanceOcorrenciaCrossover = builder.chanceOcorrenciaCrossover;
         this.chanceOcorrenciaMutacao = builder.chanceOcorrenciaMutacao;
-        this.metodoCalculoDistancia = builder.metodoCalculoDistancia;
-
-        CalculadorDistancias.inicializar(metodoCalculoDistancia);
     }
 
     public Populacao reproduzir() {
@@ -58,7 +54,6 @@ public class AlgoritmoGenetico {
     }
 
     public static class Builder {
-        private MetodoCalculoDistancia metodoCalculoDistancia;
         private int tamanhoPopulacao;
         private int qtdeGeracoes;
         private int chanceOcorrenciaCrossover;
@@ -81,11 +76,6 @@ public class AlgoritmoGenetico {
 
         public Builder chanceOcorrenciaMutacao(int chanceOcorrenciaMutacao) {
             this.chanceOcorrenciaMutacao = chanceOcorrenciaMutacao;
-            return this;
-        }
-
-        public Builder metodoCalculoDistancia(MetodoCalculoDistancia metodoCalculoDistancia) {
-            this.metodoCalculoDistancia = metodoCalculoDistancia;
             return this;
         }
 

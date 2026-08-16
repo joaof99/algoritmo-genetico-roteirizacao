@@ -1,5 +1,6 @@
 package com.genetico;
 
+import com.genetico.distancia.CalculadorDistancias;
 import com.genetico.distancia.Haversine;
 import com.genetico.exception.RotaClientException;
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +11,8 @@ public class Main {
 
     public static void main(String[] args) {
         try {
+            CalculadorDistancias.inicializar(new Haversine());
+
             AlgoritmoGenetico algoritmoGenetico;
 
             algoritmoGenetico = new AlgoritmoGenetico.Builder()
@@ -17,7 +20,6 @@ public class Main {
                     .qtdeGeracoes(50)
                     .chanceOcorrenciaMutacao(50)
                     .chanceOcorrenciaCrossover(50)
-                    .metodoCalculoDistancia(new Haversine())
                     .build();
 
             var populacaoFinal = algoritmoGenetico.reproduzir();
