@@ -20,15 +20,29 @@ import java.util.List;
 
 public class RotaClient {
     private static final Logger log = LogManager.getLogger();
-    private final String URL_BASE = System.getenv("AG_ADMINISTRATIVO_URL") != null
-            ? System.getenv("AG_ADMINISTRATIVO_URL")
-            : "http://localhost:8080";
+    private final HttpClient HTTP_CLIENT;
+    private final String URL_BASE;
+    private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private static final HttpClient HTTP_CLIENT = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(5))
-            .build();
+    public RotaClient() throws RotaClientException {
+        URL_BASE = definirUrlBase();
+        HTTP_CLIENT = inicializarHttpClient();
+    }
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private String definirUrlBase() throws RotaClientException {
+        var urlAgAdministrativo = "AG_ADMINISTRATIVO_URL";
+        if (System.getenv(urlAgAdministrativo) == null) {
+            throw new RotaClientException(String.format("Variável de ambiente: %s não configurada", urlAgAdministrativo));
+        }
+
+        return System.getenv(urlAgAdministrativo);
+    }
+
+    private HttpClient inicializarHttpClient() {
+        return HttpClient.newBuilder()
+                .connectTimeout(Duration.ofSeconds(5))
+                .build();
+    }
 
     public List<Endereco> buscarTodosEnderecos() throws RotaClientException {
         var response = buscarRotas();
