@@ -1,10 +1,10 @@
 package com.genetico.model;
 
+import com.genetico.crossover.CrossoverPMX;
+import com.genetico.crossover.MetodoCrossover;
 import com.genetico.distancia.CalculadorDistancias;
 import com.genetico.factory.RandomizadorFactory;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.StringJoiner;
 
@@ -15,6 +15,7 @@ public class Cromossomo {
     private final int[] genes;
     private final Random randomizador = RandomizadorFactory.getRandomizador();
     private final double fitness;
+    private final MetodoCrossover metodoCrossover = new CrossoverPMX();
 
     public Cromossomo() {
         genes = inicializarGenes();
@@ -69,85 +70,8 @@ public class Cromossomo {
         calcularFitness();
     }
 
-    Cromossomo[] realizarCrossoverPmx(Cromossomo pai2) {
-        var tamanhoGenes = pai2.getGenes().length;
-
-        var pontosDeCorte = gerarPontosDeCorte(tamanhoGenes);
-        var pontoCorteInicio = pontosDeCorte[0];
-        var pontoCorteFim = pontosDeCorte[1];
-
-        var genesPai1 = getGenes();
-        var genesPai2 = pai2.getGenes();
-
-        var genesFilho1 = new int[tamanhoGenes];
-        var genesFilho2 = new int[tamanhoGenes];
-
-        Arrays.fill(genesFilho1, -1);
-        Arrays.fill(genesFilho2, -1);
-
-        for (int indice = pontoCorteInicio + 1; indice <= pontoCorteFim; indice++) {
-            genesFilho1[indice] = genesPai2[indice];
-            genesFilho2[indice] = genesPai1[indice];
-        }
-
-        var mapeamentoPai2ParaPai1 = new HashMap<Integer, Integer>();
-        var mapeamentoPai1ParaPai2 = new HashMap<Integer, Integer>();
-
-        for (int i = pontoCorteInicio + 1; i <= pontoCorteFim; i++) {
-            mapeamentoPai2ParaPai1.put(genesPai2[i], genesPai1[i]);
-            mapeamentoPai1ParaPai2.put(genesPai1[i], genesPai2[i]);
-        }
-
-        for (int indice = 0; indice < tamanhoGenes; indice++) {
-            if (indiceEstaNaRegiaoDeCorte(indice, pontosDeCorte)) continue;
-
-            var gene = genesPai1[indice];
-
-            while (contemGeneRepetido(genesFilho1, gene)) {
-                gene = mapeamentoPai2ParaPai1.get(gene);
-            }
-
-            genesFilho1[indice] = gene;
-        }
-
-        for (int indice = 0; indice < tamanhoGenes; indice++) {
-            if (indiceEstaNaRegiaoDeCorte(indice, pontosDeCorte)) continue;
-
-            var gene = genesPai2[indice];
-
-            while (contemGeneRepetido(genesFilho2, gene)) {
-                gene = mapeamentoPai1ParaPai2.get(gene);
-            }
-
-            genesFilho2[indice] = gene;
-        }
-
-        return new Cromossomo[]{new Cromossomo(genesFilho1), new Cromossomo(genesFilho2)};
-    }
-
-    private int[] gerarPontosDeCorte(int tamanhoCromossomo) {
-        int pontoCorte1, pontoCorte2;
-
-        do {
-            pontoCorte1 = getRandomizador().nextInt(tamanhoCromossomo);
-            pontoCorte2 = getRandomizador().nextInt(tamanhoCromossomo);
-        } while (pontosDeCorteSaoInvalidos(pontoCorte1, pontoCorte2));
-
-        return new int[]{pontoCorte1, pontoCorte2};
-    }
-
-    private boolean indiceEstaNaRegiaoDeCorte(int indice, int[] pontosDeCorte) {
-        return (indice > pontosDeCorte[POSICAO_CORTE_INICIO] && indice <= pontosDeCorte[POSICAO_CORTE_FIM]);
-    }
-
-    private boolean contemGeneRepetido(int[] genes, int geneASerSubstituido) {
-        for (int gene : genes) {
-            if (gene == geneASerSubstituido) {
-                return true;
-            }
-        }
-
-        return false;
+    public Cromossomo[] realizarCrossover(Cromossomo pai2) {
+        return metodoCrossover.realizarCrossover(this, pai2);
     }
 
     void realizarMutacaoSwap() {

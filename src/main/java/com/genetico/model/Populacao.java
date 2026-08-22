@@ -116,7 +116,7 @@ public class Populacao {
         var chanceAleatoriaDeOcorrerCrossover = randomizador.nextInt(100) + 1;
 
         if (chanceAleatoriaDeOcorrerCrossover <= getChanceFixaOcorrenciaCrossover()) {
-            var filhosCrossover = pai1.realizarCrossoverPmx(pai2);
+            var filhosCrossover = pai1.realizarCrossover(pai2);
             filho1 = filhosCrossover[0];
             filho2 = filhosCrossover[1];
 

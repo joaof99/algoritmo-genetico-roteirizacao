@@ -1,5 +1,6 @@
 package com.genetico.crossover;
 
+import com.genetico.factory.RandomizadorFactory;
 import com.genetico.model.Cromossomo;
 
 import java.util.Arrays;
@@ -7,11 +8,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class CrossoverPMX implements MetodoCrossover {
-    private final Random randomizador;
-
-    public CrossoverPMX(Random randomizador){
-        this.randomizador = randomizador;
-    }
+    private final Random randomizador = RandomizadorFactory.getRandomizador();
 
     @Override
     public Cromossomo[] realizarCrossover(Cromossomo pai1, Cromossomo pai2) {

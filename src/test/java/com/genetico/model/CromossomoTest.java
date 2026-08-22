@@ -147,7 +147,7 @@ public class CromossomoTest {
         var pai1 = new Cromossomo(genesFixos1);
         var pai2 = new Cromossomo(genesFixos2);
 
-        var filhos = pai1.realizarCrossoverPmx(pai2);
+        var filhos = pai1.realizarCrossover(pai2);
         var indiceUltimoFilho = filhos.length - 1;
 
         assertEquals(genesEsperadosFilho1, filhos[0].formatarGenes());
