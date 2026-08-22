@@ -7,14 +7,18 @@ import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 
 public class MatrizDistancias {
     private static final Logger log = LogManager.getLogger();
-    private final LongObjectHashMap<LongDoubleHashMap> distancias = new LongObjectHashMap<>();
+    private static final LongObjectHashMap<LongDoubleHashMap> distancias = new LongObjectHashMap<>();
 
-    public void setDistancia(long idOrigem, long idDestino, double distancia) {
+    private MatrizDistancias(){
+
+    }
+
+    public static void setDistancia(long idOrigem, long idDestino, double distancia) {
         log.info("Definindo distância entre os pontos de ID {} e ID {}", idOrigem, idDestino);
         distancias.getIfAbsentPut(idOrigem, LongDoubleHashMap::new).put(idDestino, distancia);
     }
 
-    public double getDistancia(long idOrigem, long idDestino) {
+    public static double getDistancia(long idOrigem, long idDestino) {
         var linha = distancias.get(idOrigem);
 
         if (linha == null || !linha.containsKey(idDestino)) {
@@ -27,7 +31,7 @@ public class MatrizDistancias {
         return linha.get(idDestino);
     }
 
-    public int getQuantidadeDistancias(){
+    public static int getQuantidadeDistancias() {
         return distancias.values()
                 .stream()
                 .mapToInt(LongDoubleHashMap::size)

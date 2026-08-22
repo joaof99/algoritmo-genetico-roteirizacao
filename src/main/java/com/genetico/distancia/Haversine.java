@@ -11,7 +11,7 @@ public class Haversine implements MetodoCalculoDistancia {
     private static final Logger log = LogManager.getLogger(Haversine.class);
 
     @Override
-    public MatrizDistancias inicializarDistancias(List<Endereco> enderecos) {
+    public void registrarDistancias(List<Endereco> enderecos) {
         if (enderecos.isEmpty()) {
             throw new IllegalArgumentException("Nenhum endereço encontrado. Impossível iniciar a roteirização");
         }
@@ -20,20 +20,16 @@ public class Haversine implements MetodoCalculoDistancia {
             throw new IllegalArgumentException(String.format("É necessário no mínimo 6 endereços para a roteirização. Encontrado %d", enderecos.size()));
         }
 
-        var matrizDistancias = new MatrizDistancias();
-
         for (int i = 0; i < enderecos.size(); i++) {
             for (int j = i + 1; j < enderecos.size(); j++) {
                 var origem = enderecos.get(i);
                 var destino = enderecos.get(j);
 
                 var distancia = calcularDistancia(origem, destino);
-                matrizDistancias.setDistancia(origem.id(), destino.id(), distancia);
-                matrizDistancias.setDistancia(destino.id(), origem.id(), distancia);
+                MatrizDistancias.setDistancia(origem.id(), destino.id(), distancia);
+                MatrizDistancias.setDistancia(destino.id(), origem.id(), distancia);
             }
         }
-
-        return matrizDistancias;
     }
 
     @Override

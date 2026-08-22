@@ -6,6 +6,7 @@ import com.genetico.exception.RotaClientException;
 import com.genetico.model.Endereco;
 import com.genetico.client.RotaClient;
 import com.genetico.factory.RotaClientFactory;
+import com.genetico.model.MatrizDistancias;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,6 +58,6 @@ class CalculadorDistanciasTest {
 
         CalculadorDistancias.inicializar(new Haversine(), enderecos);
 
-        assertEquals(21, CalculadorDistancias.getMatrizDistancias().getQuantidadeDistancias());
+        assertEquals(21, MatrizDistancias.getQuantidadeDistancias());
     }
 }
