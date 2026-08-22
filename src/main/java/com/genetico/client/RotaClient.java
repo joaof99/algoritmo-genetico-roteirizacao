@@ -44,8 +44,8 @@ public class RotaClient {
                 .build();
     }
 
-    public List<Endereco> buscarTodosEnderecos() throws RotaClientException {
-        var response = buscarRotas();
+    public List<Endereco> buscarEnderecosRota(int idRota) throws RotaClientException {
+        var response = buscarEnderecos(idRota);
 
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
             throw new RotaClientException(String.format("AG administrativo retornou HTTP %d", response.statusCode()));
@@ -56,10 +56,10 @@ public class RotaClient {
         return extrairEnderecos(json);
     }
 
-    private HttpResponse<String> buscarRotas() throws RotaClientException {
+    private HttpResponse<String> buscarEnderecos(int idRota) throws RotaClientException {
         try {
-            var uri = URI.create(URL_BASE + "/rotas/todas");
-            log.info("Buscando rotas em {} ", uri);
+            var uri = URI.create(URL_BASE + "/rotas/" + idRota + "/enderecos");
+            log.info("Buscando endereços para a rota de ID {} em {} ", idRota, uri);
 
             var request = HttpRequest.newBuilder()
                     .uri(uri)
@@ -85,28 +85,16 @@ public class RotaClient {
     }
 
     private static List<Endereco> extrairEnderecos(JsonNode json) {
-        var rotas = new ArrayList<Rota>();
+        var enderecos = new ArrayList<Endereco>();
 
-        json.forEach(rota -> {
-            var enderecos = new ArrayList<Endereco>();
+        json.forEach(endereco -> {
+            var id = endereco.get("id").asInt();
+            var latitude = endereco.get("latitude").asDouble();
+            var longitude = endereco.get("longitude").asDouble();
+            var cidade = endereco.get("cidade").asText();
 
-            rota.get("enderecos").forEach(endereco -> {
-                var id = endereco.get("id").asInt();
-                var latitude = endereco.get("latitude").asDouble();
-                var longitude = endereco.get("longitude").asDouble();
-                var cidade = endereco.get("cidade").asText();
-
-                enderecos.add(new Endereco(id, latitude, longitude, cidade));
-            });
-
-            rotas.add(new Rota(enderecos));
+            enderecos.add(new Endereco(id, latitude, longitude, cidade));
         });
-
-        var enderecos = rotas
-                .stream()
-                .flatMap(rota -> rota.enderecos().stream())
-                .distinct()
-                .toList();
 
         log.info("Foram encontradas {} endereços", enderecos.size());
         return enderecos;

@@ -15,8 +15,8 @@ public class CalculadorDistancias {
 
     }
 
-    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia) throws RotaClientException {
-        enderecos = RotaClientFactory.getRotaClient().buscarTodosEnderecos();
+    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, int idRota) throws RotaClientException {
+        enderecos = RotaClientFactory.getRotaClient().buscarEnderecosRota(idRota);
         matrizDistancias = metodoCalculoDistancia.inicializarDistancias(enderecos);
     }
 

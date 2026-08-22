@@ -11,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            CalculadorDistancias.inicializar(new Haversine());
+            CalculadorDistancias.inicializar(new Haversine(),10);
 
             AlgoritmoGenetico algoritmoGenetico;
 

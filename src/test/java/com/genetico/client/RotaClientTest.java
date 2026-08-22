@@ -59,7 +59,7 @@ class RotaClientTest {
 
             var rotaClient = new RotaClient();
 
-            var enderecos = rotaClient.buscarTodosEnderecos();
+            var enderecos = rotaClient.buscarEnderecosRota(1);
 
             assertEquals(1, enderecos.size());
             assertEquals(1, enderecos.getFirst().id());

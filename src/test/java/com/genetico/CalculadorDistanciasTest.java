@@ -16,6 +16,7 @@ import org.mockito.Mockito;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -52,9 +53,9 @@ class CalculadorDistanciasTest {
         rotaClientFactory.when(RotaClientFactory::getRotaClient)
                 .thenReturn(rotaClient);
 
-        when(rotaClient.buscarTodosEnderecos()).thenReturn(enderecos);
+        when(rotaClient.buscarEnderecosRota(anyInt())).thenReturn(enderecos);
 
-        CalculadorDistancias.inicializar(new Haversine());
+        CalculadorDistancias.inicializar(new Haversine(), 1);
 
         assertEquals(21, CalculadorDistancias.getMatrizDistancias().getQuantidadeDistancias());
     }
