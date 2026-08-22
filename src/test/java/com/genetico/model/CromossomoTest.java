@@ -188,14 +188,7 @@ public class CromossomoTest {
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        var random = mock(Random.class);
-
         var cromossomo = new Cromossomo(genesCromossomoInicial) {
-            @Override
-            public Random getRandomizador() {
-                return random;
-            }
-
             @Override
             public double getFitness() {
                 return 1000;
@@ -206,7 +199,7 @@ public class CromossomoTest {
                 .thenReturn(indiceAleatorioGene1)
                 .thenReturn(indiceAleatorioGene2);
 
-        cromossomo.realizarMutacaoSwap();
+        cromossomo.realizarMutacao();
         assertEquals(formatacaoEsperadaCromossomo, cromossomo.formatarGenes());
     }
 

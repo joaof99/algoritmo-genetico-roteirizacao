@@ -26,7 +26,7 @@ public class Main {
             log.info("População final: ");
             populacaoFinal.imprimirPopulacao();
         } catch (RotaClientException e) {
-            log.error("Algoritmo Genético não pode inicializar: {}", e.getMessage());
+            log.error("Algoritmo Genético não pôde inicializar. {}", e.getMessage());
             System.exit(1);
         }
     }

@@ -4,18 +4,19 @@ import com.genetico.crossover.CrossoverPMX;
 import com.genetico.crossover.MetodoCrossover;
 import com.genetico.distancia.CalculadorDistancias;
 import com.genetico.factory.RandomizadorFactory;
+import com.genetico.mutacao.MetodoMutacao;
+import com.genetico.mutacao.Swap;
 
 import java.util.Random;
 import java.util.StringJoiner;
 
 public class Cromossomo {
     public static final int QTDE_MAXIMA_GENES = CalculadorDistancias.getQuantidadeEnderecos();
-    private static final int POSICAO_CORTE_INICIO = 0;
-    private static final int POSICAO_CORTE_FIM = 1;
     private final int[] genes;
     private final Random randomizador = RandomizadorFactory.getRandomizador();
     private final double fitness;
     private final MetodoCrossover metodoCrossover = new CrossoverPMX();
+    private final MetodoMutacao metodoMutacao = new Swap();
 
     public Cromossomo() {
         genes = inicializarGenes();
@@ -70,23 +71,12 @@ public class Cromossomo {
         calcularFitness();
     }
 
-    public Cromossomo[] realizarCrossover(Cromossomo pai2) {
+    Cromossomo[] realizarCrossover(Cromossomo pai2) {
         return metodoCrossover.realizarCrossover(this, pai2);
     }
 
-    void realizarMutacaoSwap() {
-        int indiceAleatorioGene1, indiceAleatorioGene2;
-
-        do {
-            indiceAleatorioGene1 = getRandomizador().nextInt(1, getGenes().length);
-            indiceAleatorioGene2 = getRandomizador().nextInt(1, getGenes().length);
-        } while (indiceAleatorioGene1 == indiceAleatorioGene2);
-
-        var genesAtuais = getGenes();
-        var valorGeneAnteriorIndice1 = genesAtuais[indiceAleatorioGene1];
-
-        genesAtuais[indiceAleatorioGene1] = genesAtuais[indiceAleatorioGene2];
-        genesAtuais[indiceAleatorioGene2] = valorGeneAnteriorIndice1;
+    void realizarMutacao() {
+        metodoMutacao.realizarMutacao(this);
     }
 
     private boolean pontosDeCorteSaoInvalidos(int pontoCorte1, int pontoCorte2) {
@@ -111,9 +101,5 @@ public class Cromossomo {
 
     public double getFitness() {
         return fitness;
-    }
-
-    public Random getRandomizador() {
-        return randomizador;
     }
 }

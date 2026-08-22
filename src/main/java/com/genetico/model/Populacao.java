@@ -71,6 +71,8 @@ public class Populacao {
             var filho2 = filhos[1];
 
             realizarMutacao(filho1, filho2);
+            filho1.atualizarFitness();
+            filho2.atualizarFitness();
 
             cromossomosFilhos[contadorIndice] = new Cromossomo(filho1.getGenes());
             contadorIndice++;
@@ -133,11 +135,8 @@ public class Populacao {
         var chanceAleatoriaDeOcorrerMutacao = randomizador.nextInt(100) + 1;
 
         if (chanceAleatoriaDeOcorrerMutacao <= getChanceFixaOcorrenciaMutacao()) {
-            filho1.realizarMutacaoSwap();
-            filho2.realizarMutacaoSwap();
-
-            filho1.atualizarFitness();
-            filho2.atualizarFitness();
+            filho1.realizarMutacao();
+            filho2.realizarMutacao();
         }
     }
 
