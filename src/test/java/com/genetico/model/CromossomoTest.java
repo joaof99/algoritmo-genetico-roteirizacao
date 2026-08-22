@@ -36,6 +36,21 @@ public class CromossomoTest {
                 });
     }
 
+    private static double[][] inicializarDistanciasFixas() {
+        return new double[][]{
+                {10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+                {15, 15, 15, 25, 35, 45, 55, 65, 75, 85},
+                {10, 10, 10, 30, 20, 30, 40, 50, 60, 70},
+                {5, 5, 5, 5, 5, 15, 25, 35, 45, 55},
+                {10, 10, 10, 10, 10, 10, 20, 30, 40, 50},
+                {5, 5, 5, 5, 5, 5, 5, 15, 25, 35},
+                {10, 10, 10, 10, 10, 10, 10, 10, 20, 30},
+                {5, 5, 5, 5, 5, 5, 5, 5, 5, 15},
+                {10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
+                {10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
+        };
+    }
+
     @AfterEach
     void tearDown() {
         calculadorDistancias.close();
@@ -59,21 +74,6 @@ public class CromossomoTest {
                         155.0
                 )
         );
-    }
-
-    private static double[][] inicializarDistanciasFixas() {
-        return new double[][]{
-                {10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
-                {15, 15, 15, 25, 35, 45, 55, 65, 75, 85},
-                {10, 10, 10, 30, 20, 30, 40, 50, 60, 70},
-                {5, 5, 5, 5, 5, 15, 25, 35, 45, 55},
-                {10, 10, 10, 10, 10, 10, 20, 30, 40, 50},
-                {5, 5, 5, 5, 5, 5, 5, 15, 25, 35},
-                {10, 10, 10, 10, 10, 10, 10, 10, 20, 30},
-                {5, 5, 5, 5, 5, 5, 5, 5, 5, 15},
-                {10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
-                {10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
-        };
     }
 
     @Test
@@ -129,6 +129,10 @@ public class CromossomoTest {
             int[] pontosCorteFixos,
             String genesEsperadosFilho1,
             String genesEsperadosFilho2) {
+        calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
+        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
         var random = mock(Random.class);
         when(random.nextInt(anyInt())).thenReturn(pontosCorteFixos[0], pontosCorteFixos[1]);
 
@@ -178,6 +182,10 @@ public class CromossomoTest {
     @MethodSource("casosDeTesteParaMutacaoSwap")
     @DisplayName("Deve realizar mutação swap corretamente com diferentes combinações de genes")
     public void deveRealizarMutacaoSwapCorretamente(int[] genesCromossomoInicial, int indiceAleatorioGene1, int indiceAleatorioGene2, String formatacaoEsperadaCromossomo) {
+        calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
+        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
         var random = mock(Random.class);
 
         var cromossomo = new Cromossomo(genesCromossomoInicial) {
