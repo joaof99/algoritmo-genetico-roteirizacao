@@ -94,7 +94,7 @@ public class CromossomoTest {
     @DisplayName(value = "Genes devem ser formatados corretamente com caracter delimitador: |")
     public void genesDevemSerFormatadosCorretamenteAoImprimir() {
         calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
-        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
+        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         boolean impressaoCromossomoEstaNoPadrao = new Cromossomo()
@@ -108,7 +108,7 @@ public class CromossomoTest {
     @DisplayName(value = "Não deve existir genes repetidos em um cromossomo")
     public void naoDeveExistirGenesRepetidosNoCromossomo() {
         calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
-        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
+        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         var cromossomo = new Cromossomo();
@@ -138,7 +138,7 @@ public class CromossomoTest {
             String genesEsperadosFilho1,
             String genesEsperadosFilho2) {
         calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
-        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
+        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         when(random.nextInt(anyInt()))
@@ -185,7 +185,7 @@ public class CromossomoTest {
     @DisplayName("Deve realizar mutação swap corretamente com diferentes combinações de genes")
     public void deveRealizarMutacaoSwapCorretamente(int[] genesCromossomoInicial, int indiceAleatorioGene1, int indiceAleatorioGene2, String formatacaoEsperadaCromossomo) {
         calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
-        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
+        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         var cromossomo = new Cromossomo(genesCromossomoInicial) {

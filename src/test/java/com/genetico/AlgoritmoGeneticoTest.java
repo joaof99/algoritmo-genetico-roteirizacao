@@ -40,7 +40,7 @@ public class AlgoritmoGeneticoTest {
     @DisplayName("Reprodução deve gerar população de tamanho fixo, ordenada e com fitness melhorado")
     public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() throws RotaClientException {
         calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
-        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
+        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         var distanciasFixas = inicializarDistanciasFixas();

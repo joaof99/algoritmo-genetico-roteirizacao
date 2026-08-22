@@ -36,7 +36,7 @@ public class Cromossomo {
         var genes = new int[QTDE_MAXIMA_GENES];
 
         for (int i = 0; i < genes.length; i++) {
-            genes[i] = CalculadorDistancias.getEnderecoId(i);
+            genes[i] = CalculadorDistancias.getEnderecoIdRealBanco(i);
         }
 
         embaralharGenes(genes);

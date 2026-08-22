@@ -28,7 +28,7 @@ public class CalculadorDistancias {
         return matrizDistancias;
     }
 
-    public static int getEnderecoId(int indice) {
+    public static int getEnderecoIdRealBanco(int indice) {
         return enderecos.get(indice).id();
     }
 
