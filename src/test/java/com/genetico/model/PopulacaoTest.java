@@ -1,11 +1,13 @@
 package com.genetico.model;
 
 import com.genetico.distancia.CalculadorDistancias;
+import com.genetico.factory.RandomizadorFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
 
 import java.util.Random;
 import java.util.stream.Stream;
@@ -80,7 +82,9 @@ public class PopulacaoTest {
     public void deveSelecionarCorretamenteOPaiNaRoleta(double numeroAleatorio, String formatacaoGenesEsperado) {
         var distanciasFixas = inicializarDistanciasFixas();
 
-        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
+        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class);
+             var randomizadorFactory = mockStatic(RandomizadorFactory.class)) {
+
             calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
                     .thenAnswer(invocation -> {
                         int indiceCidadeOrigem = invocation.getArgument(0);
@@ -90,11 +94,11 @@ public class PopulacaoTest {
 
             calculadorDeDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
 
-            var populacao = spy(inicializarPopulacaoTeste());
-
-            var random = mock(Random.class);
+            var random = Mockito.mock(Random.class);
             when(random.nextDouble(anyDouble())).thenReturn(numeroAleatorio);
-            doReturn(random).when(populacao).getRandomizador();
+            randomizadorFactory.when(RandomizadorFactory::getRandomizador).thenReturn(random);
+
+            var populacao = spy(inicializarPopulacaoTeste());
 
             var cromossomoPai = populacao.selecionarCromossomoPaiPorRoleta();
             assertEquals(formatacaoGenesEsperado, cromossomoPai.formatarGenes());

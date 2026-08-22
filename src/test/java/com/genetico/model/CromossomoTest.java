@@ -1,6 +1,7 @@
 package com.genetico.model;
 
 import com.genetico.distancia.CalculadorDistancias;
+import com.genetico.factory.RandomizadorFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +22,16 @@ import static org.mockito.Mockito.*;
 
 public class CromossomoTest {
     private MockedStatic<CalculadorDistancias> calculadorDistancias;
+    private MockedStatic<RandomizadorFactory> randomizadorFactory;
+    private Random random;
 
     @BeforeEach
     void setUp() {
+        randomizadorFactory = Mockito.mockStatic(RandomizadorFactory.class);
         calculadorDistancias = Mockito.mockStatic(CalculadorDistancias.class);
+        random = Mockito.mock(Random.class);
+
+        randomizadorFactory.when(RandomizadorFactory::getRandomizador).thenReturn(random);
 
         var distanciasFixas = inicializarDistanciasFixas();
 
@@ -54,6 +61,7 @@ public class CromossomoTest {
     @AfterEach
     void tearDown() {
         calculadorDistancias.close();
+        randomizadorFactory.close();
     }
 
     @ParameterizedTest
@@ -133,16 +141,10 @@ public class CromossomoTest {
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoId(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        var random = mock(Random.class);
-        when(random.nextInt(anyInt())).thenReturn(pontosCorteFixos[0], pontosCorteFixos[1]);
+        when(random.nextInt(anyInt()))
+                .thenReturn(pontosCorteFixos[0], pontosCorteFixos[1]);
 
-        var pai1 = new Cromossomo(genesFixos1) {
-            @Override
-            public Random getRandomizador() {
-                return random;
-            }
-        };
-
+        var pai1 = new Cromossomo(genesFixos1);
         var pai2 = new Cromossomo(genesFixos2);
 
         var filhos = pai1.realizarCrossoverPmx(pai2);

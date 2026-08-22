@@ -1,6 +1,7 @@
 package com.genetico.model;
 
 import com.genetico.distancia.CalculadorDistancias;
+import com.genetico.factory.RandomizadorFactory;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,11 +13,10 @@ public class Cromossomo {
     private static final int POSICAO_CORTE_INICIO = 0;
     private static final int POSICAO_CORTE_FIM = 1;
     private final int[] genes;
-    private final Random randomizador;
+    private final Random randomizador = RandomizadorFactory.getRandomizador();
     private final double fitness;
 
     public Cromossomo() {
-        randomizador = new Random();
         genes = inicializarGenes();
         fitness = calcularFitness();
     }
@@ -28,7 +28,6 @@ public class Cromossomo {
 
         this.genes = genes;
         fitness = calcularFitness();
-        randomizador = new Random();
     }
 
     private int[] inicializarGenes() {
