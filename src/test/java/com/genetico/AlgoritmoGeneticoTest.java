@@ -39,7 +39,6 @@ public class AlgoritmoGeneticoTest {
     @Test
     @DisplayName("Reprodução deve gerar população de tamanho fixo, ordenada e com fitness melhorado")
     public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() throws RotaClientException {
-        calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -62,6 +61,7 @@ public class AlgoritmoGeneticoTest {
         var algoritmoGenetico = new AlgoritmoGenetico
                 .Builder()
                 .qtdeGeracoes(50)
+                .qtdeGenesCromossomo(10)
                 .tamanhoPopulacao(30)
                 .chanceOcorrenciaMutacao(80)
                 .chanceOcorrenciaCrossover(80)

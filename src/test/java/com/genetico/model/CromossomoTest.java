@@ -87,17 +87,16 @@ public class CromossomoTest {
     @Test
     @DisplayName(value = "Genes devem ser inicializados com o tamanho correto definido na constante")
     public void genesDevemSerInicializadosComOTamanhoCorreto() {
-        assertEquals(Cromossomo.QTDE_MAXIMA_GENES, new Cromossomo().getGenes().length);
+        assertEquals(10, new Cromossomo(10).getGenes().length);
     }
 
     @Test
     @DisplayName(value = "Genes devem ser formatados corretamente com caracter delimitador: |")
     public void genesDevemSerFormatadosCorretamenteAoImprimir() {
-        calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        boolean impressaoCromossomoEstaNoPadrao = new Cromossomo()
+        boolean impressaoCromossomoEstaNoPadrao = new Cromossomo(10)
                 .formatarGenes()
                 .matches("^(\\d+\\s\\|\\s)+(\\d+(\\.\\d+)?)$");
 
@@ -107,11 +106,10 @@ public class CromossomoTest {
     @Test
     @DisplayName(value = "Não deve existir genes repetidos em um cromossomo")
     public void naoDeveExistirGenesRepetidosNoCromossomo() {
-        calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        var cromossomo = new Cromossomo();
+        var cromossomo = new Cromossomo(10);
 
         var genesSemRepeticao = new HashSet<>();
 
@@ -137,7 +135,6 @@ public class CromossomoTest {
             int[] pontosCorteFixos,
             String genesEsperadosFilho1,
             String genesEsperadosFilho2) {
-        calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -184,7 +181,6 @@ public class CromossomoTest {
     @MethodSource("casosDeTesteParaMutacaoSwap")
     @DisplayName("Deve realizar mutação swap corretamente com diferentes combinações de genes")
     public void deveRealizarMutacaoSwapCorretamente(int[] genesCromossomoInicial, int indiceAleatorioGene1, int indiceAleatorioGene2, String formatacaoEsperadaCromossomo) {
-        calculadorDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 

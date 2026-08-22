@@ -3,7 +3,6 @@ package com.genetico.distancia;
 import com.genetico.exception.RotaClientException;
 import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
-import com.genetico.factory.RotaClientFactory;
 
 import java.util.List;
 
@@ -15,8 +14,8 @@ public class CalculadorDistancias {
 
     }
 
-    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, int idRota) throws RotaClientException {
-        enderecos = RotaClientFactory.getRotaClient().buscarEnderecosRota(idRota);
+    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, List<Endereco> enderecosRota) throws RotaClientException {
+        enderecos = enderecosRota;
         matrizDistancias = metodoCalculoDistancia.inicializarDistancias(enderecos);
     }
 
@@ -30,9 +29,5 @@ public class CalculadorDistancias {
 
     public static int getEnderecoIdRealBanco(int indice) {
         return enderecos.get(indice).id();
-    }
-
-    public static int getQuantidadeEnderecos() {
-        return enderecos.size();
     }
 }

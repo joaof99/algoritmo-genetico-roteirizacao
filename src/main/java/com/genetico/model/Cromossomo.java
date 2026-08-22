@@ -11,29 +11,27 @@ import java.util.Random;
 import java.util.StringJoiner;
 
 public class Cromossomo {
-    public static final int QTDE_MAXIMA_GENES = CalculadorDistancias.getQuantidadeEnderecos();
+    private final int quantidadeMaximaGenes;
     private final int[] genes;
     private final Random randomizador = RandomizadorFactory.getRandomizador();
     private final double fitness;
     private final MetodoCrossover metodoCrossover = new CrossoverPMX();
     private final MetodoMutacao metodoMutacao = new Swap();
 
-    public Cromossomo() {
+    public Cromossomo(int quantidadeMaximaGenes) {
+        this.quantidadeMaximaGenes = quantidadeMaximaGenes;
         genes = inicializarGenes();
         fitness = calcularFitness();
     }
 
     public Cromossomo(int[] genes) {
-        if (genes.length > QTDE_MAXIMA_GENES) {
-            throw new IllegalArgumentException(String.format("A quantidade de genes não deve ultrapassar a capacidade máxima de: %s", QTDE_MAXIMA_GENES));
-        }
-
+        quantidadeMaximaGenes = genes.length;
         this.genes = genes;
         fitness = calcularFitness();
     }
 
     private int[] inicializarGenes() {
-        var genes = new int[QTDE_MAXIMA_GENES];
+        var genes = new int[quantidadeMaximaGenes];
 
         for (int i = 0; i < genes.length; i++) {
             genes[i] = CalculadorDistancias.getEnderecoIdRealBanco(i);

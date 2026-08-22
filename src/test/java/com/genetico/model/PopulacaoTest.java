@@ -22,9 +22,7 @@ public class PopulacaoTest {
     @DisplayName("Tamanho da população deve ser inicializado corretamente")
     public void tamanhoDaPopulacaoDeveSerInicializadoCorretamente() {
         try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
-
-            var populacao = new Populacao(30, 50, 50);
+            var populacao = new Populacao(30, 50, 50, 10);
             assertEquals(30, populacao.getTamanhoPopulacao());
         }
     }
@@ -73,7 +71,7 @@ public class PopulacaoTest {
         cromossomos[3] = cromossomo4;
         cromossomos[4] = cromossomo5;
 
-        return new Populacao(cromossomos, 50, 50);
+        return new Populacao(cromossomos, 50, 50, 10);
     }
 
     @ParameterizedTest
@@ -91,8 +89,6 @@ public class PopulacaoTest {
                         int indiceCidadeDestino = invocation.getArgument(1);
                         return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
                     });
-
-            calculadorDeDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
 
             var random = Mockito.mock(Random.class);
             when(random.nextDouble(anyDouble())).thenReturn(numeroAleatorio);
@@ -233,8 +229,6 @@ public class PopulacaoTest {
             calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
                     .thenAnswer(invocation -> 40.0);
 
-            calculadorDeDistancias.when(CalculadorDistancias::getQuantidadeEnderecos).thenReturn(10);
-
             var genes1 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
             var genes2 = new int[]{0, 1, 2, 3, 4, 5, 7, 6, 8, 9};
             var genes3 = new int[]{0, 1, 2, 4, 3, 5, 6, 7, 8, 9};
@@ -270,7 +264,7 @@ public class PopulacaoTest {
             cromossomos[8] = cromossomo9;
             cromossomos[9] = cromossomo10;
 
-            var populacaoFilha = new Populacao(cromossomos, 50, 50).gerarPopulacaoFilha();
+            var populacaoFilha = new Populacao(cromossomos, 50, 50, 10).gerarPopulacaoFilha();
 
             assertEquals(10, populacaoFilha.getCromossomos().length);
         }

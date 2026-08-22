@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 public class AlgoritmoGenetico {
     private static final Logger log = LogManager.getLogger();
     private final int qtdeGeracoes;
+    private final int qtdeGenesCromossomo;
     private final int tamanhoPopulacao;
     private final int chanceOcorrenciaCrossover;
     private final int chanceOcorrenciaMutacao;
@@ -19,12 +20,13 @@ public class AlgoritmoGenetico {
     private AlgoritmoGenetico(Builder builder) {
         this.tamanhoPopulacao = builder.tamanhoPopulacao;
         this.qtdeGeracoes = builder.qtdeGeracoes;
+        this.qtdeGenesCromossomo = builder.qtdeGenesCromossomo;
         this.chanceOcorrenciaCrossover = builder.chanceOcorrenciaCrossover;
         this.chanceOcorrenciaMutacao = builder.chanceOcorrenciaMutacao;
     }
 
     public Populacao reproduzir() {
-        populacao = new Populacao(tamanhoPopulacao, chanceOcorrenciaCrossover, chanceOcorrenciaMutacao);
+        populacao = new Populacao(tamanhoPopulacao, chanceOcorrenciaCrossover, chanceOcorrenciaMutacao, qtdeGenesCromossomo);
         log.info("População inicial");
         populacao.imprimirPopulacao();
 
@@ -54,6 +56,7 @@ public class AlgoritmoGenetico {
     public static class Builder {
         private int tamanhoPopulacao;
         private int qtdeGeracoes;
+        private int qtdeGenesCromossomo;
         private int chanceOcorrenciaCrossover;
         private int chanceOcorrenciaMutacao;
 
@@ -64,6 +67,11 @@ public class AlgoritmoGenetico {
 
         public Builder qtdeGeracoes(int qtdeGeracoes) {
             this.qtdeGeracoes = qtdeGeracoes;
+            return this;
+        }
+
+        public Builder qtdeGenesCromossomo(int qtdeGenesCromossomo) {
+            this.qtdeGenesCromossomo = qtdeGenesCromossomo;
             return this;
         }
 

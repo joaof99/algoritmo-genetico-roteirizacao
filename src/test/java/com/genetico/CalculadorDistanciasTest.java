@@ -55,7 +55,7 @@ class CalculadorDistanciasTest {
 
         when(rotaClient.buscarEnderecosRota(anyInt())).thenReturn(enderecos);
 
-        CalculadorDistancias.inicializar(new Haversine(), 1);
+        CalculadorDistancias.inicializar(new Haversine(), enderecos);
 
         assertEquals(21, CalculadorDistancias.getMatrizDistancias().getQuantidadeDistancias());
     }
