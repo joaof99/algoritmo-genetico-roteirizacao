@@ -93,7 +93,7 @@ public class PopulacaoTest {
             when(random.nextDouble(anyDouble())).thenReturn(numeroAleatorio);
             randomizadorFactory.when(RandomizadorFactory::getRandomizador).thenReturn(random);
 
-            var populacao = spy(inicializarPopulacaoTeste());
+            var populacao = inicializarPopulacaoTeste();
 
             var cromossomoPai = populacao.selecionarCromossomoPaiPorRoleta();
             assertEquals(formatacaoGenesEsperado, cromossomoPai.formatarGenes());
