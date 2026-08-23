@@ -89,9 +89,9 @@ public class PopulacaoTest {
     @MethodSource("casosDeTesteParaSelecacaoRoleta")
     public void deveSelecionarCorretamenteOPaiNaRoleta(double numeroAleatorio, String formatacaoGenesEsperado) {
         try (var randomizadorFactory = mockStatic(RandomizadorFactory.class)) {
-            var random = Mockito.mock(Random.class);
-            when(random.nextDouble(anyDouble())).thenReturn(numeroAleatorio);
-            randomizadorFactory.when(RandomizadorFactory::getRandomizador).thenReturn(random);
+            var randomizador = Mockito.mock(Random.class);
+            when(randomizador.nextDouble(anyDouble())).thenReturn(numeroAleatorio);
+            randomizadorFactory.when(RandomizadorFactory::getRandomizador).thenReturn(randomizador);
 
             var populacao = inicializarPopulacaoTeste();
 
