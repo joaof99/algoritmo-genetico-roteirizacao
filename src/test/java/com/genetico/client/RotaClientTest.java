@@ -36,14 +36,10 @@ class RotaClientTest {
                 .thenReturn("""
                         [
                           {
-                            "enderecos": [
-                              {
-                                "id": 1,
-                                "latitude": -23.5505,
-                                "longitude": -46.6333,
-                                "cidade": "São Paulo"
-                              }
-                            ]
+                            "id": 1,
+                            "latitude": -23.5505,
+                            "longitude": -46.6333,
+                            "cidade": "São Paulo"
                           }
                         ]
                         """);
