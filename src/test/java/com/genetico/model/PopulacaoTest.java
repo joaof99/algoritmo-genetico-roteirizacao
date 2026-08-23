@@ -2,13 +2,17 @@ package com.genetico.model;
 
 import com.genetico.distancia.CalculadorDistancias;
 import com.genetico.factory.RandomizadorFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
+import java.util.OptionalDouble;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -17,37 +21,43 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class PopulacaoTest {
+    private MockedStatic<CalculadorDistancias> calculadorDistancias;
+
+    @BeforeEach
+    void setUp() {
+        calculadorDistancias = Mockito.mockStatic(CalculadorDistancias.class);
+        var distanciasFixas = inicializarDistanciasFixas();
+
+        calculadorDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+                .thenAnswer(invocation -> {
+                    int indiceCidadeOrigem = invocation.getArgument(0);
+                    int indiceCidadeDestino = invocation.getArgument(1);
+                    return OptionalDouble.of(distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino]);
+                });
+    }
+
+    @AfterEach
+    void tearDown() {
+        calculadorDistancias.close();
+    }
 
     @Test
     @DisplayName("Tamanho da população deve ser inicializado corretamente")
     public void tamanhoDaPopulacaoDeveSerInicializadoCorretamente() {
-        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            var populacao = new Populacao(30, 50, 50, 10);
-            assertEquals(30, populacao.getTamanhoPopulacao());
-        }
+        var populacao = new Populacao(30, 50, 50, 10);
+        assertEquals(30, populacao.getTamanhoPopulacao());
     }
 
     @Test
     @DisplayName(value = "deve ordenar os fitness dos cromossomos em ordem crescente")
     public void deveOrdenarOsFitnessDosCromossomosEmOrdemCrescente() {
-        var distanciasFixas = inicializarDistanciasFixas();
+        var populacao = inicializarPopulacaoTeste();
 
-        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
-                    .thenAnswer(invocation -> {
-                        int indiceCidadeOrigem = invocation.getArgument(0);
-                        int indiceCidadeDestino = invocation.getArgument(1);
-                        return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
-                    });
-
-            var populacao = inicializarPopulacaoTeste();
-
-            assertEquals(70, populacao.getCromossomos()[0].getFitness());
-            assertEquals(70, populacao.getCromossomos()[1].getFitness());
-            assertEquals(90, populacao.getCromossomos()[2].getFitness());
-            assertEquals(100, populacao.getCromossomos()[3].getFitness());
-            assertEquals(220, populacao.getCromossomos()[4].getFitness());
-        }
+        assertEquals(70, populacao.getCromossomos()[0].getFitness());
+        assertEquals(70, populacao.getCromossomos()[1].getFitness());
+        assertEquals(90, populacao.getCromossomos()[2].getFitness());
+        assertEquals(100, populacao.getCromossomos()[3].getFitness());
+        assertEquals(220, populacao.getCromossomos()[4].getFitness());
     }
 
     private Populacao inicializarPopulacaoTeste() {
@@ -78,18 +88,7 @@ public class PopulacaoTest {
     @DisplayName("Deve selecionar corretamente o pai na roleta")
     @MethodSource("casosDeTesteParaSelecacaoRoleta")
     public void deveSelecionarCorretamenteOPaiNaRoleta(double numeroAleatorio, String formatacaoGenesEsperado) {
-        var distanciasFixas = inicializarDistanciasFixas();
-
-        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class);
-             var randomizadorFactory = mockStatic(RandomizadorFactory.class)) {
-
-            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
-                    .thenAnswer(invocation -> {
-                        int indiceCidadeOrigem = invocation.getArgument(0);
-                        int indiceCidadeDestino = invocation.getArgument(1);
-                        return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
-                    });
-
+        try (var randomizadorFactory = mockStatic(RandomizadorFactory.class)) {
             var random = Mockito.mock(Random.class);
             when(random.nextDouble(anyDouble())).thenReturn(numeroAleatorio);
             randomizadorFactory.when(RandomizadorFactory::getRandomizador).thenReturn(random);
@@ -225,48 +224,46 @@ public class PopulacaoTest {
     @Test
     @DisplayName("População filha deve ser gerada com o tamanho correto")
     public void populacaoFilhaDeveSerGeradaComOTamanhoCorreto() {
-        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
-                    .thenAnswer(invocation -> 40.0);
+        calculadorDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+                .thenAnswer(_ -> OptionalDouble.of(40.0));
 
-            var genes1 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-            var genes2 = new int[]{0, 1, 2, 3, 4, 5, 7, 6, 8, 9};
-            var genes3 = new int[]{0, 1, 2, 4, 3, 5, 6, 7, 8, 9};
-            var genes4 = new int[]{0, 5, 4, 3, 2, 6, 7, 8, 1, 9};
-            var genes5 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-            var genes6 = new int[]{2, 0, 1, 4, 3, 6, 5, 9, 7, 8};
-            var genes7 = new int[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
-            var genes8 = new int[]{1, 3, 5, 7, 9, 8, 6, 4, 2, 0};
-            var genes9 = new int[]{4, 0, 2, 6, 8, 1, 3, 5, 7, 9};
-            var genes10 = new int[]{3, 6, 9, 0, 2, 5, 1, 8, 4, 7};
+        var genes1 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        var genes2 = new int[]{0, 1, 2, 3, 4, 5, 7, 6, 8, 9};
+        var genes3 = new int[]{0, 1, 2, 4, 3, 5, 6, 7, 8, 9};
+        var genes4 = new int[]{0, 5, 4, 3, 2, 6, 7, 8, 1, 9};
+        var genes5 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        var genes6 = new int[]{2, 0, 1, 4, 3, 6, 5, 9, 7, 8};
+        var genes7 = new int[]{9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
+        var genes8 = new int[]{1, 3, 5, 7, 9, 8, 6, 4, 2, 0};
+        var genes9 = new int[]{4, 0, 2, 6, 8, 1, 3, 5, 7, 9};
+        var genes10 = new int[]{3, 6, 9, 0, 2, 5, 1, 8, 4, 7};
 
-            var cromossomo1 = new Cromossomo(genes1);
-            var cromossomo2 = new Cromossomo(genes2);
-            var cromossomo3 = new Cromossomo(genes3);
-            var cromossomo4 = new Cromossomo(genes4);
-            var cromossomo5 = new Cromossomo(genes5);
-            var cromossomo6 = new Cromossomo(genes6);
-            var cromossomo7 = new Cromossomo(genes7);
-            var cromossomo8 = new Cromossomo(genes8);
-            var cromossomo9 = new Cromossomo(genes9);
-            var cromossomo10 = new Cromossomo(genes10);
+        var cromossomo1 = new Cromossomo(genes1);
+        var cromossomo2 = new Cromossomo(genes2);
+        var cromossomo3 = new Cromossomo(genes3);
+        var cromossomo4 = new Cromossomo(genes4);
+        var cromossomo5 = new Cromossomo(genes5);
+        var cromossomo6 = new Cromossomo(genes6);
+        var cromossomo7 = new Cromossomo(genes7);
+        var cromossomo8 = new Cromossomo(genes8);
+        var cromossomo9 = new Cromossomo(genes9);
+        var cromossomo10 = new Cromossomo(genes10);
 
-            var cromossomos = new Cromossomo[10];
+        var cromossomos = new Cromossomo[10];
 
-            cromossomos[0] = cromossomo1;
-            cromossomos[1] = cromossomo2;
-            cromossomos[2] = cromossomo3;
-            cromossomos[3] = cromossomo4;
-            cromossomos[4] = cromossomo5;
-            cromossomos[5] = cromossomo6;
-            cromossomos[6] = cromossomo7;
-            cromossomos[7] = cromossomo8;
-            cromossomos[8] = cromossomo9;
-            cromossomos[9] = cromossomo10;
+        cromossomos[0] = cromossomo1;
+        cromossomos[1] = cromossomo2;
+        cromossomos[2] = cromossomo3;
+        cromossomos[3] = cromossomo4;
+        cromossomos[4] = cromossomo5;
+        cromossomos[5] = cromossomo6;
+        cromossomos[6] = cromossomo7;
+        cromossomos[7] = cromossomo8;
+        cromossomos[8] = cromossomo9;
+        cromossomos[9] = cromossomo10;
 
-            var populacaoFilha = new Populacao(cromossomos, 50, 50, 10).gerarPopulacaoFilha();
+        var populacaoFilha = new Populacao(cromossomos, 50, 50, 10).gerarPopulacaoFilha();
 
-            assertEquals(10, populacaoFilha.getCromossomos().length);
-        }
+        assertEquals(10, populacaoFilha.getCromossomos().length);
     }
 }

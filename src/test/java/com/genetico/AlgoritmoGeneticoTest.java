@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.OptionalDouble;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -48,7 +49,7 @@ public class AlgoritmoGeneticoTest {
                 .thenAnswer(invocation -> {
                     int indiceCidadeOrigem = invocation.getArgument(0);
                     int indiceCidadeDestino = invocation.getArgument(1);
-                    return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
+                    return OptionalDouble.of(distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino]);
                 });
 
         var graficoService = mock(GraficoService.class);

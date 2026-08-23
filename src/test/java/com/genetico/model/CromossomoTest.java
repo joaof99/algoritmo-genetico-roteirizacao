@@ -13,6 +13,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import java.util.HashSet;
+import java.util.OptionalDouble;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -39,7 +40,7 @@ public class CromossomoTest {
                 .thenAnswer(invocation -> {
                     int indiceCidadeOrigem = invocation.getArgument(0);
                     int indiceCidadeDestino = invocation.getArgument(1);
-                    return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
+                    return OptionalDouble.of(distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino]);
                 });
     }
 

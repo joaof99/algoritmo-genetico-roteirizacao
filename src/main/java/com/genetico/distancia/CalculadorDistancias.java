@@ -5,6 +5,7 @@ import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
 
 import java.util.List;
+import java.util.OptionalDouble;
 
 public class CalculadorDistancias {
     private static List<Endereco> enderecos;
@@ -18,7 +19,7 @@ public class CalculadorDistancias {
         metodoCalculoDistancia.registrarDistancias(enderecos);
     }
 
-    public static double obterDistanciaEntreEnderecos(int indiceEnderecoOrigem, int indiceEnderecoDestino) {
+    public static OptionalDouble obterDistanciaEntreEnderecos(int indiceEnderecoOrigem, int indiceEnderecoDestino) {
         return MatrizDistancias.getDistancia(indiceEnderecoOrigem, indiceEnderecoDestino);
     }
 

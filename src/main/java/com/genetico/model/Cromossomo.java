@@ -59,7 +59,17 @@ public class Cromossomo {
             var indiceCidadeOrigem = this.genes[indice];
             var indiceCidadeDestino = this.genes[indice + 1];
 
-            fitness += CalculadorDistancias.obterDistanciaEntreEnderecos(indiceCidadeOrigem, indiceCidadeDestino);
+            var distancia = CalculadorDistancias
+                    .obterDistanciaEntreEnderecos(indiceCidadeOrigem, indiceCidadeDestino)
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            String.format(
+                                    "Distância não encontrada entre os endereços %d e %d",
+                                    indiceCidadeOrigem,
+                                    indiceCidadeDestino
+                            )
+                    ));
+
+            fitness += distancia;
         }
 
         return fitness;
