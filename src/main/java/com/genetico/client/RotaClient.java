@@ -19,22 +19,24 @@ import java.util.List;
 
 public class RotaClient {
     private static final Logger log = LogManager.getLogger();
-    private final HttpClient HTTP_CLIENT;
+    private final HttpClient urlBase;
     private final String URL_BASE;
-    private final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
     public RotaClient() throws RotaClientException {
         URL_BASE = definirUrlBase();
-        HTTP_CLIENT = inicializarHttpClient();
+        urlBase = inicializarHttpClient();
+        objectMapper = new ObjectMapper();
     }
 
     private String definirUrlBase() throws RotaClientException {
-        var urlAgAdministrativo = "AG_ADMINISTRATIVO_URL";
-        if (System.getenv(urlAgAdministrativo) == null) {
+        var urlAgAdministrativo = System.getenv("AG_ADMINISTRATIVO_URL");
+
+        if (urlAgAdministrativo == null || urlAgAdministrativo.isBlank()) {
             throw new RotaClientException(String.format("Variável de ambiente: %s não configurada", urlAgAdministrativo));
         }
 
-        return System.getenv(urlAgAdministrativo);
+        return urlAgAdministrativo;
     }
 
     private HttpClient inicializarHttpClient() {
@@ -60,13 +62,9 @@ public class RotaClient {
             var uri = URI.create(URL_BASE + "/rotas/" + idRota + "/enderecos");
             log.info("Buscando endereços para a rota de ID {} em {} ", idRota, uri);
 
-            var request = HttpRequest.newBuilder()
-                    .uri(uri)
-                    .timeout(Duration.ofSeconds(10))
-                    .GET()
-                    .build();
+            var request = criarRequest(uri);
 
-            return HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            return urlBase.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RotaClientException(String.format("Thread interrompida ao buscar rotas em %s", URL_BASE), e);
@@ -75,9 +73,45 @@ public class RotaClient {
         }
     }
 
+    private HttpRequest criarRequest(URI uri){
+        return HttpRequest.newBuilder()
+                .uri(uri)
+                .timeout(Duration.ofSeconds(10))
+                .GET()
+                .build();
+    }
+
+    public double buscarDistanciaEntreEnderecosApi(int origemId, int destinoId) throws RotaClientException {
+        var response = buscarDistanciaAPI(origemId, destinoId);
+
+        if (response.statusCode() < 200 || response.statusCode() >= 300) {
+            throw new RotaClientException(String.format("AG administrativo retornou HTTP %d ao buscar distância", response.statusCode()));
+        }
+
+        try {
+            return Double.parseDouble(response.body());
+        } catch (NumberFormatException e) {
+            throw new RotaClientException(String.format("Resposta inválida ao buscar distância entre %d e %d: %s", origemId, destinoId, response.body()), e);
+        }
+    }
+
+    private HttpResponse<String> buscarDistanciaAPI(int origemId, int destinoId) throws RotaClientException {
+        try {
+            var uri = URI.create(URL_BASE + "/distancias/" + origemId + "/" + destinoId);
+            log.info("Buscando distância entre endereços {} e {} em {}", origemId, destinoId, uri);
+
+            return urlBase.send(criarRequest(uri), HttpResponse.BodyHandlers.ofString());
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RotaClientException(String.format("Thread interrompida ao buscar distância em %s", URL_BASE), e);
+        } catch (IOException e) {
+            throw new RotaClientException(String.format("Não foi possível conectar ao AG administrativo em %s", URL_BASE), e);
+        }
+    }
+
     private JsonNode parsearResposta(HttpResponse<String> response) throws RotaClientException {
         try {
-            return OBJECT_MAPPER.readTree(response.body());
+            return objectMapper.readTree(response.body());
         } catch (JsonProcessingException e) {
             throw new RotaClientException(String.format("Resposta inválida do AG Administrativo %d", response.statusCode()), e);
         }
