@@ -1,9 +1,11 @@
 package com.genetico.client;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.genetico.exception.RotaClientException;
+import com.genetico.model.DistanciaResponse;
 import com.genetico.model.Endereco;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,16 +18,17 @@ import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RotaClient {
     private static final Logger log = LogManager.getLogger();
-    private final HttpClient urlBase;
-    private final String URL_BASE;
+    private final HttpClient httpClient;
+    private final String urlBase;
     private final ObjectMapper objectMapper;
 
     public RotaClient() throws RotaClientException {
-        URL_BASE = definirUrlBase();
-        urlBase = inicializarHttpClient();
+        urlBase = definirUrlBase();
+        httpClient = inicializarHttpClient();
         objectMapper = new ObjectMapper();
     }
 
@@ -59,21 +62,21 @@ public class RotaClient {
 
     private HttpResponse<String> buscarEnderecos(int idRota) throws RotaClientException {
         try {
-            var uri = URI.create(URL_BASE + "/rotas/" + idRota + "/enderecos");
+            var uri = URI.create(urlBase + "/rotas/" + idRota + "/enderecos");
             log.info("Buscando endereços para a rota de ID {} em {} ", idRota, uri);
 
             var request = criarRequest(uri);
 
-            return urlBase.send(request, HttpResponse.BodyHandlers.ofString());
+            return httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RotaClientException(String.format("Thread interrompida ao buscar rotas em %s", URL_BASE), e);
+            throw new RotaClientException(String.format("Thread interrompida ao buscar rotas em %s", urlBase), e);
         } catch (IOException e) {
-            throw new RotaClientException(String.format("Não foi possível conectar ao AG administrativo em %s", URL_BASE), e);
+            throw new RotaClientException(String.format("Não foi possível conectar ao AG administrativo em %s", urlBase), e);
         }
     }
 
-    private HttpRequest criarRequest(URI uri){
+    private HttpRequest criarRequest(URI uri) {
         return HttpRequest.newBuilder()
                 .uri(uri)
                 .timeout(Duration.ofSeconds(10))
@@ -97,15 +100,46 @@ public class RotaClient {
 
     private HttpResponse<String> buscarDistanciaAPI(int origemId, int destinoId) throws RotaClientException {
         try {
-            var uri = URI.create(URL_BASE + "/distancias/" + origemId + "/" + destinoId);
+            var uri = URI.create(urlBase + "/distancias/" + origemId + "/" + destinoId);
             log.info("Buscando distância entre endereços {} e {} em {}", origemId, destinoId, uri);
 
-            return urlBase.send(criarRequest(uri), HttpResponse.BodyHandlers.ofString());
+            return httpClient.send(criarRequest(uri), HttpResponse.BodyHandlers.ofString());
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new RotaClientException(String.format("Thread interrompida ao buscar distância em %s", URL_BASE), e);
+            throw new RotaClientException(String.format("Thread interrompida ao buscar distância em %s", urlBase), e);
         } catch (IOException e) {
-            throw new RotaClientException(String.format("Não foi possível conectar ao AG administrativo em %s", URL_BASE), e);
+            throw new RotaClientException(String.format("Não foi possível conectar ao AG administrativo em %s", urlBase), e);
+        }
+    }
+
+    public List<DistanciaResponse> buscarDistanciasEnderecos(List<Integer> idsEnderecos) throws RotaClientException {
+        if (idsEnderecos.isEmpty()) {
+            throw new RotaClientException("Lista de IDs de endereços não pode ser vazia");
+        }
+
+        log.info("Buscando matriz de distâncias para {} endereços", idsEnderecos.size());
+
+        try {
+            var idsFormatados = idsEnderecos.stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(","));
+
+            var uri = URI.create(urlBase + "/distancias/matrix?idsEnderecos=" + idsFormatados);
+            var response = httpClient.send(criarRequest(uri), HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                throw new RotaClientException(String.format(
+                        "AG administrativo retornou HTTP %d ao buscar matriz de distâncias",
+                        response.statusCode()));
+            }
+
+            return objectMapper.readValue(response.body(),
+                    new TypeReference<>() {});
+        } catch (IOException e) {
+            throw new RotaClientException("Erro de comunicação ao buscar matriz de distâncias", e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RotaClientException("Thread interrompida ao buscar matriz de distâncias", e);
         }
     }
 
