@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.genetico.exception.RotaClientException;
 import com.genetico.model.DistanciaResponse;
 import com.genetico.model.Endereco;
+import com.genetico.model.Rota;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -117,6 +118,11 @@ public class RotaClient {
             throw new RotaClientException("Lista de IDs de endereços não pode ser vazia");
         }
 
+        var quantidadeEnderecos = idsEnderecos.size();
+        if (quantidadeEnderecos > 25) {
+            throw new RotaClientException(String.format("O máximo de endereços suportado numa requisição é 25. Encontrado: %d", quantidadeEnderecos));
+        }
+
         log.info("Buscando matriz de distâncias para {} endereços", idsEnderecos.size());
 
         try {
@@ -134,7 +140,8 @@ public class RotaClient {
             }
 
             return objectMapper.readValue(response.body(),
-                    new TypeReference<>() {});
+                    new TypeReference<>() {
+                    });
         } catch (IOException e) {
             throw new RotaClientException("Erro de comunicação ao buscar matriz de distâncias", e);
         } catch (InterruptedException e) {
