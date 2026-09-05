@@ -34,15 +34,18 @@ class RotaClientTest {
 
         Mockito.when(response.body())
                 .thenReturn("""
-                        [
-                          {
-                            "id": 1,
-                            "latitude": -23.5505,
-                            "longitude": -46.6333,
-                            "cidade": "São Paulo"
-                          }
-                        ]
-                        """);
+                {
+                  "enderecos": [
+                    {
+                      "id": 1,
+                      "latitude": -23.5505,
+                      "longitude": -46.6333,
+                      "cidade": "São Paulo"
+                    }
+                  ],
+                  "distancias": []
+                }
+                """);
 
         Mockito.when(httpClient.send(
                 any(HttpRequest.class),
@@ -55,7 +58,7 @@ class RotaClientTest {
 
             var rotaClient = new RotaClient();
 
-            var enderecos = rotaClient.buscarEnderecosRota(1);
+            var enderecos = rotaClient.buscarDadosAlgoritmoGenetico(1).enderecos();
 
             assertEquals(1, enderecos.size());
             assertEquals(1, enderecos.getFirst().id());

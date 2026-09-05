@@ -1,7 +1,7 @@
 package com.genetico;
 
 import com.genetico.distancia.CalculadorDistancias;
-import com.genetico.distancia.Haversine;
+import com.genetico.distancia.CalculoDistanciaAPI;
 import com.genetico.exception.RotaClientException;
 import com.genetico.factory.RotaClientFactory;
 import org.apache.logging.log4j.LogManager;
@@ -12,15 +12,15 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            var enderecos = RotaClientFactory.getRotaClient().buscarEnderecosRota(10);
-            CalculadorDistancias.inicializar(new Haversine(), enderecos);
+            var algoritmoGeneticoResponse = RotaClientFactory.getRotaClient().buscarDadosAlgoritmoGenetico(3);
+            CalculadorDistancias.inicializar(new CalculoDistanciaAPI(), algoritmoGeneticoResponse);
 
             AlgoritmoGenetico algoritmoGenetico;
 
             algoritmoGenetico = new AlgoritmoGenetico.Builder()
                     .tamanhoPopulacao(30)
                     .qtdeGeracoes(50)
-                    .qtdeGenesCromossomo(enderecos.size())
+                    .qtdeGenesCromossomo(algoritmoGeneticoResponse.enderecos().size())
                     .chanceOcorrenciaMutacao(50)
                     .chanceOcorrenciaCrossover(50)
                     .build();

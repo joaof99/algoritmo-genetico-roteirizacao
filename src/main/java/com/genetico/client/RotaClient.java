@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.genetico.exception.RotaClientException;
+import com.genetico.model.AlgoritmoGeneticoResponse;
 import com.genetico.model.DistanciaResponse;
 import com.genetico.model.Endereco;
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +49,7 @@ public class RotaClient {
                 .build();
     }
 
-    public List<Endereco> buscarEnderecosRota(int idRota) throws RotaClientException {
+    public AlgoritmoGeneticoResponse buscarDadosAlgoritmoGenetico(int idRota) throws RotaClientException {
         var response = buscarEnderecos(idRota);
 
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
@@ -57,7 +58,7 @@ public class RotaClient {
 
         var json = parsearResposta(response);
 
-        return extrairEnderecos(json);
+        return extrairDadosAlgoritmoGenetico(json);
     }
 
     private HttpResponse<String> buscarEnderecos(int idRota) throws RotaClientException {
@@ -157,20 +158,31 @@ public class RotaClient {
         }
     }
 
-    private static List<Endereco> extrairEnderecos(JsonNode json) {
+    private static AlgoritmoGeneticoResponse extrairDadosAlgoritmoGenetico(JsonNode json) {
         var enderecos = new ArrayList<Endereco>();
+        var distancias = new ArrayList<DistanciaResponse>();
 
-        json.forEach(endereco -> {
-            var id = endereco.get("id").asInt();
-            var latitude = endereco.get("latitude").asDouble();
-            var longitude = endereco.get("longitude").asDouble();
-            var cidade = endereco.get("cidade").asText();
+        json.get("enderecos").forEach(jsonNode -> {
+            var id = jsonNode.get("id").asInt();
+            var latitude = jsonNode.get("latitude").asDouble();
+            var longitude = jsonNode.get("longitude").asDouble();
+            var cidade = jsonNode.get("cidade").asText();
 
             enderecos.add(new Endereco(id, latitude, longitude, cidade));
         });
 
-        log.info("Foram encontradas {} endereços", enderecos.size());
-        return enderecos;
+        json.get("distancias").forEach(jsonNode -> {
+            var idOrigem = jsonNode.get("idOrigem").asInt();
+            var idDestino = jsonNode.get("idDestino").asInt();
+            var distancia = jsonNode.get("distancia").asDouble();
+
+            distancias.add(new DistanciaResponse(idOrigem, idDestino, distancia));
+        });
+
+        log.info("Foram encontradas {} endereços e {} distâncias", enderecos.size(), distancias.size());
+
+        return new AlgoritmoGeneticoResponse(distancias, enderecos);
     }
+
 }
 

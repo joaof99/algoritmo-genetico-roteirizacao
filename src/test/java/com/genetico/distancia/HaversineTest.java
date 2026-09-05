@@ -1,6 +1,5 @@
-package com.genetico;
+package com.genetico.distancia;
 
-import com.genetico.distancia.Haversine;
 import com.genetico.model.Endereco;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

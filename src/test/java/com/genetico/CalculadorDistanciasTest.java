@@ -3,6 +3,7 @@ package com.genetico;
 import com.genetico.distancia.CalculadorDistancias;
 import com.genetico.distancia.Haversine;
 import com.genetico.exception.RotaClientException;
+import com.genetico.model.AlgoritmoGeneticoResponse;
 import com.genetico.model.Endereco;
 import com.genetico.client.RotaClient;
 import com.genetico.factory.RotaClientFactory;
@@ -35,8 +36,8 @@ class CalculadorDistanciasTest {
     }
 
     @Test
-    @DisplayName("Matriz de distâncias deve ser criada corretamente")
-    public void matrizDeDistanciasDeveSerCriadaCorretamente() throws RotaClientException {
+    @DisplayName("Matriz de distâncias deve ser criada corretamente utilizando Haversine")
+    public void matrizDeDistanciasDeveSerCriadaCorretamenteUtilizandoHaversine() throws RotaClientException {
         var hospitalSP = new Endereco(1, -5.3, -8.2, "Hospital SP");
         var barbearia = new Endereco(3, -90.3, -50.9, "Barbearia");
         var shoppingSP  = new Endereco(2, -90.3, -50.9, "Shopping SP");
@@ -54,9 +55,12 @@ class CalculadorDistanciasTest {
         rotaClientFactory.when(RotaClientFactory::getRotaClient)
                 .thenReturn(rotaClient);
 
-        when(rotaClient.buscarEnderecosRota(anyInt())).thenReturn(enderecos);
+        var algoritmoGeneticoResponse = new AlgoritmoGeneticoResponse(null, enderecos);
 
-        CalculadorDistancias.inicializar(new Haversine(), enderecos);
+        when(rotaClient.buscarDadosAlgoritmoGenetico(anyInt()))
+                .thenReturn(algoritmoGeneticoResponse);
+
+        CalculadorDistancias.inicializar(new Haversine(), algoritmoGeneticoResponse);
 
         assertEquals(21, MatrizDistancias.getQuantidadeDistancias());
     }

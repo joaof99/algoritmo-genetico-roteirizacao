@@ -1,6 +1,7 @@
 package com.genetico.distancia;
 
 import com.genetico.exception.RotaClientException;
+import com.genetico.model.AlgoritmoGeneticoResponse;
 import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
 
@@ -14,9 +15,9 @@ public class CalculadorDistancias {
 
     }
 
-    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, List<Endereco> enderecosRota) throws RotaClientException {
-        enderecos = enderecosRota;
-        metodoCalculoDistancia.registrarDistancias(enderecos);
+    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, AlgoritmoGeneticoResponse algoritmoGeneticoResponse) throws RotaClientException {
+        enderecos = algoritmoGeneticoResponse.enderecos();
+        metodoCalculoDistancia.registrarDistancias(algoritmoGeneticoResponse);
     }
 
     public static OptionalDouble obterDistanciaEntreEnderecos(int indiceEnderecoOrigem, int indiceEnderecoDestino) {

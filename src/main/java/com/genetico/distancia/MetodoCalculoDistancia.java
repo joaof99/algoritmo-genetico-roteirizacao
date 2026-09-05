@@ -1,11 +1,7 @@
 package com.genetico.distancia;
 
-import com.genetico.exception.RotaClientException;
-import com.genetico.model.Endereco;
-
-import java.util.List;
+import com.genetico.model.AlgoritmoGeneticoResponse;
 
 public interface MetodoCalculoDistancia {
-    double calcularDistancia(Endereco origem, Endereco destino);
-    void registrarDistancias(List<Endereco> enderecos) throws RotaClientException;
+    void registrarDistancias(AlgoritmoGeneticoResponse algoritmoGeneticoResponse);
 }
