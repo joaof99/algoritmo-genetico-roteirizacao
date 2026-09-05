@@ -1,6 +1,6 @@
 package com.genetico.distancia;
 
-import com.genetico.exception.RotaClientException;
+import com.genetico.exception.AlgoritmoGeneticoClientException;
 import com.genetico.model.AlgoritmoGeneticoResponse;
 import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
@@ -15,7 +15,7 @@ public class CalculadorDistancias {
 
     }
 
-    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, AlgoritmoGeneticoResponse algoritmoGeneticoResponse) throws RotaClientException {
+    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, AlgoritmoGeneticoResponse algoritmoGeneticoResponse) throws AlgoritmoGeneticoClientException {
         enderecos = algoritmoGeneticoResponse.enderecos();
         metodoCalculoDistancia.registrarDistancias(algoritmoGeneticoResponse);
     }

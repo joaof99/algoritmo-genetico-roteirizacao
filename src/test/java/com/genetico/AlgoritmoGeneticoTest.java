@@ -1,7 +1,7 @@
 package com.genetico;
 
 import com.genetico.distancia.CalculadorDistancias;
-import com.genetico.exception.RotaClientException;
+import com.genetico.exception.AlgoritmoGeneticoClientException;
 import com.genetico.model.Cromossomo;
 import com.genetico.service.GraficoService;
 import com.genetico.factory.GraficoServiceFactory;
@@ -39,7 +39,7 @@ public class AlgoritmoGeneticoTest {
 
     @Test
     @DisplayName("Reprodução deve gerar população de tamanho fixo, ordenada e com fitness melhorado")
-    public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() throws RotaClientException {
+    public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() throws AlgoritmoGeneticoClientException {
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 

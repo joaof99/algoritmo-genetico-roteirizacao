@@ -2,11 +2,11 @@ package com.genetico;
 
 import com.genetico.distancia.CalculadorDistancias;
 import com.genetico.distancia.Haversine;
-import com.genetico.exception.RotaClientException;
+import com.genetico.exception.AlgoritmoGeneticoClientException;
 import com.genetico.model.AlgoritmoGeneticoResponse;
 import com.genetico.model.Endereco;
-import com.genetico.client.RotaClient;
-import com.genetico.factory.RotaClientFactory;
+import com.genetico.client.AlgoritmoGeneticoClient;
+import com.genetico.factory.AlgoritmoGeneticoClientFactory;
 import com.genetico.model.MatrizDistancias;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,21 +23,21 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class CalculadorDistanciasTest {
-    private MockedStatic<RotaClientFactory> rotaClientFactory;
+    private MockedStatic<AlgoritmoGeneticoClientFactory> algoritmoGeneticoClientFactory;
 
     @BeforeEach
     void setUp() {
-        rotaClientFactory = Mockito.mockStatic(RotaClientFactory.class);
+        algoritmoGeneticoClientFactory = Mockito.mockStatic(AlgoritmoGeneticoClientFactory.class);
     }
 
     @AfterEach
     void tearDown() {
-        rotaClientFactory.close();
+        algoritmoGeneticoClientFactory.close();
     }
 
     @Test
     @DisplayName("Matriz de distâncias deve ser criada corretamente utilizando Haversine")
-    public void matrizDeDistanciasDeveSerCriadaCorretamenteUtilizandoHaversine() throws RotaClientException {
+    public void matrizDeDistanciasDeveSerCriadaCorretamenteUtilizandoHaversine() throws AlgoritmoGeneticoClientException {
         var hospitalSP = new Endereco(1, -5.3, -8.2, "Hospital SP");
         var barbearia = new Endereco(3, -90.3, -50.9, "Barbearia");
         var shoppingSP  = new Endereco(2, -90.3, -50.9, "Shopping SP");
@@ -51,13 +51,13 @@ class CalculadorDistanciasTest {
 
         var enderecos = List.of(hospitalSP, barbearia, shoppingSP, padaria, armazem, hospitalRJ, pizzaria, bar, estadio, shoppingSC);
 
-        var rotaClient = mock(RotaClient.class);
-        rotaClientFactory.when(RotaClientFactory::getRotaClient)
-                .thenReturn(rotaClient);
+        var algoritmoGeneticoClient = mock(AlgoritmoGeneticoClient.class);
+        algoritmoGeneticoClientFactory.when(AlgoritmoGeneticoClientFactory::getAlgoritmoGeneticoClient)
+                .thenReturn(algoritmoGeneticoClient);
 
         var algoritmoGeneticoResponse = new AlgoritmoGeneticoResponse(null, enderecos);
 
-        when(rotaClient.buscarDadosAlgoritmoGenetico(anyInt()))
+        when(algoritmoGeneticoClient.buscarDadosAlgoritmoGenetico(anyInt()))
                 .thenReturn(algoritmoGeneticoResponse);
 
         CalculadorDistancias.inicializar(new Haversine(), algoritmoGeneticoResponse);

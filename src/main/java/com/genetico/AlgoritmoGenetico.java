@@ -1,6 +1,6 @@
 package com.genetico;
 
-import com.genetico.exception.RotaClientException;
+import com.genetico.exception.AlgoritmoGeneticoClientException;
 import com.genetico.factory.GraficoServiceFactory;
 import com.genetico.model.Populacao;
 import com.genetico.service.GraficoService;
@@ -85,7 +85,7 @@ public class AlgoritmoGenetico {
             return this;
         }
 
-        public AlgoritmoGenetico build() throws RotaClientException {
+        public AlgoritmoGenetico build() throws AlgoritmoGeneticoClientException {
             return new AlgoritmoGenetico(this);
         }
     }

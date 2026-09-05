@@ -2,8 +2,8 @@ package com.genetico;
 
 import com.genetico.distancia.CalculadorDistancias;
 import com.genetico.distancia.CalculoDistanciaAPI;
-import com.genetico.exception.RotaClientException;
-import com.genetico.factory.RotaClientFactory;
+import com.genetico.exception.AlgoritmoGeneticoClientException;
+import com.genetico.factory.AlgoritmoGeneticoClientFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            var algoritmoGeneticoResponse = RotaClientFactory.getRotaClient().buscarDadosAlgoritmoGenetico(3);
+            var algoritmoGeneticoResponse = AlgoritmoGeneticoClientFactory.getAlgoritmoGeneticoClient().buscarDadosAlgoritmoGenetico(3);
             CalculadorDistancias.inicializar(new CalculoDistanciaAPI(), algoritmoGeneticoResponse);
 
             AlgoritmoGenetico algoritmoGenetico;
@@ -29,7 +29,7 @@ public class Main {
 
             log.info("População final: ");
             populacaoFinal.imprimirPopulacao();
-        } catch (RotaClientException e) {
+        } catch (AlgoritmoGeneticoClientException e) {
             log.error("Algoritmo Genético não pôde inicializar. {}", e.getMessage());
             System.exit(1);
         }
