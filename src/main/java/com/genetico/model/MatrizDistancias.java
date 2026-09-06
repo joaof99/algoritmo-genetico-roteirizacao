@@ -30,6 +30,10 @@ public class MatrizDistancias {
         return OptionalDouble.of(linha.get(idDestino));
     }
 
+    public static IntObjectHashMap<IntDoubleHashMap> getDistancias() {
+        return distancias;
+    }
+
     public static int getQuantidadeDistancias() {
         return distancias.values()
                 .stream()

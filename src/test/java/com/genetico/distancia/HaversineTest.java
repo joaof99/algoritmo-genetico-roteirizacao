@@ -3,6 +3,7 @@ package com.genetico.distancia;
 import com.genetico.model.AlgoritmoGeneticoResponse;
 import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +12,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HaversineTest {
+
+    @BeforeEach
+    public void beforeEach(){
+        MatrizDistancias.getDistancias().clear();
+    }
+
     @Test
     @DisplayName("Deve calcular a distância de Haversine corretamente")
     public void deveCalcularDistanciaHaversineCorretamente() {
