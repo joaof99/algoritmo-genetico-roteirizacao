@@ -37,7 +37,7 @@ public class AlgoritmoGeneticoClient {
         var urlAgAdministrativo = System.getenv("AG_ADMINISTRATIVO_URL");
 
         if (urlAgAdministrativo == null || urlAgAdministrativo.isBlank()) {
-            throw new AlgoritmoGeneticoClientException(String.format("Variável de ambiente: %s não configurada", urlAgAdministrativo));
+            throw new AlgoritmoGeneticoClientException("Variável de ambiente: AG_ADMINISTRATIVO_URL não configurada");
         }
 
         return urlAgAdministrativo;
