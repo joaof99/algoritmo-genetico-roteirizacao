@@ -58,7 +58,10 @@ public class AlgoritmoGeneticoClient {
 
         var json = parsearResposta(response);
 
-        return extrairDadosAlgoritmoGenetico(json);
+        var agResponse =  extrairDadosAlgoritmoGenetico(json);
+        validarIntegridadeAlgoritmoGeneticoResponse(agResponse);
+
+        return agResponse;
     }
 
     private HttpResponse<String> buscarDados(int idRota) throws AlgoritmoGeneticoClientException {
@@ -182,6 +185,16 @@ public class AlgoritmoGeneticoClient {
         log.info("Foram encontradas {} endereços e {} distâncias", enderecos.size(), distancias.size());
 
         return new AlgoritmoGeneticoResponse(distancias, enderecos);
+    }
+
+    private void validarIntegridadeAlgoritmoGeneticoResponse(AlgoritmoGeneticoResponse algoritmoGeneticoResponse) throws AlgoritmoGeneticoClientException {
+        var quantidadeDistanciasNecessarias = algoritmoGeneticoResponse.enderecos().size() * (algoritmoGeneticoResponse.enderecos().size() - 1);
+        var quantidadeDistancias = algoritmoGeneticoResponse.distancias().size();
+
+        if(quantidadeDistancias != quantidadeDistanciasNecessarias){
+            throw new AlgoritmoGeneticoClientException(String.format("A quantidade de distâncias da resposta deveria ser: %d porém foi encontrado %d",
+                    quantidadeDistanciasNecessarias, quantidadeDistancias));
+        }
     }
 
 }
