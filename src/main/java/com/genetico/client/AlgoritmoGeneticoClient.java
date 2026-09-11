@@ -192,7 +192,7 @@ public class AlgoritmoGeneticoClient {
         var quantidadeDistancias = algoritmoGeneticoResponse.distancias().size();
 
         if(quantidadeDistancias != quantidadeDistanciasNecessarias){
-            throw new AlgoritmoGeneticoClientException(String.format("A quantidade de distâncias da resposta deveria ser: %d porém foi encontrado %d",
+            throw new AlgoritmoGeneticoClientException(String.format("A quantidade de distâncias da resposta deveria ser %d porém foi encontrado %d",
                     quantidadeDistanciasNecessarias, quantidadeDistancias));
         }
     }

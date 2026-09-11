@@ -12,7 +12,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 class AlgoritmoGeneticoClientTest {
@@ -179,6 +179,129 @@ class AlgoritmoGeneticoClientTest {
             assertEquals(new DistanciaResponse(4, 1, 600.25), distancias.get(9));
             assertEquals(new DistanciaResponse(4, 2, 500.60), distancias.get(10));
             assertEquals(new DistanciaResponse(4, 3, 200.30), distancias.get(11));
+        }
+    }
+
+    @Test
+    @DisplayName("Deve disparar erro caso seja retornado quantidade de distâncias incorretas")
+    public void deveDisparrErroCasoSejaRetornadoQuantidadeDistanciasIncorretas() throws IOException, InterruptedException {
+        var httpClient = Mockito.mock(HttpClient.class);
+        var httpClientBuilder = Mockito.mock(HttpClient.Builder.class);
+        var response = Mockito.mock(HttpResponse.class);
+
+        Mockito.when(httpClientBuilder.connectTimeout(any(Duration.class)))
+                .thenReturn(httpClientBuilder);
+
+        Mockito.when(httpClientBuilder.build())
+                .thenReturn(httpClient);
+
+        Mockito.when(response.statusCode())
+                .thenReturn(200);
+
+        Mockito.when(response.body())
+                .thenReturn("""
+                {
+                  "enderecos": [
+                    {
+                      "id": 1,
+                      "latitude": -23.5505,
+                      "longitude": -46.6333,
+                      "cidade": "São Paulo"
+                    },
+                    {
+                      "id": 2,
+                      "latitude": -90.5505,
+                      "longitude": -80.6333,
+                      "cidade": "Curitiba"
+                    },
+                    {
+                      "id": 3,
+                      "latitude": -70.5505,
+                      "longitude": -60.6333,
+                      "cidade": "Sorocaba"
+                    },
+                    {
+                      "id": 4,
+                      "latitude": -40.5505,
+                      "longitude": -30.6333,
+                      "cidade": "Balneário Camboriú"
+                    }
+                  ],
+                  "distancias": [
+                    {
+                      "idOrigem": 1,
+                      "idDestino": 2,
+                      "distancia": 1000.50
+                    },
+                    {
+                      "idOrigem": 1,
+                      "idDestino": 3,
+                      "distancia": 800.75
+                    },
+                    {
+                      "idOrigem": 1,
+                      "idDestino": 4,
+                      "distancia": 600.25
+                    },
+                    {
+                      "idOrigem": 2,
+                      "idDestino": 1,
+                      "distancia": 1000.50
+                    },
+                    {
+                      "idOrigem": 2,
+                      "idDestino": 3,
+                      "distancia": 300.40
+                    },
+                    {
+                      "idOrigem": 2,
+                      "idDestino": 4,
+                      "distancia": 500.60
+                    },
+                    {
+                      "idOrigem": 3,
+                      "idDestino": 1,
+                      "distancia": 800.75
+                    },
+                    {
+                      "idOrigem": 3,
+                      "idDestino": 2,
+                      "distancia": 300.40
+                    },
+                    {
+                      "idOrigem": 3,
+                      "idDestino": 4,
+                      "distancia": 200.30
+                    },
+                    {
+                      "idOrigem": 4,
+                      "idDestino": 1,
+                      "distancia": 600.25
+                    },
+                    {
+                      "idOrigem": 4,
+                      "idDestino": 2,
+                      "distancia": 500.60
+                    }
+                  ]
+                }
+                """);
+
+        Mockito.when(httpClient.send(
+                any(HttpRequest.class),
+                any(HttpResponse.BodyHandler.class)
+        )).thenReturn(response);
+
+        try (var httpClientEstatico = Mockito.mockStatic(HttpClient.class)) {
+            httpClientEstatico.when(HttpClient::newBuilder)
+                    .thenReturn(httpClientBuilder);
+
+            var exception = assertThrows(
+                    AlgoritmoGeneticoClientException.class,
+                    () -> new AlgoritmoGeneticoClient().buscarDadosAlgoritmoGenetico(1)
+            );
+
+            assertEquals("A quantidade de distâncias da resposta deveria ser 12 porém foi encontrado 11", exception.getMessage());
         }
     }
 }
