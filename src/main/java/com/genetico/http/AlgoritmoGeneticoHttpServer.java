@@ -26,8 +26,8 @@ public class AlgoritmoGeneticoHttpServer {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final int porta;
+    private final String hostname;
     private HttpServer server;
-    private String hostname;
 
     public AlgoritmoGeneticoHttpServer(int porta, String hostname) {
         this.porta = porta;
