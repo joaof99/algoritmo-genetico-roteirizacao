@@ -15,7 +15,7 @@ public class CalculadorDistancias {
 
     }
 
-    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, AlgoritmoGeneticoResponse algoritmoGeneticoResponse) throws AlgoritmoGeneticoClientException {
+    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, AlgoritmoGeneticoResponse algoritmoGeneticoResponse) {
         enderecos = algoritmoGeneticoResponse.enderecos();
         metodoCalculoDistancia.registrarDistancias(algoritmoGeneticoResponse);
     }

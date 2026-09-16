@@ -85,7 +85,7 @@ public class AlgoritmoGenetico {
             return this;
         }
 
-        public AlgoritmoGenetico build() throws AlgoritmoGeneticoClientException {
+        public AlgoritmoGenetico build() {
             return new AlgoritmoGenetico(this);
         }
     }
