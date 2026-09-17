@@ -70,10 +70,12 @@ public class AlgoritmoGeneticoHttpServer {
     private void inicializarAlgoritmoGenetico(AlgoritmoGeneticoResponse response) {
         CalculadorDistancias.inicializar(new CalculoDistanciaAPI(), response);
 
+        var enderecos = response.enderecos().toArray(Endereco[]::new);
+
         var algoritmoGenetico = new AlgoritmoGenetico.Builder()
                 .tamanhoPopulacao(30)
                 .qtdeGeracoes(50)
-                .qtdeGenesCromossomo(response.enderecos().size())
+                .enderecos(enderecos)
                 .chanceOcorrenciaMutacao(50)
                 .chanceOcorrenciaCrossover(50)
                 .build();

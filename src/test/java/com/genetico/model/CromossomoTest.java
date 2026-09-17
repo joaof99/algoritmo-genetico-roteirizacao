@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import java.util.HashSet;
 import java.util.OptionalDouble;
 import java.util.Random;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,6 +26,7 @@ public class CromossomoTest {
     private MockedStatic<CalculadorDistancias> calculadorDistancias;
     private MockedStatic<RandomizadorFactory> randomizadorFactory;
     private Random random;
+    private Endereco[] enderecos;
 
     @BeforeEach
     void setUp() {
@@ -42,6 +44,10 @@ public class CromossomoTest {
                     int indiceCidadeDestino = invocation.getArgument(1);
                     return OptionalDouble.of(distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino]);
                 });
+
+        enderecos = IntStream.range(0, 10)
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900, ""))
+                .toArray(Endereco[]::new);
     }
 
     private static double[][] inicializarDistanciasFixas() {
@@ -88,7 +94,7 @@ public class CromossomoTest {
     @Test
     @DisplayName(value = "Genes devem ser inicializados com o tamanho correto definido na constante")
     public void genesDevemSerInicializadosComOTamanhoCorreto() {
-        assertEquals(10, new Cromossomo(10).getGenes().length);
+        assertEquals(10, new Cromossomo(enderecos).getGenes().length);
     }
 
     @Test
@@ -97,7 +103,7 @@ public class CromossomoTest {
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        boolean impressaoCromossomoEstaNoPadrao = new Cromossomo(10)
+        boolean impressaoCromossomoEstaNoPadrao = new Cromossomo(enderecos)
                 .formatarGenes()
                 .matches("^(\\d+\\s\\|\\s)+(\\d+(\\.\\d+)?)$");
 
@@ -110,7 +116,7 @@ public class CromossomoTest {
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        var cromossomo = new Cromossomo(10);
+        var cromossomo = new Cromossomo(enderecos);
 
         var genesSemRepeticao = new HashSet<>();
 

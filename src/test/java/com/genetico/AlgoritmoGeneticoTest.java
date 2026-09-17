@@ -2,9 +2,10 @@ package com.genetico;
 
 import com.genetico.distancia.CalculadorDistancias;
 import com.genetico.exception.AlgoritmoGeneticoClientException;
-import com.genetico.model.Cromossomo;
-import com.genetico.service.GraficoService;
 import com.genetico.factory.GraficoServiceFactory;
+import com.genetico.model.Cromossomo;
+import com.genetico.model.Endereco;
+import com.genetico.service.GraficoService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,7 @@ import org.mockito.Mockito;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.OptionalDouble;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -59,10 +61,14 @@ public class AlgoritmoGeneticoTest {
 
         var melhoresFitnessCaptor = ArgumentCaptor.forClass(double[].class);
 
+        var enderecos = IntStream.range(0, 10)
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900, ""))
+                .toArray(Endereco[]::new);
+
         var algoritmoGenetico = new AlgoritmoGenetico
                 .Builder()
                 .qtdeGeracoes(50)
-                .qtdeGenesCromossomo(10)
+                .enderecos(enderecos)
                 .tamanhoPopulacao(30)
                 .chanceOcorrenciaMutacao(80)
                 .chanceOcorrenciaCrossover(80)
@@ -74,7 +80,6 @@ public class AlgoritmoGeneticoTest {
                 any(),
                 melhoresFitnessCaptor.capture()
         );
-
 
         var cromossomosPopulacaoFinal = populacaoFinal.getCromossomos();
 

@@ -17,9 +17,11 @@ public class Cromossomo {
     private final double fitness;
     private final MetodoCrossover metodoCrossover = new CrossoverPMX();
     private final MetodoMutacao metodoMutacao = new Swap();
+    private Endereco[] enderecos;
 
-    public Cromossomo(int quantidadeMaximaGenes) {
-        this.quantidadeMaximaGenes = quantidadeMaximaGenes;
+    public Cromossomo(Endereco[] enderecos) {
+        this.enderecos = enderecos;
+        this.quantidadeMaximaGenes = enderecos.length;
         genes = inicializarGenes();
         fitness = calcularFitness();
     }
@@ -34,7 +36,7 @@ public class Cromossomo {
         var genes = new int[quantidadeMaximaGenes];
 
         for (int i = 0; i < genes.length; i++) {
-            genes[i] = CalculadorDistancias.getEnderecoIdRealBanco(i);
+            genes[i] = enderecos[i].id();
         }
 
         embaralharGenes(genes);

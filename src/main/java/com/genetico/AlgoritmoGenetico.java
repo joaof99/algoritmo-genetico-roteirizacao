@@ -1,7 +1,7 @@
 package com.genetico;
 
-import com.genetico.exception.AlgoritmoGeneticoClientException;
 import com.genetico.factory.GraficoServiceFactory;
+import com.genetico.model.Endereco;
 import com.genetico.model.Populacao;
 import com.genetico.service.GraficoService;
 import org.apache.logging.log4j.LogManager;
@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 public class AlgoritmoGenetico {
     private static final Logger log = LogManager.getLogger();
     private final int qtdeGeracoes;
-    private final int qtdeGenesCromossomo;
+    private final Endereco[] enderecos;
     private final int tamanhoPopulacao;
     private final int chanceOcorrenciaCrossover;
     private final int chanceOcorrenciaMutacao;
@@ -20,13 +20,13 @@ public class AlgoritmoGenetico {
     private AlgoritmoGenetico(Builder builder) {
         this.tamanhoPopulacao = builder.tamanhoPopulacao;
         this.qtdeGeracoes = builder.qtdeGeracoes;
-        this.qtdeGenesCromossomo = builder.qtdeGenesCromossomo;
+        this.enderecos = builder.enderecos;
         this.chanceOcorrenciaCrossover = builder.chanceOcorrenciaCrossover;
         this.chanceOcorrenciaMutacao = builder.chanceOcorrenciaMutacao;
     }
 
     public Populacao reproduzir() {
-        populacao = new Populacao(tamanhoPopulacao, chanceOcorrenciaCrossover, chanceOcorrenciaMutacao, qtdeGenesCromossomo);
+        populacao = new Populacao(tamanhoPopulacao, chanceOcorrenciaCrossover, chanceOcorrenciaMutacao, enderecos);
         log.info("População inicial");
         populacao.imprimirPopulacao();
 
@@ -56,9 +56,9 @@ public class AlgoritmoGenetico {
     public static class Builder {
         private int tamanhoPopulacao;
         private int qtdeGeracoes;
-        private int qtdeGenesCromossomo;
         private int chanceOcorrenciaCrossover;
         private int chanceOcorrenciaMutacao;
+        private Endereco[] enderecos;
 
         public Builder tamanhoPopulacao(int tamanhoPopulacao) {
             this.tamanhoPopulacao = tamanhoPopulacao;
@@ -70,8 +70,8 @@ public class AlgoritmoGenetico {
             return this;
         }
 
-        public Builder qtdeGenesCromossomo(int qtdeGenesCromossomo) {
-            this.qtdeGenesCromossomo = qtdeGenesCromossomo;
+        public Builder enderecos(Endereco[] enderecos) {
+            this.enderecos = enderecos;
             return this;
         }
 

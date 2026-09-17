@@ -14,6 +14,7 @@ import org.mockito.Mockito;
 
 import java.util.OptionalDouble;
 import java.util.Random;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -158,7 +159,11 @@ public class PopulacaoTest {
     @Test
     @DisplayName("Tamanho da população deve ser inicializado corretamente")
     public void tamanhoDaPopulacaoDeveSerInicializadoCorretamente() {
-        var populacao = new Populacao(30, 50, 50, 10);
+        var enderecos = IntStream.range(0, 10)
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900, ""))
+                .toArray(Endereco[]::new);
+
+        var populacao = new Populacao(30, 50, 50, enderecos);
         assertEquals(30, populacao.getTamanhoPopulacao());
     }
 
@@ -195,7 +200,7 @@ public class PopulacaoTest {
         cromossomos[3] = cromossomo4;
         cromossomos[4] = cromossomo5;
 
-        return new Populacao(cromossomos, 50, 50, 10);
+        return new Populacao(cromossomos, 50, 50, null);
     }
 
     @ParameterizedTest
@@ -262,8 +267,7 @@ public class PopulacaoTest {
         cromossomos[8] = cromossomo9;
         cromossomos[9] = cromossomo10;
 
-        var populacaoFilha = new Populacao(cromossomos, 50, 50, 10).gerarPopulacaoFilha();
-
+        var populacaoFilha = new Populacao(cromossomos, 50, 50, null).gerarPopulacaoFilha();
         assertEquals(10, populacaoFilha.getCromossomos().length);
     }
 }

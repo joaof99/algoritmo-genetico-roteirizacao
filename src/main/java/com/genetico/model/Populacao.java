@@ -10,23 +10,23 @@ import java.util.Random;
 
 public class Populacao {
     private static final Logger log = LogManager.getLogger();
-    private final int qtdeGenesCromossomos;
+    private final Endereco[] enderecos;
     private final Cromossomo[] cromossomos;
     private final int tamanhoPopulacao;
     private final int chanceFixaOcorrenciaCrossover;
     private final int chanceFixaOcorrenciaMutacao;
     private final Random randomizador = RandomizadorFactory.getRandomizador();
 
-    public Populacao(int tamanhoPopulacao, int chanceFixaOcorrenciaCrossover, int chanceFixaOcorrenciaMutacao, int qtdeGenesCromossomos) {
-        this.qtdeGenesCromossomos = qtdeGenesCromossomos;
+    public Populacao(int tamanhoPopulacao, int chanceFixaOcorrenciaCrossover, int chanceFixaOcorrenciaMutacao, Endereco[] enderecos) {
+        this.enderecos = enderecos;
         this.tamanhoPopulacao = tamanhoPopulacao;
         this.cromossomos = avaliarPopulacao(iniciarCromossomosPopulacaoAleatoriamente());
         this.chanceFixaOcorrenciaCrossover = chanceFixaOcorrenciaCrossover;
         this.chanceFixaOcorrenciaMutacao = chanceFixaOcorrenciaMutacao;
     }
 
-    public Populacao(Cromossomo[] cromossomos, int chanceFixaOcorrenciaCrossover, int chanceFixaOcorrenciaMutacao, int qtdeGenesCromossomos) {
-        this.qtdeGenesCromossomos = qtdeGenesCromossomos;
+    public Populacao(Cromossomo[] cromossomos, int chanceFixaOcorrenciaCrossover, int chanceFixaOcorrenciaMutacao, Endereco[] enderecos) {
+        this.enderecos = enderecos;
         this.tamanhoPopulacao = cromossomos.length;
         this.cromossomos = avaliarPopulacao(cromossomos);
         this.chanceFixaOcorrenciaCrossover = chanceFixaOcorrenciaCrossover;
@@ -37,7 +37,7 @@ public class Populacao {
         var cromossomos = new Cromossomo[getTamanhoPopulacao()];
 
         for (int indice = 0; indice < getTamanhoPopulacao(); indice++) {
-            cromossomos[indice] = new Cromossomo(qtdeGenesCromossomos);
+            cromossomos[indice] = new Cromossomo(enderecos);
         }
 
         return cromossomos;
@@ -87,11 +87,11 @@ public class Populacao {
 
         var todosOsCromossomos = unirCromossomosPaisEFilhos(cromossomosFilhos);
 
-        var populacaoPaiComFilhos = new Populacao(todosOsCromossomos, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao(), qtdeGenesCromossomos);
+        var populacaoPaiComFilhos = new Populacao(todosOsCromossomos, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao(), enderecos);
 
         var melhoresCromosomosNovaPopulacao = Arrays.copyOfRange(populacaoPaiComFilhos.getCromossomos(), 0, getTamanhoPopulacao());
 
-        return new Populacao(melhoresCromosomosNovaPopulacao, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao(), qtdeGenesCromossomos);
+        return new Populacao(melhoresCromosomosNovaPopulacao, getChanceFixaOcorrenciaCrossover(), getChanceFixaOcorrenciaMutacao(), enderecos);
     }
 
     Cromossomo selecionarCromossomoPaiPorRoleta() {
