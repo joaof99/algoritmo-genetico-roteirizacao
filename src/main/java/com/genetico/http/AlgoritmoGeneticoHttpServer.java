@@ -21,8 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class AlgoritmoGeneticoHttpServer {
-
-    private static final Logger log = LogManager.getLogger(AlgoritmoGeneticoHttpServer.class);
+    private static final Logger log = LogManager.getLogger();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final int porta;
