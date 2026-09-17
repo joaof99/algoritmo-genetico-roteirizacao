@@ -41,7 +41,7 @@ public class AlgoritmoGeneticoTest {
 
     @Test
     @DisplayName("Reprodução deve gerar população de tamanho fixo, ordenada e com fitness melhorado")
-    public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() throws AlgoritmoGeneticoClientException {
+    public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() {
         calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
