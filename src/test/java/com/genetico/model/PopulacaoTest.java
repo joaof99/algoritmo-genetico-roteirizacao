@@ -200,7 +200,7 @@ public class PopulacaoTest {
         cromossomos[3] = cromossomo4;
         cromossomos[4] = cromossomo5;
 
-        return new Populacao(cromossomos, 50, 50, null);
+        return new Populacao(cromossomos, 50, 50);
     }
 
     @ParameterizedTest
@@ -267,7 +267,7 @@ public class PopulacaoTest {
         cromossomos[8] = cromossomo9;
         cromossomos[9] = cromossomo10;
 
-        var populacaoFilha = new Populacao(cromossomos, 50, 50, null).gerarPopulacaoFilha();
+        var populacaoFilha = new Populacao(cromossomos, 50, 50).gerarPopulacaoFilha();
         assertEquals(10, populacaoFilha.getCromossomos().length);
     }
 }
