@@ -72,11 +72,11 @@ public class AlgoritmoGeneticoHttpServer {
         var enderecos = response.enderecos().toArray(Endereco[]::new);
 
         var algoritmoGenetico = new AlgoritmoGenetico.Builder()
-                .tamanhoPopulacao(30)
-                .qtdeGeracoes(50)
+                .tamanhoPopulacao(response.tamanhoPopulacao() )
+                .qtdeGeracoes(response.quantidadeGeracoes())
                 .enderecos(enderecos)
-                .chanceOcorrenciaMutacao(50)
-                .chanceOcorrenciaCrossover(50)
+                .chanceOcorrenciaMutacao(response.chanceOcorrenciaMutacao())
+                .chanceOcorrenciaCrossover(response.chanceOcorrenciaCrossover())
                 .build();
 
         var populacaoFinal = algoritmoGenetico.reproduzir();
@@ -117,7 +117,12 @@ public class AlgoritmoGeneticoHttpServer {
 
         log.info("Foram encontradas {} endereços e {} distâncias", enderecos.size(), distancias.size());
 
-        return new AlgoritmoGeneticoResponse(distancias, enderecos);
+        var tamanhoPopulacao = json.get("tamanhoPopulacao").asInt();
+        var quantidadeGeracoes = json.get("quantidadeGeracoes").asInt();
+        var chanceOcorrenciaMutacao = json.get("chanceOcorrenciaMutacao").asInt();
+        var chanceOcorrenciaCrossover = json.get("chanceOcorrenciaCrossover").asInt();
+
+        return new AlgoritmoGeneticoResponse(distancias, enderecos, tamanhoPopulacao, quantidadeGeracoes, chanceOcorrenciaMutacao, chanceOcorrenciaCrossover);
     }
 
     private void enviarResposta(HttpExchange exchange, int status, String resposta) throws IOException {

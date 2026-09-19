@@ -58,7 +58,7 @@ public class AlgoritmoGeneticoClient {
 
         var json = parsearResposta(response);
 
-        var agResponse =  extrairDadosAlgoritmoGenetico(json);
+        var agResponse = extrairDadosAlgoritmoGenetico(json);
         validarIntegridadeAlgoritmoGeneticoResponse(agResponse);
 
         return agResponse;
@@ -184,7 +184,7 @@ public class AlgoritmoGeneticoClient {
 
         log.info("Foram encontradas {} endereços e {} distâncias", enderecos.size(), distancias.size());
 
-        return new AlgoritmoGeneticoResponse(distancias, enderecos);
+        return new AlgoritmoGeneticoResponse(distancias, enderecos, 0, 0, 0, 0);
     }
 
     private void validarIntegridadeAlgoritmoGeneticoResponse(AlgoritmoGeneticoResponse algoritmoGeneticoResponse) throws AlgoritmoGeneticoClientException {

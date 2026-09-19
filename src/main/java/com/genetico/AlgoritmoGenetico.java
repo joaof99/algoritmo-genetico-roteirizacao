@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 public class AlgoritmoGenetico {
     private static final Logger log = LogManager.getLogger();
-    private final int qtdeGeracoes;
+    private final int quantidadeGeracoes;
     private final Endereco[] enderecos;
     private final int tamanhoPopulacao;
     private final int chanceOcorrenciaCrossover;
@@ -19,21 +19,30 @@ public class AlgoritmoGenetico {
 
     private AlgoritmoGenetico(Builder builder) {
         this.tamanhoPopulacao = builder.tamanhoPopulacao;
-        this.qtdeGeracoes = builder.qtdeGeracoes;
+        this.quantidadeGeracoes = builder.qtdeGeracoes;
         this.enderecos = builder.enderecos;
         this.chanceOcorrenciaCrossover = builder.chanceOcorrenciaCrossover;
         this.chanceOcorrenciaMutacao = builder.chanceOcorrenciaMutacao;
     }
 
     public Populacao reproduzir() {
+        log.info("Iniciando roteirização do algoritmo genético com os seguintes parâmetros");
+
+        log.info("==========================================================================");
+        log.info("Quantidade de gerações {}", quantidadeGeracoes);
+        log.info("Tamanho da população {}", tamanhoPopulacao);
+        log.info("Chance de ocorrência de crossover {}%", chanceOcorrenciaCrossover);
+        log.info("Chance de ocorrência de mutação {}%", chanceOcorrenciaMutacao);
+        log.info("==========================================================================");
+
         populacao = new Populacao(tamanhoPopulacao, chanceOcorrenciaCrossover, chanceOcorrenciaMutacao, enderecos);
         log.info("População inicial");
         populacao.imprimirPopulacao();
 
-        var indicesGeracoes = new double[qtdeGeracoes];
-        var melhoresFitnessPopulacoes = new double[qtdeGeracoes];
+        var indicesGeracoes = new double[quantidadeGeracoes];
+        var melhoresFitnessPopulacoes = new double[quantidadeGeracoes];
 
-        for (int indiceGeracao = 0; indiceGeracao < qtdeGeracoes; indiceGeracao++) {
+        for (int indiceGeracao = 0; indiceGeracao < quantidadeGeracoes; indiceGeracao++) {
             preencherValoresGraficoFitness(indicesGeracoes, indiceGeracao, melhoresFitnessPopulacoes);
 
             populacao = populacao.gerarPopulacaoFilha();
