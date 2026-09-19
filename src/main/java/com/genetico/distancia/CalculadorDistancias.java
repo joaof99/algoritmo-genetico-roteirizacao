@@ -8,22 +8,15 @@ import java.util.List;
 import java.util.OptionalDouble;
 
 public class CalculadorDistancias {
-    private static List<Endereco> enderecos;
-
     private CalculadorDistancias() {
 
     }
 
     public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, AlgoritmoGeneticoRequest algoritmoGeneticoResponse) {
-        enderecos = algoritmoGeneticoResponse.enderecos();
         metodoCalculoDistancia.registrarDistancias(algoritmoGeneticoResponse);
     }
 
     public static OptionalDouble obterDistanciaEntreEnderecos(int indiceEnderecoOrigem, int indiceEnderecoDestino) {
         return MatrizDistancias.getDistancia(indiceEnderecoOrigem, indiceEnderecoDestino);
-    }
-
-    public static int getEnderecoIdRealBanco(int indice) {
-        return enderecos.get(indice).id();
     }
 }

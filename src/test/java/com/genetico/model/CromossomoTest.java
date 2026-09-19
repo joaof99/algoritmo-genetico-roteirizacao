@@ -100,9 +100,6 @@ public class CromossomoTest {
     @Test
     @DisplayName(value = "Genes devem ser formatados corretamente com caracter delimitador: |")
     public void genesDevemSerFormatadosCorretamenteAoImprimir() {
-        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-
         boolean impressaoCromossomoEstaNoPadrao = new Cromossomo(enderecos)
                 .formatarGenes()
                 .matches("^(\\d+\\s\\|\\s)+(\\d+(\\.\\d+)?)$");
@@ -113,9 +110,6 @@ public class CromossomoTest {
     @Test
     @DisplayName(value = "Não deve existir genes repetidos em um cromossomo")
     public void naoDeveExistirGenesRepetidosNoCromossomo() {
-        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-
         var cromossomo = new Cromossomo(enderecos);
 
         var genesSemRepeticao = new HashSet<>();
@@ -142,9 +136,6 @@ public class CromossomoTest {
             int[] pontosCorteFixos,
             String genesEsperadosFilho1,
             String genesEsperadosFilho2) {
-        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-
         when(random.nextInt(anyInt()))
                 .thenReturn(pontosCorteFixos[0], pontosCorteFixos[1]);
 
@@ -188,9 +179,6 @@ public class CromossomoTest {
     @MethodSource("casosDeTesteParaMutacaoSwap")
     @DisplayName("Deve realizar mutação swap corretamente com diferentes combinações de genes")
     public void deveRealizarMutacaoSwapCorretamente(int[] genesCromossomoInicial, int indiceAleatorioGene1, int indiceAleatorioGene2, String formatacaoEsperadaCromossomo) {
-        calculadorDistancias.when(() -> CalculadorDistancias.getEnderecoIdRealBanco(anyInt()))
-                .thenAnswer(invocation -> invocation.getArgument(0));
-
         var cromossomo = new Cromossomo(genesCromossomoInicial) {
             @Override
             public double getFitness() {
