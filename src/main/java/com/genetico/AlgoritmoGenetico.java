@@ -26,7 +26,7 @@ public class AlgoritmoGenetico {
     }
 
     public Populacao reproduzir() {
-        log.info("Iniciando roteirização do algoritmo genético com os seguintes parâmetros");
+        log.info("Iniciando roteirização do algoritmo genético com os seguintes parâmetros:");
 
         log.info("==========================================================================");
         log.info("Quantidade de gerações {}", quantidadeGeracoes);
