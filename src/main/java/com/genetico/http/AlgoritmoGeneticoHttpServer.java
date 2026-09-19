@@ -72,7 +72,7 @@ public class AlgoritmoGeneticoHttpServer {
         var enderecos = response.enderecos().toArray(Endereco[]::new);
 
         var algoritmoGenetico = new AlgoritmoGenetico.Builder()
-                .tamanhoPopulacao(response.tamanhoPopulacao() )
+                .tamanhoPopulacao(response.tamanhoPopulacao())
                 .qtdeGeracoes(response.quantidadeGeracoes())
                 .enderecos(enderecos)
                 .chanceOcorrenciaMutacao(response.chanceOcorrenciaMutacao())
