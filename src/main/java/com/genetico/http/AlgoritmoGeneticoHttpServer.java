@@ -23,21 +23,33 @@ import java.util.ArrayList;
 public class AlgoritmoGeneticoHttpServer {
     private static final Logger log = LogManager.getLogger();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
-    private final int porta;
     private final String hostname;
+    private final int porta;
+    private final String url;
     private HttpServer server;
 
-    public AlgoritmoGeneticoHttpServer(int porta, String hostname) {
+    public AlgoritmoGeneticoHttpServer(int porta, String hostname) throws AlgoritmoGeneticoHttpServerException {
         this.porta = porta;
         this.hostname = hostname;
+        this.url = definirUrl();
+    }
+
+    private String definirUrl() throws AlgoritmoGeneticoHttpServerException {
+        var urlAlgoritmoGeneticoHttpServer = System.getenv("AG_SERVER_URL");
+
+        if (urlAlgoritmoGeneticoHttpServer == null || urlAlgoritmoGeneticoHttpServer.isBlank()) {
+            throw new AlgoritmoGeneticoHttpServerException("Variável de ambiente: AG_SERVER não configurada");
+        }
+
+        return urlAlgoritmoGeneticoHttpServer;
     }
 
     public void iniciarServidor() throws AlgoritmoGeneticoHttpServerException {
         try {
             server = HttpServer.create(new InetSocketAddress(hostname, porta), 0);
-            server.createContext("/ag/iniciar", this::processarRequisicao);
+            server.createContext(url, this::processarRequisicao);
             server.start();
+
             log.info("Algoritmo Genético aguardando rotas na porta {}...", porta);
         } catch (IOException e) {
             throw new AlgoritmoGeneticoHttpServerException("Houve um erro de I/O ao subir o servidor", e);
