@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.genetico.AlgoritmoGenetico;
-import com.genetico.distancia.CalculadorDistancias;
+import com.genetico.distancia.GerenciadorDistancias;
 import com.genetico.distancia.CalculoDistanciaAPI;
 import com.genetico.exception.AlgoritmoGeneticoHttpServerException;
 import com.genetico.model.AlgoritmoGeneticoRequest;
@@ -67,7 +67,7 @@ public class AlgoritmoGeneticoHttpServer {
     }
 
     private void inicializarAlgoritmoGenetico(AlgoritmoGeneticoRequest response) {
-        CalculadorDistancias.inicializar(new CalculoDistanciaAPI(), response);
+        GerenciadorDistancias.inicializar(new CalculoDistanciaAPI(), response);
 
         var enderecos = response.enderecos().toArray(Endereco[]::new);
 

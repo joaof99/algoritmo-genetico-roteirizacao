@@ -2,7 +2,7 @@ package com.genetico.model;
 
 import com.genetico.crossover.CrossoverPMX;
 import com.genetico.crossover.MetodoCrossover;
-import com.genetico.distancia.CalculadorDistancias;
+import com.genetico.distancia.GerenciadorDistancias;
 import com.genetico.factory.RandomizadorFactory;
 import com.genetico.mutacao.MetodoMutacao;
 import com.genetico.mutacao.Swap;
@@ -61,7 +61,7 @@ public class Cromossomo {
             var indiceCidadeOrigem = this.genes[indice];
             var indiceCidadeDestino = this.genes[indice + 1];
 
-            var distancia = CalculadorDistancias
+            var distancia = GerenciadorDistancias
                     .obterDistanciaEntreEnderecos(indiceCidadeOrigem, indiceCidadeDestino)
                     .orElseThrow(() -> new IllegalArgumentException(
                             String.format(

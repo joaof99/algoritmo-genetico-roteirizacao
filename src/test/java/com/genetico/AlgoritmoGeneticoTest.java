@@ -1,7 +1,6 @@
 package com.genetico;
 
-import com.genetico.distancia.CalculadorDistancias;
-import com.genetico.exception.AlgoritmoGeneticoClientException;
+import com.genetico.distancia.GerenciadorDistancias;
 import com.genetico.factory.GraficoServiceFactory;
 import com.genetico.model.Cromossomo;
 import com.genetico.model.Endereco;
@@ -24,18 +23,18 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class AlgoritmoGeneticoTest {
-    private MockedStatic<CalculadorDistancias> calculadorDistancias;
+    private MockedStatic<GerenciadorDistancias> gerenciadorDistancias;
     private MockedStatic<GraficoServiceFactory> graficoServiceFactory;
 
     @BeforeEach
     void setUp() {
-        calculadorDistancias = Mockito.mockStatic(CalculadorDistancias.class);
+        gerenciadorDistancias = Mockito.mockStatic(GerenciadorDistancias.class);
         graficoServiceFactory = Mockito.mockStatic(GraficoServiceFactory.class);
     }
 
     @AfterEach
     void tearDown() {
-        calculadorDistancias.close();
+        gerenciadorDistancias.close();
         graficoServiceFactory.close();
     }
 
@@ -44,7 +43,7 @@ public class AlgoritmoGeneticoTest {
     public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() {
         var distanciasFixas = inicializarDistanciasFixas();
 
-        calculadorDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+        gerenciadorDistancias.when(() -> GerenciadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
                 .thenAnswer(invocation -> {
                     int indiceCidadeOrigem = invocation.getArgument(0);
                     int indiceCidadeDestino = invocation.getArgument(1);

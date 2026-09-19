@@ -1,14 +1,12 @@
 package com.genetico.distancia;
 
 import com.genetico.model.AlgoritmoGeneticoRequest;
-import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
 
-import java.util.List;
 import java.util.OptionalDouble;
 
-public class CalculadorDistancias {
-    private CalculadorDistancias() {
+public class GerenciadorDistancias {
+    private GerenciadorDistancias() {
 
     }
 

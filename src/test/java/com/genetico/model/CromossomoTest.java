@@ -1,6 +1,6 @@
 package com.genetico.model;
 
-import com.genetico.distancia.CalculadorDistancias;
+import com.genetico.distancia.GerenciadorDistancias;
 import com.genetico.factory.RandomizadorFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class CromossomoTest {
-    private MockedStatic<CalculadorDistancias> calculadorDistancias;
+    private MockedStatic<GerenciadorDistancias> gerenciadorDistancias;
     private MockedStatic<RandomizadorFactory> randomizadorFactory;
     private Random random;
     private Endereco[] enderecos;
@@ -31,14 +31,14 @@ public class CromossomoTest {
     @BeforeEach
     void setUp() {
         randomizadorFactory = Mockito.mockStatic(RandomizadorFactory.class);
-        calculadorDistancias = Mockito.mockStatic(CalculadorDistancias.class);
+        gerenciadorDistancias = Mockito.mockStatic(GerenciadorDistancias.class);
         random = Mockito.mock(Random.class);
 
         randomizadorFactory.when(RandomizadorFactory::getRandomizador).thenReturn(random);
 
         var distanciasFixas = inicializarDistanciasFixas();
 
-        calculadorDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+        gerenciadorDistancias.when(() -> GerenciadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
                 .thenAnswer(invocation -> {
                     int indiceCidadeOrigem = invocation.getArgument(0);
                     int indiceCidadeDestino = invocation.getArgument(1);
@@ -67,7 +67,7 @@ public class CromossomoTest {
 
     @AfterEach
     void tearDown() {
-        calculadorDistancias.close();
+        gerenciadorDistancias.close();
         randomizadorFactory.close();
     }
 

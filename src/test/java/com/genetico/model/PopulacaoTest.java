@@ -1,6 +1,6 @@
 package com.genetico.model;
 
-import com.genetico.distancia.CalculadorDistancias;
+import com.genetico.distancia.GerenciadorDistancias;
 import com.genetico.factory.RandomizadorFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,14 +22,14 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class PopulacaoTest {
-    private MockedStatic<CalculadorDistancias> calculadorDistancias;
+    private MockedStatic<GerenciadorDistancias> gerenciadorDistancias;
 
     @BeforeEach
     void setUp() {
-        calculadorDistancias = Mockito.mockStatic(CalculadorDistancias.class);
+        gerenciadorDistancias = Mockito.mockStatic(GerenciadorDistancias.class);
         var distanciasFixas = inicializarDistanciasFixas();
 
-        calculadorDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+        gerenciadorDistancias.when(() -> GerenciadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
                 .thenAnswer(invocation -> {
                     int indiceCidadeOrigem = invocation.getArgument(0);
                     int indiceCidadeDestino = invocation.getArgument(1);
@@ -39,7 +39,7 @@ public class PopulacaoTest {
 
     @AfterEach
     void tearDown() {
-        calculadorDistancias.close();
+        gerenciadorDistancias.close();
     }
 
     private double[][] inicializarDistanciasFixas() {
@@ -229,7 +229,7 @@ public class PopulacaoTest {
     @Test
     @DisplayName("População filha deve ser gerada com o tamanho correto")
     public void populacaoFilhaDeveSerGeradaComOTamanhoCorreto() {
-        calculadorDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+        gerenciadorDistancias.when(() -> GerenciadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
                 .thenAnswer(_ -> OptionalDouble.of(40.0));
 
         var genes1 = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
