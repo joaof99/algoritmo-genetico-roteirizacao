@@ -1,6 +1,6 @@
 package com.genetico.distancia;
 
-import com.genetico.model.AlgoritmoGeneticoResponse;
+import com.genetico.model.AlgoritmoGeneticoRequest;
 import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,7 +41,7 @@ class HaversineTest {
                 new Endereco(9, -90.3, -50.9, "Estádio"),
                 new Endereco(10, -90.3, -50.9, "Shopping SC"));
 
-        new Haversine().registrarDistancias(new AlgoritmoGeneticoResponse(null, enderecos, 0, 0, 0, 0));
+        new Haversine().registrarDistancias(new AlgoritmoGeneticoRequest(null, enderecos, 0, 0, 0, 0));
 
         assertEquals(90, MatrizDistancias.getQuantidadeDistancias());
     }

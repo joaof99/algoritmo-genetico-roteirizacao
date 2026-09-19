@@ -1,6 +1,6 @@
 package com.genetico.distancia;
 
-import com.genetico.model.AlgoritmoGeneticoResponse;
+import com.genetico.model.AlgoritmoGeneticoRequest;
 import com.genetico.model.DistanciaResponse;
 import com.genetico.model.MatrizDistancias;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ class CalculoDistanciaAPITest {
                 new DistanciaResponse(3, 2, 800)
         );
 
-        new CalculoDistanciaAPI().registrarDistancias(new AlgoritmoGeneticoResponse(distancias, null, 0, 0, 0, 0));
+        new CalculoDistanciaAPI().registrarDistancias(new AlgoritmoGeneticoRequest(distancias, null, 0, 0, 0, 0));
 
         assertEquals(6, MatrizDistancias.getQuantidadeDistancias());
     }

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.genetico.exception.AlgoritmoGeneticoClientException;
-import com.genetico.model.AlgoritmoGeneticoResponse;
+import com.genetico.model.AlgoritmoGeneticoRequest;
 import com.genetico.model.DistanciaResponse;
 import com.genetico.model.Endereco;
 import org.apache.logging.log4j.LogManager;
@@ -49,7 +49,7 @@ public class AlgoritmoGeneticoClient {
                 .build();
     }
 
-    public AlgoritmoGeneticoResponse buscarDadosAlgoritmoGenetico(int idRota) throws AlgoritmoGeneticoClientException {
+    public AlgoritmoGeneticoRequest buscarDadosAlgoritmoGenetico(int idRota) throws AlgoritmoGeneticoClientException {
         var response = buscarDados(idRota);
 
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
@@ -161,7 +161,7 @@ public class AlgoritmoGeneticoClient {
         }
     }
 
-    private static AlgoritmoGeneticoResponse extrairDadosAlgoritmoGenetico(JsonNode json) {
+    private static AlgoritmoGeneticoRequest extrairDadosAlgoritmoGenetico(JsonNode json) {
         var enderecos = new ArrayList<Endereco>();
         var distancias = new ArrayList<DistanciaResponse>();
 
@@ -184,12 +184,12 @@ public class AlgoritmoGeneticoClient {
 
         log.info("Foram encontradas {} endereços e {} distâncias", enderecos.size(), distancias.size());
 
-        return new AlgoritmoGeneticoResponse(distancias, enderecos, 0, 0, 0, 0);
+        return new AlgoritmoGeneticoRequest(distancias, enderecos, 0, 0, 0, 0);
     }
 
-    private void validarIntegridadeAlgoritmoGeneticoResponse(AlgoritmoGeneticoResponse algoritmoGeneticoResponse) throws AlgoritmoGeneticoClientException {
-        var quantidadeDistanciasNecessarias = algoritmoGeneticoResponse.enderecos().size() * (algoritmoGeneticoResponse.enderecos().size() - 1);
-        var quantidadeDistancias = algoritmoGeneticoResponse.distancias().size();
+    private void validarIntegridadeAlgoritmoGeneticoResponse(AlgoritmoGeneticoRequest algoritmoGeneticoRequest) throws AlgoritmoGeneticoClientException {
+        var quantidadeDistanciasNecessarias = algoritmoGeneticoRequest.enderecos().size() * (algoritmoGeneticoRequest.enderecos().size() - 1);
+        var quantidadeDistancias = algoritmoGeneticoRequest.distancias().size();
 
         if(quantidadeDistancias != quantidadeDistanciasNecessarias){
             throw new AlgoritmoGeneticoClientException(String.format("A quantidade de distâncias da resposta deveria ser %d porém foi encontrado %d",

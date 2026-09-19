@@ -1,6 +1,6 @@
 package com.genetico.distancia;
 
-import com.genetico.model.AlgoritmoGeneticoResponse;
+import com.genetico.model.AlgoritmoGeneticoRequest;
 import com.genetico.model.Endereco;
 import com.genetico.model.MatrizDistancias;
 import org.apache.logging.log4j.LogManager;
@@ -10,8 +10,8 @@ public class Haversine implements MetodoCalculoDistancia {
     private static final Logger log = LogManager.getLogger(Haversine.class);
 
     @Override
-    public void registrarDistancias(AlgoritmoGeneticoResponse algoritmoGeneticoResponse) {
-        var enderecos = algoritmoGeneticoResponse.enderecos();
+    public void registrarDistancias(AlgoritmoGeneticoRequest algoritmoGeneticoRequest) {
+        var enderecos = algoritmoGeneticoRequest.enderecos();
         if (enderecos.isEmpty()) {
             throw new IllegalArgumentException("Nenhum endereço encontrado. Impossível iniciar a roteirização");
         }

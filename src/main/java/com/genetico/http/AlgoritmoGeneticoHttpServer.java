@@ -7,7 +7,7 @@ import com.genetico.AlgoritmoGenetico;
 import com.genetico.distancia.CalculadorDistancias;
 import com.genetico.distancia.CalculoDistanciaAPI;
 import com.genetico.exception.AlgoritmoGeneticoHttpServerException;
-import com.genetico.model.AlgoritmoGeneticoResponse;
+import com.genetico.model.AlgoritmoGeneticoRequest;
 import com.genetico.model.DistanciaResponse;
 import com.genetico.model.Endereco;
 import com.sun.net.httpserver.HttpExchange;
@@ -66,7 +66,7 @@ public class AlgoritmoGeneticoHttpServer {
         }
     }
 
-    private void inicializarAlgoritmoGenetico(AlgoritmoGeneticoResponse response) {
+    private void inicializarAlgoritmoGenetico(AlgoritmoGeneticoRequest response) {
         CalculadorDistancias.inicializar(new CalculoDistanciaAPI(), response);
 
         var enderecos = response.enderecos().toArray(Endereco[]::new);
@@ -86,7 +86,7 @@ public class AlgoritmoGeneticoHttpServer {
         populacaoFinal.imprimirPopulacao();
     }
 
-    private AlgoritmoGeneticoResponse extrairDadosAlgoritmoGenetico(JsonNode json) {
+    private AlgoritmoGeneticoRequest extrairDadosAlgoritmoGenetico(JsonNode json) {
         var enderecos = new ArrayList<Endereco>();
         var distancias = new ArrayList<DistanciaResponse>();
 
@@ -122,7 +122,7 @@ public class AlgoritmoGeneticoHttpServer {
         var chanceOcorrenciaMutacao = json.get("chanceOcorrenciaMutacao").asInt();
         var chanceOcorrenciaCrossover = json.get("chanceOcorrenciaCrossover").asInt();
 
-        return new AlgoritmoGeneticoResponse(distancias, enderecos, tamanhoPopulacao, quantidadeGeracoes, chanceOcorrenciaMutacao, chanceOcorrenciaCrossover);
+        return new AlgoritmoGeneticoRequest(distancias, enderecos, tamanhoPopulacao, quantidadeGeracoes, chanceOcorrenciaMutacao, chanceOcorrenciaCrossover);
     }
 
     private void enviarResposta(HttpExchange exchange, int status, String resposta) throws IOException {

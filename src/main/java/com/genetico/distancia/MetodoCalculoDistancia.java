@@ -1,7 +1,7 @@
 package com.genetico.distancia;
 
-import com.genetico.model.AlgoritmoGeneticoResponse;
+import com.genetico.model.AlgoritmoGeneticoRequest;
 
 public interface MetodoCalculoDistancia {
-    void registrarDistancias(AlgoritmoGeneticoResponse algoritmoGeneticoResponse);
+    void registrarDistancias(AlgoritmoGeneticoRequest algoritmoGeneticoRequest);
 }
