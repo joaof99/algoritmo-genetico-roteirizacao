@@ -108,14 +108,7 @@ public class AlgoritmoGeneticoHttpServer {
             var longitude = jsonNode.get("longitude").asDouble();
             var cidade = jsonNode.get("cidade").asText();
 
-            enderecos.add(
-                    new Endereco(
-                            id,
-                            latitude,
-                            longitude,
-                            cidade
-                    )
-            );
+            enderecos.add(new Endereco(id, latitude, longitude, cidade));
         });
 
         json.get("distancias").forEach(jsonNode -> {
@@ -123,8 +116,7 @@ public class AlgoritmoGeneticoHttpServer {
             var idDestino = jsonNode.get("idDestino").asInt();
             var distancia = jsonNode.get("distancia").asDouble();
 
-            distancias.add(new DistanciaResponse(idOrigem, idDestino, distancia)
-            );
+            distancias.add(new DistanciaResponse(idOrigem, idDestino, distancia));
         });
 
         log.info("Foram encontradas {} endereços e {} distâncias", enderecos.size(), distancias.size());
