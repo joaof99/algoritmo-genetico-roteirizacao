@@ -52,7 +52,7 @@ public class Haversine implements MetodoCalculoDistancia {
 
         var distancia = RAIO_TERRA_KM * c;
 
-        log.info("Distância entre {} (ID: {}) e {} (ID: {}) é igual a {}", origem.descricao(), origem.id(), destino.descricao(), destino.id(), distancia);
+        log.info("Distância entre (ID: {}) e (ID: {}) é igual a {}", origem.id(), destino.id(), distancia);
 
         return distancia;
     }

@@ -160,7 +160,7 @@ public class PopulacaoTest {
     @DisplayName("Tamanho da população deve ser inicializado corretamente")
     public void tamanhoDaPopulacaoDeveSerInicializadoCorretamente() {
         var enderecos = IntStream.range(0, 10)
-                .mapToObj(i -> new Endereco(i, -40.3, -30.900, ""))
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900))
                 .toArray(Endereco[]::new);
 
         var populacao = new Populacao(30, 50, 50, enderecos);

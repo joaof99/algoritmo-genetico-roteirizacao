@@ -106,9 +106,8 @@ public class AlgoritmoGeneticoHttpServer {
             var id = jsonNode.get("id").asInt();
             var latitude = jsonNode.get("latitude").asDouble();
             var longitude = jsonNode.get("longitude").asDouble();
-            var cidade = jsonNode.get("cidade").asText();
 
-            enderecos.add(new Endereco(id, latitude, longitude, cidade));
+            enderecos.add(new Endereco(id, latitude, longitude));
         });
 
         json.get("distancias").forEach(jsonNode -> {

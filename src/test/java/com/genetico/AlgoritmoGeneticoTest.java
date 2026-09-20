@@ -58,7 +58,7 @@ public class AlgoritmoGeneticoTest {
         var melhoresFitnessCaptor = ArgumentCaptor.forClass(double[].class);
 
         var enderecos = IntStream.range(0, 10)
-                .mapToObj(i -> new Endereco(i, -40.3, -30.900, ""))
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900))
                 .toArray(Endereco[]::new);
 
         var algoritmoGenetico = new AlgoritmoGenetico

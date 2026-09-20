@@ -46,7 +46,7 @@ public class CromossomoTest {
                 });
 
         enderecos = IntStream.range(0, 10)
-                .mapToObj(i -> new Endereco(i, -40.3, -30.900, ""))
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900))
                 .toArray(Endereco[]::new);
     }
 
