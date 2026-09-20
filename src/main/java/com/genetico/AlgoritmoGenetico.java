@@ -26,14 +26,12 @@ public class AlgoritmoGenetico {
     }
 
     public Populacao reproduzir() {
-        log.info("Iniciando roteirização do algoritmo genético com os seguintes parâmetros:");
-
-        log.info("==========================================================================");
+        log.info("=========== Inicializando roteirização do algoritmo genético com os seguintes parâmetros =============================");
         log.info("Quantidade de gerações {}", quantidadeGeracoes);
         log.info("Tamanho da população {}", tamanhoPopulacao);
         log.info("Chance de ocorrência de crossover {}%", chanceOcorrenciaCrossover);
         log.info("Chance de ocorrência de mutação {}%", chanceOcorrenciaMutacao);
-        log.info("==========================================================================");
+        log.info("=================================================================================================================");
 
         populacao = new Populacao(tamanhoPopulacao, chanceOcorrenciaCrossover, chanceOcorrenciaMutacao, enderecos);
         log.info("População inicial");
