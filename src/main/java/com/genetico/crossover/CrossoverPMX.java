@@ -98,8 +98,8 @@ public class CrossoverPMX implements MetodoCrossover {
     }
 
     private boolean indiceEstaNaRegiaoDeCorte(int indice, int[] pontosDeCorte) {
-        int POSICAO_CORTE_INICIO = 0;
-        int POSICAO_CORTE_FIM = 1;
+        var POSICAO_CORTE_INICIO = 0;
+        var POSICAO_CORTE_FIM = 1;
 
         return (indice > pontosDeCorte[POSICAO_CORTE_INICIO] && indice <= pontosDeCorte[POSICAO_CORTE_FIM]);
     }
