@@ -1,8 +1,8 @@
 package com.genetico;
 
-import com.genetico.exception.AlgoritmoGeneticoHttpServerException;
+import com.genetico.exception.AlgoritmoGeneticoServidorException;
 import com.genetico.handler.AlgoritmoGeneticoHttpHandler;
-import com.genetico.http.Servidor;
+import com.genetico.http.AlgoritmoGeneticoServidor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,8 +11,8 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            new Servidor(8081, "localhost", new AlgoritmoGeneticoHttpHandler()).iniciarServidor();
-        } catch (AlgoritmoGeneticoHttpServerException e) {
+            new AlgoritmoGeneticoServidor(8081, "localhost", new AlgoritmoGeneticoHttpHandler()).iniciarServidor();
+        } catch (AlgoritmoGeneticoServidorException e) {
             log.error("Algoritmo Genético não pôde inicializar. {}", e.getMessage());
             System.exit(1);
         }
