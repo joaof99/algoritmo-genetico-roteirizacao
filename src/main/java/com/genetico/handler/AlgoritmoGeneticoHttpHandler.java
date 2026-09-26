@@ -33,7 +33,6 @@ public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
             var json = OBJECT_MAPPER.readTree(exchange.getRequestBody());
 
             var dadosAlgoritmoGenetico = extrairDadosAlgoritmoGenetico(json);
-
             inicializarAlgoritmoGenetico(dadosAlgoritmoGenetico);
 
             enviarResposta(exchange, 200, "{\"status\":\"algoritmo finalizado\"}");
@@ -91,11 +90,8 @@ public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
         log.info("Foram encontradas {} endereços e {} distâncias", enderecos.size(), distancias.size());
 
         var tamanhoPopulacao = json.get("tamanhoPopulacao").asInt();
-
         var quantidadeGeracoes = json.get("quantidadeGeracoes").asInt();
-
         var chanceOcorrenciaMutacao = json.get("chanceOcorrenciaMutacao").asInt();
-
         var chanceOcorrenciaCrossover = json.get("chanceOcorrenciaCrossover").asInt();
 
         return new AlgoritmoGeneticoRequest(
