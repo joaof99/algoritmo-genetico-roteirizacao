@@ -25,6 +25,8 @@ public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         try {
+            log.info("Recebendo requisição ...");
+
             if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
                 enviarResposta(exchange, 405, "{\"erro\":\"Método não permitido\"}");
                 return;
