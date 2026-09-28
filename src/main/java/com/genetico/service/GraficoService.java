@@ -17,10 +17,8 @@ import java.time.format.DateTimeFormatter;
 
 public class GraficoService {
     private static final Logger log = LogManager.getLogger(GraficoService.class);
-    private final XYChart chart;
 
     public GraficoService() {
-        this.chart = configurarChart();
         criarPastaGraficos();
     }
 
@@ -32,7 +30,7 @@ public class GraficoService {
         }
     }
 
-    private XYChart configurarChart() {
+    private XYChart criarChart() {
         var chart = new XYChartBuilder()
                 .width(800)
                 .height(600)
@@ -58,7 +56,13 @@ public class GraficoService {
 
         checarSeHaIndicesGeracoesRepetidos(indicesGeracoes);
 
-        criarImagemGrafico(indicesGeracoes, melhoresFitnessPopulacoes);
+        var chart = criarChart();
+
+        criarImagemGrafico(indicesGeracoes, melhoresFitnessPopulacoes, chart);
+        configurarJanela(chart);
+    }
+
+    private void configurarJanela(XYChart chart) {
         var jFrame = new SwingWrapper<>(chart).displayChart();
         SwingUtilities.invokeLater(() -> jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE));
     }
@@ -75,9 +79,9 @@ public class GraficoService {
         }
     }
 
-    private void criarImagemGrafico(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes) {
+    private void criarImagemGrafico(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes, XYChart chart) {
         var dataAtualFormatada = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss"));
-        var diretorioCompletoGraficoFitness = "graficos_fitness/evolucao_fitness_" + dataAtualFormatada;
+        var diretorioCompletoGraficoFitness = String.format("graficos_fitness/evolucao_fitness_%s", dataAtualFormatada);
         chart.addSeries("Melhor Fitness", indicesGeracoes, melhoresFitnessPopulacoes).setMarker(SeriesMarkers.CIRCLE);
 
         try {
