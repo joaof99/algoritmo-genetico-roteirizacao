@@ -81,11 +81,11 @@ public class GraficoService {
 
     private void criarImagemGrafico(double[] indicesGeracoes, double[] melhoresFitnessPopulacoes, XYChart chart) {
         var dataAtualFormatada = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss"));
-        var diretorioCompletoGraficoFitness = String.format("graficos_fitness/evolucao_fitness_%s", dataAtualFormatada);
+        var caminhoGraficoFitness = String.format("graficos_fitness/evolucao_fitness_%s", dataAtualFormatada);
         chart.addSeries("Melhor Fitness", indicesGeracoes, melhoresFitnessPopulacoes).setMarker(SeriesMarkers.CIRCLE);
 
         try {
-            BitmapEncoder.saveBitmap(chart, diretorioCompletoGraficoFitness, BitmapEncoder.BitmapFormat.PNG);
+            BitmapEncoder.saveBitmap(chart, caminhoGraficoFitness, BitmapEncoder.BitmapFormat.PNG);
         } catch (IOException ioException) {
             log.error("Houve um erro de entrada e saída: {}", ioException.getMessage());
             throw new RuntimeException(ioException);
