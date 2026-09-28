@@ -87,7 +87,7 @@ public class GraficoService {
         try {
             BitmapEncoder.saveBitmap(chart, caminhoGraficoFitness, BitmapEncoder.BitmapFormat.PNG);
         } catch (IOException ioException) {
-            log.error("Houve um erro de entrada e saída: {}", ioException.getMessage());
+            log.error("Houve um erro I/O ao criar o gráfico de fitness: {}", ioException.getMessage());
             throw new RuntimeException(ioException);
         }
     }
