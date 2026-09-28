@@ -8,6 +8,7 @@ import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -58,7 +59,8 @@ public class GraficoService {
         checarSeHaIndicesGeracoesRepetidos(indicesGeracoes);
 
         criarImagemGrafico(indicesGeracoes, melhoresFitnessPopulacoes);
-        new SwingWrapper<>(chart).displayChart();
+        var jFrame = new SwingWrapper<>(chart).displayChart();
+        SwingUtilities.invokeLater(() -> jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE));
     }
 
     private void checarSeHaIndicesGeracoesRepetidos(double[] indicesGeracoes) {
