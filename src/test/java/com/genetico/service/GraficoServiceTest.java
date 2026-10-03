@@ -21,7 +21,7 @@ public class GraficoServiceTest {
         try (MockedStatic<LocalDateTime> dataTeste = mockStatic(LocalDateTime.class)) {
             dataTeste.when(LocalDateTime::now).thenReturn(dataAtualFixa);
 
-            this.graficoService = new GraficoService();
+            graficoService = new GraficoService();
         }
     }
 

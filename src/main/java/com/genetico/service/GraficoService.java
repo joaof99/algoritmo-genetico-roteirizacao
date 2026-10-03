@@ -64,7 +64,7 @@ public class GraficoService {
 
     private void configurarJanela(XYChart chart) {
         var jFrame = new SwingWrapper<>(chart).displayChart();
-        SwingUtilities.invokeLater(() -> jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE));
+        jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private void checarSeHaIndicesGeracoesRepetidos(double[] indicesGeracoes) {
