@@ -16,7 +16,7 @@ public class AlgoritmoGeneticoServidor {
     private final int porta;
     private HttpServer server;
 
-    public AlgoritmoGeneticoServidor(int porta, String hostname, AlgoritmoGeneticoHttpHandler handler) throws AlgoritmoGeneticoServidorException {
+    public AlgoritmoGeneticoServidor(int porta, String hostname, AlgoritmoGeneticoHttpHandler handler) {
         this.porta = porta;
         this.hostname = hostname;
         this.algoritmoGeneticoHttpHandler = handler;
