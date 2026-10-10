@@ -25,7 +25,7 @@ public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         var status = 200;
-        var resposta = "{\"status\":\"algoritmo finalizado\"}";
+        var resposta = "{\"status\":\"Pedido de roteirização recebido com sucesso\"}";
 
         try {
             log.info("Recebendo requisição ...");

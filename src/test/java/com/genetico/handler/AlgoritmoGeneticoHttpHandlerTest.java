@@ -107,7 +107,7 @@ class AlgoritmoGeneticoHttpHandlerTest {
         verify(graficoService).gerarGraficoEvolucaoFitness(Mockito.any(double[].class), Mockito.any(double[].class));
 
         assertEquals("application/json", exchange.getResponseHeaders().getFirst("Content-Type"));
-        assertEquals("{\"status\":\"algoritmo finalizado\"}", exchange.getResponseBody().toString());
+        assertEquals("{\"status\":\"Pedido de roteirização recebido com sucesso\"}", exchange.getResponseBody().toString());
     }
 
     private static HttpExchange criarExchange(String metodo, String corpo) {
