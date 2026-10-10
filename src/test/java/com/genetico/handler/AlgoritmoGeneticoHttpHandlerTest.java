@@ -67,16 +67,16 @@ class AlgoritmoGeneticoHttpHandlerTest {
     }
 
     @Test
-    @DisplayName("Deve responder erro interno quando os dados estiverem incompletos")
-    void deveResponderErroInternoQuandoDadosEstiveremIncompletos() throws IOException {
+    @DisplayName("Deve responder requisição inválida quando os dados estiverem incompletos")
+    void deveResponderRequisicaoInvalidaQuandoDadosEstiveremIncompletos() throws IOException {
         var exchange = criarExchange("POST", "{}");
 
         handler.handle(exchange);
 
-        verify(exchange).sendResponseHeaders(eq(500), anyLong());
+        verify(exchange).sendResponseHeaders(eq(400), anyLong());
 
         assertEquals("application/json", exchange.getResponseHeaders().getFirst("Content-Type"));
-        assertEquals("{\"erro\":\"Erro interno do servidor\"}", exchange.getResponseBody().toString());
+        assertEquals("{\"erro\":\"Dados da requisição inválidos\"}", exchange.getResponseBody().toString());
     }
 
     @Test

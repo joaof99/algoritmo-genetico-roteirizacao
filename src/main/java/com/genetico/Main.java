@@ -13,7 +13,7 @@ public class Main {
         try {
             new AlgoritmoGeneticoServidor(8081, "localhost", new AlgoritmoGeneticoHttpHandler()).iniciarServidor();
         } catch (AlgoritmoGeneticoServidorException e) {
-            log.error("Algoritmo Genético não pôde inicializar. {}", e.getMessage());
+            log.error("Algoritmo Genético não pôde inicializar.", e);
             System.exit(1);
         }
     }

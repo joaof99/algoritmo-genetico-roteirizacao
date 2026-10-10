@@ -24,40 +24,43 @@ public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
+        var status = 200;
+        var resposta = "{\"status\":\"algoritmo finalizado\"}";
+
         try {
             log.info("Recebendo requisição ...");
 
             if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
-                enviarResposta(exchange, 405, "{\"erro\":\"Método não permitido\"}");
-                return;
+                status = 405;
+                resposta = "{\"erro\":\"Método não permitido\"}";
+            } else {
+                var json = OBJECT_MAPPER.readTree(exchange.getRequestBody());
+                inicializarAlgoritmoGenetico(extrairDadosAlgoritmoGenetico(json));
             }
-
-            var json = OBJECT_MAPPER.readTree(exchange.getRequestBody());
-
-            var dadosAlgoritmoGenetico = extrairDadosAlgoritmoGenetico(json);
-            inicializarAlgoritmoGenetico(dadosAlgoritmoGenetico);
-
-            enviarResposta(exchange, 200, "{\"status\":\"algoritmo finalizado\"}");
         } catch (JsonProcessingException e) {
             log.error("Erro ao parsear JSON da requisição", e);
-
-            enviarResposta(exchange, 400, "{\"erro\":\"JSON inválido\"}");
+            status = 400;
+            resposta = "{\"erro\":\"JSON inválido\"}";
+        } catch (RequisicaoInvalidaException e) {
+            log.warn("Requisição inválida: {}", e.getMessage());
+            status = 400;
+            resposta = "{\"erro\":\"Dados da requisição inválidos\"}";
         } catch (Exception e) {
             log.error("Erro inesperado ao processar requisição", e);
-
-            enviarResposta(exchange, 500, "{\"erro\":\"Erro interno do servidor\"}");
+            status = 500;
+            resposta = "{\"erro\":\"Erro interno do servidor\"}";
         }
+
+        enviarResposta(exchange, status, resposta);
     }
 
     private void inicializarAlgoritmoGenetico(AlgoritmoGeneticoRequest request) {
         GerenciadorDistancias.inicializar(new CalculoDistanciaAPI(), request);
 
-        var enderecos = request.enderecos().toArray(com.genetico.model.Endereco[]::new);
-
         var algoritmoGenetico = new AlgoritmoGenetico.Builder()
                 .tamanhoPopulacao(request.tamanhoPopulacao())
                 .qtdeGeracoes(request.quantidadeGeracoes())
-                .enderecos(enderecos)
+                .enderecos(request.enderecos().toArray(Endereco[]::new))
                 .chanceOcorrenciaMutacao(request.chanceOcorrenciaMutacao())
                 .chanceOcorrenciaCrossover(request.chanceOcorrenciaCrossover())
                 .build();
@@ -65,55 +68,78 @@ public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
         var populacaoFinal = algoritmoGenetico.reproduzir();
 
         log.info("População final:");
-
         populacaoFinal.imprimirPopulacao();
     }
 
     private AlgoritmoGeneticoRequest extrairDadosAlgoritmoGenetico(JsonNode json) {
+        if (json == null || !json.isObject()) {
+            throw new RequisicaoInvalidaException("O corpo deve ser um objeto JSON");
+        }
+
         var enderecos = new ArrayList<Endereco>();
         var distancias = new ArrayList<DistanciaResponse>();
 
-        json.get("enderecos").forEach(jsonNode -> {
-            var id = jsonNode.get("id").asInt();
-            var latitude = jsonNode.get("latitude").asDouble();
-            var longitude = jsonNode.get("longitude").asDouble();
+        obterArray(json, "enderecos").forEach(jsonNode -> enderecos.add(new Endereco(
+                obterInteiro(jsonNode, "id"),
+                obterDecimal(jsonNode, "latitude"),
+                obterDecimal(jsonNode, "longitude")
+        )));
 
-            enderecos.add(new Endereco(id, latitude, longitude));
-        });
+        obterArray(json, "distancias").forEach(jsonNode -> distancias.add(new DistanciaResponse(
+                obterInteiro(jsonNode, "idOrigem"),
+                obterInteiro(jsonNode, "idDestino"),
+                obterDecimal(jsonNode, "distancia")
+        )));
 
-        json.get("distancias").forEach(jsonNode -> {
-            var idOrigem = jsonNode.get("idOrigem").asInt();
-            var idDestino = jsonNode.get("idDestino").asInt();
-            var distancia = jsonNode.get("distancia").asDouble();
-
-            distancias.add(new DistanciaResponse(idOrigem, idDestino, distancia));
-        });
-
-        log.info("Foram encontradas {} endereços e {} distâncias", enderecos.size(), distancias.size());
-
-        var tamanhoPopulacao = json.get("tamanhoPopulacao").asInt();
-        var quantidadeGeracoes = json.get("quantidadeGeracoes").asInt();
-        var chanceOcorrenciaMutacao = json.get("chanceOcorrenciaMutacao").asInt();
-        var chanceOcorrenciaCrossover = json.get("chanceOcorrenciaCrossover").asInt();
+        log.info("Foram encontrados {} endereços e {} distâncias", enderecos.size(), distancias.size());
 
         return new AlgoritmoGeneticoRequest(
                 distancias,
                 enderecos,
-                tamanhoPopulacao,
-                quantidadeGeracoes,
-                chanceOcorrenciaMutacao,
-                chanceOcorrenciaCrossover
+                obterInteiro(json, "tamanhoPopulacao"),
+                obterInteiro(json, "quantidadeGeracoes"),
+                obterInteiro(json, "chanceOcorrenciaMutacao"),
+                obterInteiro(json, "chanceOcorrenciaCrossover")
         );
+    }
+
+    private JsonNode obterArray(JsonNode json, String campo) {
+        var valor = json.get(campo);
+        if (valor == null || !valor.isArray()) {
+            throw new RequisicaoInvalidaException("O campo '" + campo + "' deve ser um array");
+        }
+        return valor;
+    }
+
+    private int obterInteiro(JsonNode json, String campo) {
+        var valor = json.get(campo);
+        if (valor == null || !valor.isIntegralNumber() || !valor.canConvertToInt()) {
+            throw new RequisicaoInvalidaException("O campo '" + campo + "' deve ser um inteiro");
+        }
+        return valor.intValue();
+    }
+
+    private double obterDecimal(JsonNode json, String campo) {
+        var valor = json.get(campo);
+        if (valor == null || !valor.isNumber() || !Double.isFinite(valor.doubleValue())) {
+            throw new RequisicaoInvalidaException("O campo '" + campo + "' deve ser um número finito");
+        }
+        return valor.doubleValue();
     }
 
     private void enviarResposta(HttpExchange exchange, int status, String resposta) throws IOException {
         var bytes = resposta.getBytes(StandardCharsets.UTF_8);
-
         exchange.getResponseHeaders().set("Content-Type", "application/json");
         exchange.sendResponseHeaders(status, bytes.length);
 
         try (var output = exchange.getResponseBody()) {
             output.write(bytes);
+        }
+    }
+
+    private static class RequisicaoInvalidaException extends RuntimeException {
+        private RequisicaoInvalidaException(String message) {
+            super(message);
         }
     }
 }
