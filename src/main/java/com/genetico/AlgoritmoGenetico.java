@@ -2,6 +2,7 @@ package com.genetico;
 
 import com.genetico.factory.GraficoServiceFactory;
 import com.genetico.model.Endereco;
+import com.genetico.model.EstatisticasFitness;
 import com.genetico.model.Populacao;
 import com.genetico.service.GraficoService;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +17,7 @@ public class AlgoritmoGenetico {
     private final int chanceOcorrenciaMutacao;
     private final GraficoService graficoService = GraficoServiceFactory.getGraficoService();
     private Populacao populacao;
+    private EstatisticasFitness estatisticasFitness;
 
     private AlgoritmoGenetico(Builder builder) {
         this.tamanhoPopulacao = builder.tamanhoPopulacao;
@@ -48,7 +50,16 @@ public class AlgoritmoGenetico {
 
         graficoService.gerarGraficoEvolucaoFitness(indicesGeracoes, melhoresFitnessPopulacoes);
 
+        var melhorFitnessPopulacaoInicial = melhoresFitnessPopulacoes[0];
+        var melhorFitnessPopulacaoFinal = populacao.getCromossomos()[0].getFitness();
+
+        estatisticasFitness = new EstatisticasFitness(melhorFitnessPopulacaoInicial, melhorFitnessPopulacaoFinal);
+
         return populacao;
+    }
+
+    public EstatisticasFitness getEstatisticasFitness() {
+        return estatisticasFitness;
     }
 
     private void preencherValoresGraficoFitness(double[] indicesGeracoes, int indiceGeracao, double[] melhoresFitnessPopulacoes) {

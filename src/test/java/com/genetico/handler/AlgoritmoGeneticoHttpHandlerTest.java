@@ -1,15 +1,11 @@
 package com.genetico.handler;
 
-import com.genetico.factory.GraficoServiceFactory;
-import com.genetico.service.GraficoService;
+import com.genetico.model.AlgoritmoGeneticoRequest;
+import com.genetico.service.RoteirizacaoService;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,29 +13,17 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class AlgoritmoGeneticoHttpHandlerTest {
-    private final AlgoritmoGeneticoHttpHandler handler = new AlgoritmoGeneticoHttpHandler();
-    private MockedStatic<GraficoServiceFactory> graficoServiceFactory;
-    private GraficoService graficoService;
-
-    @BeforeEach
-    void setUp() {
-        graficoServiceFactory = Mockito.mockStatic(GraficoServiceFactory.class);
-        graficoService = mock(GraficoService.class);
-        graficoServiceFactory.when(GraficoServiceFactory::getGraficoService)
-                .thenReturn(graficoService);
-    }
-
-    @AfterEach
-    void tearDown() {
-        graficoServiceFactory.close();
-    }
+    private final RoteirizacaoService roteirizacaoService = mock(RoteirizacaoService.class);
+    private final AlgoritmoGeneticoHttpHandler handler = new AlgoritmoGeneticoHttpHandler(roteirizacaoService);
 
     @Test
     @DisplayName("Deve rejeitar método diferente de POST")
@@ -80,8 +64,8 @@ class AlgoritmoGeneticoHttpHandlerTest {
     }
 
     @Test
-    @DisplayName("Deve processar algoritmo e responder sucesso")
-    void deveProcessarAlgoritmoEResponderSucesso() throws IOException {
+    @DisplayName("Deve extrair os dados da requisição e delegar a roteirização ao serviço")
+    void deveExtrairDadosERepassarAoServicoDeRoteirizacao() throws IOException {
         var corpo = """
                 {
                   "enderecos": [
@@ -104,10 +88,42 @@ class AlgoritmoGeneticoHttpHandlerTest {
         handler.handle(exchange);
 
         verify(exchange).sendResponseHeaders(eq(200), anyLong());
-        verify(graficoService).gerarGraficoEvolucaoFitness(Mockito.any(double[].class), Mockito.any(double[].class));
+        verify(roteirizacaoService).executar(any(AlgoritmoGeneticoRequest.class));
 
         assertEquals("application/json", exchange.getResponseHeaders().getFirst("Content-Type"));
         assertEquals("{\"status\":\"Pedido de roteirização recebido com sucesso\"}", exchange.getResponseBody().toString());
+    }
+
+    @Test
+    @DisplayName("Deve responder erro interno quando o serviço de roteirização falhar")
+    void deveResponderErroInternoQuandoServicoDeRoteirizacaoFalhar() throws IOException {
+        var corpo = """
+                {
+                  "enderecos": [
+                    {"id": 1, "latitude": -23.5, "longitude": -46.6},
+                    {"id": 2, "latitude": -23.6, "longitude": -46.7}
+                  ],
+                  "distancias": [
+                    {"idOrigem": 1, "idDestino": 2, "distancia": 10.0},
+                    {"idOrigem": 2, "idDestino": 1, "distancia": 10.0}
+                  ],
+                  "tamanhoPopulacao": 2,
+                  "quantidadeGeracoes": 1,
+                  "chanceOcorrenciaMutacao": 0,
+                  "chanceOcorrenciaCrossover": 0
+                }
+                """;
+
+        var exchange = criarExchange("POST", corpo);
+
+        doThrow(new RuntimeException("Falha simulada"))
+                .when(roteirizacaoService)
+                .executar(any());
+
+        handler.handle(exchange);
+
+        verify(exchange).sendResponseHeaders(eq(500), anyLong());
+        assertEquals("{\"erro\":\"Erro interno do servidor\"}", exchange.getResponseBody().toString());
     }
 
     private static HttpExchange criarExchange(String metodo, String corpo) {

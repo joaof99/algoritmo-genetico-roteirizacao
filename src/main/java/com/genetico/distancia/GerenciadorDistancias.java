@@ -10,8 +10,8 @@ public class GerenciadorDistancias {
 
     }
 
-    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, AlgoritmoGeneticoRequest algoritmoGeneticoResponse) {
-        metodoCalculoDistancia.registrarDistancias(algoritmoGeneticoResponse);
+    public static void inicializar(MetodoCalculoDistancia metodoCalculoDistancia, AlgoritmoGeneticoRequest algoritmoGeneticoRequest) {
+        metodoCalculoDistancia.registrarDistancias(algoritmoGeneticoRequest);
     }
 
     public static OptionalDouble obterDistanciaEntreEnderecos(int indiceEnderecoOrigem, int indiceEnderecoDestino) {
