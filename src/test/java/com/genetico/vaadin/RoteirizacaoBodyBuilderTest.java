@@ -22,7 +22,7 @@ class RoteirizacaoBodyBuilderTest {
         var corpo = roteirizacaoBodyBuilder.montar(request, estatisticasFitness);
 
         assertEquals(
-                "{\"melhor_fitness\":40.0,\"pior_fitness\":100.0,\"qtde_geracoes\":50,\"tamanho_populacao\":10,\"prob_crossover\":80,\"prob_mutacao\":5}",
+                "{\"melhor_fitness_populacao_inicial\":100.0,\"melhor_fitness_populacao_final\":40.0,\"qtde_geracoes\":50,\"tamanho_populacao\":10,\"prob_crossover\":80,\"prob_mutacao\":5}",
                 corpo
         );
     }

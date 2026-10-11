@@ -12,8 +12,8 @@ public class RoteirizacaoBodyBuilder {
 
     public String montar(AlgoritmoGeneticoRequest request, EstatisticasFitness estatisticasFitness) throws IOException {
         var corpo = new LinkedHashMap<String, Object>();
-        corpo.put("melhor_fitness", estatisticasFitness.melhorFitnessPopulacaoFinal());
-        corpo.put("pior_fitness", estatisticasFitness.melhorFitnessPopulacaoInicial());
+        corpo.put("melhor_fitness_populacao_inicial", estatisticasFitness.melhorFitnessPopulacaoInicial());
+        corpo.put("melhor_fitness_populacao_final", estatisticasFitness.melhorFitnessPopulacaoFinal());
         corpo.put("qtde_geracoes", request.quantidadeGeracoes());
         corpo.put("tamanho_populacao", request.tamanhoPopulacao());
         corpo.put("prob_crossover", request.chanceOcorrenciaCrossover());
