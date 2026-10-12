@@ -15,23 +15,27 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
     private static final Logger log = LogManager.getLogger();
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private final RoteirizacaoService roteirizacaoService;
+    private final Executor executorRoteirizacoes;
 
     public AlgoritmoGeneticoHttpHandler() {
-        this(new RoteirizacaoService());
+        this(new RoteirizacaoService(), Executors.newSingleThreadExecutor());
     }
 
-    AlgoritmoGeneticoHttpHandler(RoteirizacaoService roteirizacaoService) {
+    AlgoritmoGeneticoHttpHandler(RoteirizacaoService roteirizacaoService, Executor executorRoteirizacoes) {
         this.roteirizacaoService = roteirizacaoService;
+        this.executorRoteirizacoes = executorRoteirizacoes;
     }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        var status = 200;
+        var status = 202;
         var resposta = "{\"status\":\"Pedido de roteirização recebido com sucesso\"}";
 
         try {
@@ -42,7 +46,8 @@ public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
                 resposta = "{\"erro\":\"Método não permitido\"}";
             } else {
                 var json = OBJECT_MAPPER.readTree(exchange.getRequestBody());
-                roteirizacaoService.executar(extrairDadosAlgoritmoGenetico(json));
+                var request = extrairDadosAlgoritmoGenetico(json);
+                executorRoteirizacoes.execute(() -> executarRoteirizacao(request));
             }
         } catch (JsonProcessingException e) {
             log.error("Erro ao parsear JSON da requisição", e);
@@ -59,6 +64,14 @@ public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
         }
 
         enviarResposta(exchange, status, resposta);
+    }
+
+    private void executarRoteirizacao(AlgoritmoGeneticoRequest request) {
+        try {
+            roteirizacaoService.executar(request);
+        } catch (Exception e) {
+            log.error("Erro ao executar a roteirização em segundo plano", e);
+        }
     }
 
     private AlgoritmoGeneticoRequest extrairDadosAlgoritmoGenetico(JsonNode json) {
