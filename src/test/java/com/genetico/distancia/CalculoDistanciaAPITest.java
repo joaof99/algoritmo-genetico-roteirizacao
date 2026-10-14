@@ -30,7 +30,7 @@ class CalculoDistanciaAPITest {
                 new DistanciaResponse(3, 2, 800)
         );
 
-        new CalculoDistanciaAPI().registrarDistancias(new AlgoritmoGeneticoRequest(distancias, null, 0, 0, 0, 0));
+        new CalculoDistanciaAPI().registrarDistancias(new AlgoritmoGeneticoRequest(0, distancias, null, 0, 0, 0, 0));
 
         assertEquals(6, MatrizDistancias.getQuantidadeDistancias());
     }

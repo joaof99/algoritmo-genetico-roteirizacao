@@ -55,7 +55,8 @@ class RoteirizacaoServiceTest {
                 new DistanciaResponse(1, 2, 10.0),
                 new DistanciaResponse(2, 1, 10.0)
         );
-        var request = new AlgoritmoGeneticoRequest(distancias, enderecos, 2, 1, 0, 0);
+
+        var request = new AlgoritmoGeneticoRequest(7, distancias, enderecos, 2, 1, 0, 0);
 
         roteirizacaoService.executar(request);
 

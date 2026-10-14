@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 class AlgoritmoGeneticoHttpHandlerTest {
     private static final String CORPO_VALIDO = """
             {
+              "idRota": 7,
               "enderecos": [
                 {"id": 1, "latitude": -23.5, "longitude": -46.6},
                 {"id": 2, "latitude": -23.6, "longitude": -46.7}
@@ -112,6 +113,16 @@ class AlgoritmoGeneticoHttpHandlerTest {
         handler.handle(criarExchange("POST", CORPO_VALIDO));
 
         verify(roteirizacaoService).executar(any(AlgoritmoGeneticoRequest.class));
+    }
+
+    @Test
+    @DisplayName("Deve extrair da requisição o ID da rota a ser roteirizada")
+    void deveExtrairDaRequisicaoIdDaRotaASerRoteirizada() throws IOException {
+        handler.handle(criarExchange("POST", CORPO_VALIDO));
+
+        var requestCaptor = ArgumentCaptor.forClass(AlgoritmoGeneticoRequest.class);
+        verify(roteirizacaoService).executar(requestCaptor.capture());
+        assertEquals(7, requestCaptor.getValue().idRota());
     }
 
     @Test

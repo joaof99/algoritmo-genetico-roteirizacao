@@ -42,7 +42,7 @@ class HaversineTest {
                 new Endereco(9, -90.3, -50.2),
                 new Endereco(10, -90.3, -50.9));
 
-        new Haversine().registrarDistancias(new AlgoritmoGeneticoRequest(null, enderecos, 0, 0, 0, 0));
+        new Haversine().registrarDistancias(new AlgoritmoGeneticoRequest(0, null, enderecos, 0, 0, 0, 0));
 
         assertEquals(90, MatrizDistancias.getQuantidadeDistancias());
     }

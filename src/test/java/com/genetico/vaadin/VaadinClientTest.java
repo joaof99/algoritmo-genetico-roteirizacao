@@ -25,7 +25,7 @@ import static org.mockito.Mockito.when;
 class VaadinClientTest {
     private final HttpClient httpClient = mock(HttpClient.class);
     private final VaadinClient vaadinClient = new VaadinClient(httpClient, new RoteirizacaoBodyBuilder());
-    private final AlgoritmoGeneticoRequest request = new AlgoritmoGeneticoRequest(List.of(), List.of(), 10, 50, 5, 80);
+    private final AlgoritmoGeneticoRequest request = new AlgoritmoGeneticoRequest(7, List.of(), List.of(), 10, 50, 5, 80);
     private final EstatisticasFitness estatisticasFitness = new EstatisticasFitness(100.0, 40.0);
 
     @AfterEach

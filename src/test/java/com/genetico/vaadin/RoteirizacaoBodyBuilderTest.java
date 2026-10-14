@@ -16,13 +16,13 @@ class RoteirizacaoBodyBuilderTest {
     @Test
     @DisplayName("Deve montar o corpo da requisição com os campos esperados pela tabela do Vaadin")
     void deveMontarCorpoRequisicaoComOsCamposEsperados() throws IOException {
-        var request = new AlgoritmoGeneticoRequest(List.of(), List.of(), 10, 50, 5, 80);
+        var request = new AlgoritmoGeneticoRequest(7, List.of(), List.of(), 10, 50, 5, 80);
         var estatisticasFitness = new EstatisticasFitness(100.0, 40.0);
 
         var corpo = roteirizacaoBodyBuilder.montar(request, estatisticasFitness);
 
         assertEquals(
-                "{\"melhor_fitness_populacao_inicial\":100.0,\"melhor_fitness_populacao_final\":40.0,\"qtde_geracoes\":50,\"tamanho_populacao\":10,\"prob_crossover\":80,\"prob_mutacao\":5}",
+                "{\"id_rota\":7,\"melhor_fitness_populacao_inicial\":100.0,\"melhor_fitness_populacao_final\":40.0,\"qtde_geracoes\":50,\"tamanho_populacao\":10,\"prob_crossover\":80,\"prob_mutacao\":5}",
                 corpo
         );
     }

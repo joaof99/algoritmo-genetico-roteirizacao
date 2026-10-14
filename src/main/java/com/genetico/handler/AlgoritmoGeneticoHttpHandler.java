@@ -97,6 +97,7 @@ public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
         log.info("Foram encontrados {} endereços e {} distâncias", enderecos.size(), distancias.size());
 
         return new AlgoritmoGeneticoRequest(
+                obterInteiro(json, "idRota"),
                 distancias,
                 enderecos,
                 obterInteiro(json, "tamanhoPopulacao"),
