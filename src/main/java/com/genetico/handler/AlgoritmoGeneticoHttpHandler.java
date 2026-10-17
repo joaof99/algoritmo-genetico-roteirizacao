@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.genetico.model.AlgoritmoGeneticoRequest;
-import com.genetico.model.DistanciaResponse;
+import com.genetico.model.DistanciaRequest;
 import com.genetico.model.Endereco;
 import com.genetico.service.RoteirizacaoService;
 import com.sun.net.httpserver.HttpExchange;
@@ -80,7 +80,7 @@ public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
         }
 
         var enderecos = new ArrayList<Endereco>();
-        var distancias = new ArrayList<DistanciaResponse>();
+        var distancias = new ArrayList<DistanciaRequest>();
 
         obterArray(json, "enderecos").forEach(jsonNode -> enderecos.add(new Endereco(
                 obterInteiro(jsonNode, "id"),
@@ -88,7 +88,7 @@ public class AlgoritmoGeneticoHttpHandler implements HttpHandler {
                 obterDecimal(jsonNode, "longitude")
         )));
 
-        obterArray(json, "distancias").forEach(jsonNode -> distancias.add(new DistanciaResponse(
+        obterArray(json, "distancias").forEach(jsonNode -> distancias.add(new DistanciaRequest(
                 obterInteiro(jsonNode, "idOrigem"),
                 obterInteiro(jsonNode, "idDestino"),
                 obterDecimal(jsonNode, "distancia")

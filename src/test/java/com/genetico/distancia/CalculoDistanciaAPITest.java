@@ -1,7 +1,7 @@
 package com.genetico.distancia;
 
 import com.genetico.model.AlgoritmoGeneticoRequest;
-import com.genetico.model.DistanciaResponse;
+import com.genetico.model.DistanciaRequest;
 import com.genetico.model.MatrizDistancias;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,12 +22,12 @@ class CalculoDistanciaAPITest {
     @DisplayName("Deve ser calculado todas as distâncias possíveis")
     public void deveSerCalculadoTodasAsDistanciasPossiveis() {
         var distancias = List.of(
-                new DistanciaResponse(1, 2, 800),
-                new DistanciaResponse(1, 3, 800),
-                new DistanciaResponse(2, 1, 800),
-                new DistanciaResponse(2, 3, 800),
-                new DistanciaResponse(3, 1, 800),
-                new DistanciaResponse(3, 2, 800)
+                new DistanciaRequest(1, 2, 800),
+                new DistanciaRequest(1, 3, 800),
+                new DistanciaRequest(2, 1, 800),
+                new DistanciaRequest(2, 3, 800),
+                new DistanciaRequest(3, 1, 800),
+                new DistanciaRequest(3, 2, 800)
         );
 
         new CalculoDistanciaAPI().registrarDistancias(new AlgoritmoGeneticoRequest(0, distancias, null, 0, 0, 0, 0));

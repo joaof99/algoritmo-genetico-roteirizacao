@@ -3,7 +3,7 @@ package com.genetico.service;
 import com.genetico.factory.AgInterfaceClientFactory;
 import com.genetico.factory.GraficoServiceFactory;
 import com.genetico.model.AlgoritmoGeneticoRequest;
-import com.genetico.model.DistanciaResponse;
+import com.genetico.model.DistanciaRequest;
 import com.genetico.model.Endereco;
 import com.genetico.aginterface.AgInterfaceClient;
 import org.junit.jupiter.api.AfterEach;
@@ -57,8 +57,8 @@ class RoteirizacaoServiceTest {
         );
 
         var distancias = List.of(
-                new DistanciaResponse(1, 2, 10.0),
-                new DistanciaResponse(2, 1, 10.0)
+                new DistanciaRequest(1, 2, 10.0),
+                new DistanciaRequest(2, 1, 10.0)
         );
 
         roteirizacaoService.executar(new AlgoritmoGeneticoRequest(7, distancias, enderecos, 2, 1, 0, 0));
