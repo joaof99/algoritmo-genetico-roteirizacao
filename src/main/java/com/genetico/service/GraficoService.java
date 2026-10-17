@@ -3,12 +3,10 @@ package com.genetico.service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.knowm.xchart.BitmapEncoder;
-import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -59,12 +57,6 @@ public class GraficoService {
         var chart = criarChart();
 
         criarImagemGrafico(indicesGeracoes, melhoresFitnessPopulacoes, chart);
-        configurarJanela(chart);
-    }
-
-    private void configurarJanela(XYChart chart) {
-        var jFrame = new SwingWrapper<>(chart).displayChart();
-        jFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
     private void checarSeHaIndicesGeracoesRepetidos(double[] indicesGeracoes) {
