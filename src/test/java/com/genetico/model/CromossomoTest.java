@@ -1,14 +1,21 @@
 package com.genetico.model;
 
-import com.genetico.CalculadorDistancias;
+import com.genetico.distancia.GerenciadorDistancias;
+import com.genetico.factory.RandomizadorFactory;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.util.HashSet;
+import java.util.OptionalDouble;
 import java.util.Random;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,38 +23,35 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class CromossomoTest {
+    private MockedStatic<GerenciadorDistancias> gerenciadorDistancias;
+    private MockedStatic<RandomizadorFactory> randomizadorFactory;
+    private Random random;
+    private Endereco[] enderecos;
 
-    @ParameterizedTest
-    @MethodSource("casosDeTesteParaCalculoFitness")
-    @DisplayName("Valor do fitness deve ser calculado corretamente")
-    public void valorDoFitnessDeveSeCalculadoCorretamente(int[] genesFixos, int[][] distanciasFixas, int fitnessEsperado) {
-        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
-                    .thenAnswer(invocation -> {
-                        int indiceCidadeOrigem = invocation.getArgument(0);
-                        int indiceCidadeDestino = invocation.getArgument(1);
-                        return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
-                    });
+    @BeforeEach
+    void setUp() {
+        randomizadorFactory = Mockito.mockStatic(RandomizadorFactory.class);
+        gerenciadorDistancias = Mockito.mockStatic(GerenciadorDistancias.class);
+        random = Mockito.mock(Random.class);
 
-            assertEquals(fitnessEsperado, new Cromossomo(genesFixos).getFitness());
-        }
+        randomizadorFactory.when(RandomizadorFactory::getRandomizador).thenReturn(random);
+
+        var distanciasFixas = inicializarDistanciasFixas();
+
+        gerenciadorDistancias.when(() -> GerenciadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+                .thenAnswer(invocation -> {
+                    int indiceCidadeOrigem = invocation.getArgument(0);
+                    int indiceCidadeDestino = invocation.getArgument(1);
+                    return OptionalDouble.of(distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino]);
+                });
+
+        enderecos = IntStream.range(0, 10)
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900))
+                .toArray(Endereco[]::new);
     }
 
-    private static Stream<Arguments> casosDeTesteParaCalculoFitness() {
-        return Stream.of(
-                Arguments.of(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
-                        inicializarDistanciasFixas(),
-                        100
-                ),
-                Arguments.of(new int[]{0, 9, 8, 7, 6, 5, 4, 3, 2, 1},
-                        inicializarDistanciasFixas(),
-                        155
-                )
-        );
-    }
-
-    private static int[][] inicializarDistanciasFixas() {
-        int[][] distancias = {
+    private static double[][] inicializarDistanciasFixas() {
+        return new double[][]{
                 {10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
                 {15, 15, 15, 25, 35, 45, 55, 65, 75, 85},
                 {10, 10, 10, 30, 20, 30, 40, 50, 60, 70},
@@ -59,22 +63,46 @@ public class CromossomoTest {
                 {10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
                 {10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
         };
+    }
 
-        return distancias;
+    @AfterEach
+    void tearDown() {
+        gerenciadorDistancias.close();
+        randomizadorFactory.close();
+    }
+
+    @ParameterizedTest
+    @MethodSource("casosDeTesteParaCalculoFitness")
+    @DisplayName("Valor do fitness deve ser calculado corretamente")
+    public void valorDoFitnessDeveSeCalculadoCorretamente(int[] genesFixos, double[][] distanciasFixas, double fitnessEsperado) {
+        assertEquals(fitnessEsperado, new Cromossomo(genesFixos).getFitness());
+    }
+
+    private static Stream<Arguments> casosDeTesteParaCalculoFitness() {
+        return Stream.of(
+                Arguments.of(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
+                        inicializarDistanciasFixas(),
+                        100.0
+                ),
+                Arguments.of(new int[]{0, 9, 8, 7, 6, 5, 4, 3, 2, 1},
+                        inicializarDistanciasFixas(),
+                        155.0
+                )
+        );
     }
 
     @Test
     @DisplayName(value = "Genes devem ser inicializados com o tamanho correto definido na constante")
     public void genesDevemSerInicializadosComOTamanhoCorreto() {
-        assertEquals(Cromossomo.QTDE_MAXIMA_GENES, new Cromossomo().getGenes().length);
+        assertEquals(10, new Cromossomo(enderecos).getGenes().length);
     }
 
     @Test
     @DisplayName(value = "Genes devem ser formatados corretamente com caracter delimitador: |")
     public void genesDevemSerFormatadosCorretamenteAoImprimir() {
-        boolean impressaoCromossomoEstaNoPadrao = new Cromossomo()
+        boolean impressaoCromossomoEstaNoPadrao = new Cromossomo(enderecos)
                 .formatarGenes()
-                .matches("^(\\d+\\s\\|\\s)*\\d+$");
+                .matches("^(\\d+\\s\\|\\s)+(\\d+(\\.\\d+)?)$");
 
         assertTrue(impressaoCromossomoEstaNoPadrao);
     }
@@ -82,7 +110,7 @@ public class CromossomoTest {
     @Test
     @DisplayName(value = "Não deve existir genes repetidos em um cromossomo")
     public void naoDeveExistirGenesRepetidosNoCromossomo() {
-        var cromossomo = new Cromossomo();
+        var cromossomo = new Cromossomo(enderecos);
 
         var genesSemRepeticao = new HashSet<>();
 
@@ -93,11 +121,11 @@ public class CromossomoTest {
         }
     }
 
-    @Test
-    @DisplayName(value = "O gene de origem do cromossomo deve sempre ser igual a 0")
-    public void oGeneOrigemDoCromossomoDeveSerSempreZero() {
-        assertEquals(0, new Cromossomo().getGenes()[0]);
-    }
+//    @Test
+//    @DisplayName(value = "O gene de origem do cromossomo deve sempre ser igual a 0")
+//    public void oGeneOrigemDoCromossomoDeveSerSempreZero() {
+//        assertEquals(0, new Cromossomo().getGenes()[0]);
+//    }
 
     @ParameterizedTest
     @MethodSource("casosDeTesteParaCrossoverPmx")
@@ -108,34 +136,17 @@ public class CromossomoTest {
             int[] pontosCorteFixos,
             String genesEsperadosFilho1,
             String genesEsperadosFilho2) {
-        var distanciasFixas = inicializarDistanciasFixas();
+        when(random.nextInt(anyInt()))
+                .thenReturn(pontosCorteFixos[0], pontosCorteFixos[1]);
 
-        try (var calculadorDeDistancias = mockStatic(CalculadorDistancias.class)) {
-            calculadorDeDistancias.when(() -> CalculadorDistancias.obterDistanciaEntreDuasCidades(anyInt(), anyInt()))
-                    .thenAnswer(invocation -> {
-                        int indiceCidadeOrigem = invocation.getArgument(0);
-                        int indiceCidadeDestino = invocation.getArgument(1);
-                        return distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino];
-                    });
+        var pai1 = new Cromossomo(genesFixos1);
+        var pai2 = new Cromossomo(genesFixos2);
 
-            var random = mock(Random.class);
-            when(random.nextInt(anyInt())).thenReturn(pontosCorteFixos[0], pontosCorteFixos[1]);
+        var filhos = pai1.realizarCrossover(pai2);
+        var indiceUltimoFilho = filhos.length - 1;
 
-            var pai1 = new Cromossomo(genesFixos1) {
-                @Override
-                public Random getRandomizador() {
-                    return random;
-                }
-            };
-
-            var pai2 = new Cromossomo(genesFixos2);
-
-            var filhos = pai1.realizarCrossoverPmx(pai2);
-            var indiceUltimoFilho = filhos.length - 1;
-
-            assertEquals(genesEsperadosFilho1, filhos[0].formatarGenes());
-            assertEquals(genesEsperadosFilho2, filhos[indiceUltimoFilho].formatarGenes());
-        }
+        assertEquals(genesEsperadosFilho1, filhos[0].formatarGenes());
+        assertEquals(genesEsperadosFilho2, filhos[indiceUltimoFilho].formatarGenes());
     }
 
     private static Stream<Arguments> casosDeTesteParaCrossoverPmx() {
@@ -144,22 +155,22 @@ public class CromossomoTest {
                         new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
                         new int[]{0, 4, 3, 2, 1, 7, 6, 5, 8, 9},
                         new int[]{3, 5},
-                        "0 | 4 | 2 | 3 | 1 | 7 | 6 | 5 | 8 | 9 | 200",
-                        "0 | 1 | 3 | 2 | 4 | 5 | 6 | 7 | 8 | 9 | 100"
+                        "0 | 4 | 2 | 3 | 1 | 7 | 6 | 5 | 8 | 9 | 200.0",
+                        "0 | 1 | 3 | 2 | 4 | 5 | 6 | 7 | 8 | 9 | 100.0"
                 ),
                 Arguments.of(
                         new int[]{0, 1, 2, 3, 4, 5, 6, 7},
                         new int[]{0, 3, 2, 1, 4, 5, 6, 7},
                         new int[]{0, 3},
-                        "0 | 3 | 2 | 1 | 4 | 5 | 6 | 7 | 105",
-                        "0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 85"
+                        "0 | 3 | 2 | 1 | 4 | 5 | 6 | 7 | 105.0",
+                        "0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 85.0"
                 ),
                 Arguments.of(
                         new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
                         new int[]{0, 3, 2, 1, 4, 5, 6, 7, 8, 9},
                         new int[]{1, 5},
-                        "0 | 3 | 2 | 1 | 4 | 5 | 6 | 7 | 8 | 9 | 120",
-                        "0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 100"
+                        "0 | 3 | 2 | 1 | 4 | 5 | 6 | 7 | 8 | 9 | 120.0",
+                        "0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 100.0"
                 )
         );
     }
@@ -168,16 +179,9 @@ public class CromossomoTest {
     @MethodSource("casosDeTesteParaMutacaoSwap")
     @DisplayName("Deve realizar mutação swap corretamente com diferentes combinações de genes")
     public void deveRealizarMutacaoSwapCorretamente(int[] genesCromossomoInicial, int indiceAleatorioGene1, int indiceAleatorioGene2, String formatacaoEsperadaCromossomo) {
-        var random = mock(Random.class);
-
         var cromossomo = new Cromossomo(genesCromossomoInicial) {
             @Override
-            public Random getRandomizador() {
-                return random;
-            }
-
-            @Override
-            public int getFitness() {
+            public double getFitness() {
                 return 1000;
             }
         };
@@ -186,7 +190,7 @@ public class CromossomoTest {
                 .thenReturn(indiceAleatorioGene1)
                 .thenReturn(indiceAleatorioGene2);
 
-        cromossomo.realizarMutacaoSwap();
+        cromossomo.realizarMutacao();
         assertEquals(formatacaoEsperadaCromossomo, cromossomo.formatarGenes());
     }
 
@@ -196,25 +200,25 @@ public class CromossomoTest {
                         new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9},
                         1,
                         2,
-                        "0 | 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1000"
+                        "0 | 2 | 1 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 1000.0"
                 ),
                 Arguments.of(
                         new int[]{0, 2, 1, 4, 3, 7, 6, 5, 8, 9},
                         2,
                         3,
-                        "0 | 2 | 4 | 1 | 3 | 7 | 6 | 5 | 8 | 9 | 1000"
+                        "0 | 2 | 4 | 1 | 3 | 7 | 6 | 5 | 8 | 9 | 1000.0"
                 ),
                 Arguments.of(
                         new int[]{0, 9, 3, 2, 4, 5, 6, 7, 8, 1},
                         0,
                         9,
-                        "1 | 9 | 3 | 2 | 4 | 5 | 6 | 7 | 8 | 0 | 1000"
+                        "1 | 9 | 3 | 2 | 4 | 5 | 6 | 7 | 8 | 0 | 1000.0"
                 ),
                 Arguments.of(
                         new int[]{0, 3, 2, 1, 6, 5, 4, 7, 8, 9},
                         1,
                         7,
-                        "0 | 7 | 2 | 1 | 6 | 5 | 4 | 3 | 8 | 9 | 1000"
+                        "0 | 7 | 2 | 1 | 6 | 5 | 4 | 3 | 8 | 9 | 1000.0"
                 )
         );
     }

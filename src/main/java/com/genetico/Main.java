@@ -1,6 +1,8 @@
 package com.genetico;
 
-import com.genetico.model.Populacao;
+import com.genetico.exception.AlgoritmoGeneticoServidorException;
+import com.genetico.handler.AlgoritmoGeneticoHttpHandler;
+import com.genetico.http.AlgoritmoGeneticoServidor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,16 +10,11 @@ public class Main {
     private static final Logger log = LogManager.getLogger(Main.class);
 
     public static void main(String[] args) {
-        log.info("População inicial");
-        var tamanhoPopulacao = 30;
-        var chanceFixaOcorrenciaCrossover = 50;
-        var chanceFixaOcorrenciaMutacao = 50;
-        var populacaoInicial = new Populacao(tamanhoPopulacao, chanceFixaOcorrenciaCrossover, chanceFixaOcorrenciaMutacao);
-        populacaoInicial.imprimirPopulacao();
-
-        log.info("População final");
-        var qtdeGeracoes = 50;
-        var populacaoFinal = new Reproducao(qtdeGeracoes, populacaoInicial).reproduzir();
-        populacaoFinal.imprimirPopulacao();
+        try {
+            new AlgoritmoGeneticoServidor(8081, "localhost", new AlgoritmoGeneticoHttpHandler()).iniciarServidor();
+        } catch (AlgoritmoGeneticoServidorException e) {
+            log.error("Algoritmo Genético não pôde inicializar.", e);
+            System.exit(1);
+        }
     }
 }

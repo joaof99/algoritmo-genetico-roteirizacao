@@ -1,0 +1,228 @@
+package com.genetico;
+
+import com.genetico.distancia.GerenciadorDistancias;
+import com.genetico.factory.GraficoServiceFactory;
+import com.genetico.model.Cromossomo;
+import com.genetico.model.Endereco;
+import com.genetico.service.GraficoService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.OptionalDouble;
+import java.util.stream.IntStream;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.*;
+
+public class AlgoritmoGeneticoTest {
+    private MockedStatic<GerenciadorDistancias> gerenciadorDistancias;
+    private MockedStatic<GraficoServiceFactory> graficoServiceFactory;
+
+    @BeforeEach
+    void setUp() {
+        gerenciadorDistancias = Mockito.mockStatic(GerenciadorDistancias.class);
+        graficoServiceFactory = Mockito.mockStatic(GraficoServiceFactory.class);
+    }
+
+    @AfterEach
+    void tearDown() {
+        gerenciadorDistancias.close();
+        graficoServiceFactory.close();
+    }
+
+    @Test
+    @DisplayName("Reprodução deve gerar população de tamanho fixo, ordenada e com fitness melhorado")
+    public void reproducaoDasPopulacoesDeveOcorrerDeFormaCorreta() {
+        var distanciasFixas = inicializarDistanciasFixas();
+
+        gerenciadorDistancias.when(() -> GerenciadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+                .thenAnswer(invocation -> {
+                    int indiceCidadeOrigem = invocation.getArgument(0);
+                    int indiceCidadeDestino = invocation.getArgument(1);
+                    return OptionalDouble.of(distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino]);
+                });
+
+        var graficoService = mock(GraficoService.class);
+
+        graficoServiceFactory.when(GraficoServiceFactory::getGraficoService)
+                .thenReturn(graficoService);
+
+        var melhoresFitnessCaptor = ArgumentCaptor.forClass(double[].class);
+
+        var enderecos = IntStream.range(0, 10)
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900))
+                .toArray(Endereco[]::new);
+
+        var algoritmoGenetico = new AlgoritmoGenetico
+                .Builder()
+                .qtdeGeracoes(50)
+                .enderecos(enderecos)
+                .tamanhoPopulacao(30)
+                .chanceOcorrenciaMutacao(80)
+                .chanceOcorrenciaCrossover(80)
+                .build();
+
+        var populacaoFinal = algoritmoGenetico.reproduzir();
+
+        verify(graficoService).gerarGraficoEvolucaoFitness(
+                any(),
+                melhoresFitnessCaptor.capture()
+        );
+
+        var cromossomosPopulacaoFinal = populacaoFinal.getCromossomos();
+
+        var cromossomosOrdenados = Arrays.copyOf(cromossomosPopulacaoFinal, cromossomosPopulacaoFinal.length);
+        Arrays.sort(cromossomosOrdenados, Comparator.comparingDouble(Cromossomo::getFitness));
+
+        var melhoresFitness = melhoresFitnessCaptor.getValue();
+        var melhorFitnessPopulacaoInicial = melhoresFitness[0];
+
+        var melhorFitnessEncontrado = Arrays.stream(melhoresFitness)
+                .min()
+                .orElseThrow();
+
+        assertTrue(melhorFitnessEncontrado < melhorFitnessPopulacaoInicial, "Não houve evolução no algoritmo genético");
+        assertEquals(30, populacaoFinal.getCromossomos().length);
+        assertArrayEquals(cromossomosOrdenados, populacaoFinal.getCromossomos());
+    }
+
+    @Test
+    @DisplayName("Reprodução deve registrar o melhor fitness da população inicial e da população final")
+    public void reproducaoDeveRegistrarEstatisticasDeFitnessInicialEFinal() {
+        var distanciasFixas = inicializarDistanciasFixas();
+
+        gerenciadorDistancias.when(() -> GerenciadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+                .thenAnswer(invocation -> {
+                    int indiceCidadeOrigem = invocation.getArgument(0);
+                    int indiceCidadeDestino = invocation.getArgument(1);
+                    return OptionalDouble.of(distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino]);
+                });
+
+        var graficoService = mock(GraficoService.class);
+
+        graficoServiceFactory.when(GraficoServiceFactory::getGraficoService)
+                .thenReturn(graficoService);
+
+        var melhoresFitnessCaptor = ArgumentCaptor.forClass(double[].class);
+
+        var enderecos = IntStream.range(0, 10)
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900))
+                .toArray(Endereco[]::new);
+
+        var algoritmoGenetico = new AlgoritmoGenetico
+                .Builder()
+                .qtdeGeracoes(50)
+                .enderecos(enderecos)
+                .tamanhoPopulacao(30)
+                .chanceOcorrenciaMutacao(80)
+                .chanceOcorrenciaCrossover(80)
+                .build();
+
+        var populacaoFinal = algoritmoGenetico.reproduzir();
+
+        verify(graficoService).gerarGraficoEvolucaoFitness(
+                any(),
+                melhoresFitnessCaptor.capture()
+        );
+
+        var estatisticasFitness = algoritmoGenetico.getEstatisticasFitness();
+
+        assertEquals(melhoresFitnessCaptor.getValue()[0], estatisticasFitness.melhorFitnessPopulacaoInicial());
+        assertEquals(populacaoFinal.getCromossomos()[0].getFitness(), estatisticasFitness.melhorFitnessPopulacaoFinal());
+    }
+
+    @Test
+    @DisplayName("Reprodução deve registrar o melhor fitness da população inicial e de cada geração")
+    public void reproducaoDeveRegistrarMelhorFitnessDaPopulacaoInicialEDeCadaGeracao() {
+        var distanciasFixas = inicializarDistanciasFixas();
+
+        gerenciadorDistancias.when(() -> GerenciadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+                .thenAnswer(invocation -> {
+                    int indiceCidadeOrigem = invocation.getArgument(0);
+                    int indiceCidadeDestino = invocation.getArgument(1);
+                    return OptionalDouble.of(distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino]);
+                });
+
+        graficoServiceFactory.when(GraficoServiceFactory::getGraficoService)
+                .thenReturn(mock(GraficoService.class));
+
+        var enderecos = IntStream.range(0, 10)
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900))
+                .toArray(Endereco[]::new);
+
+        var algoritmoGenetico = new AlgoritmoGenetico
+                .Builder()
+                .qtdeGeracoes(50)
+                .enderecos(enderecos)
+                .tamanhoPopulacao(30)
+                .chanceOcorrenciaMutacao(80)
+                .chanceOcorrenciaCrossover(80)
+                .build();
+
+        algoritmoGenetico.reproduzir();
+
+        assertEquals(51, algoritmoGenetico.getEstatisticasFitness().melhoresFitnessPorGeracao().size());
+    }
+
+    @Test
+    @DisplayName("Reprodução deve registrar as estatísticas de fitness mesmo quando o gráfico não puder ser gerado")
+    public void reproducaoDeveRegistrarEstatisticasDeFitnessMesmoQuandoGraficoNaoPuderSerGerado() {
+        var distanciasFixas = inicializarDistanciasFixas();
+
+        gerenciadorDistancias.when(() -> GerenciadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+                .thenAnswer(invocation -> {
+                    int indiceCidadeOrigem = invocation.getArgument(0);
+                    int indiceCidadeDestino = invocation.getArgument(1);
+                    return OptionalDouble.of(distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino]);
+                });
+
+        var graficoService = mock(GraficoService.class);
+
+        doThrow(new RuntimeException("Sem permissão para gravar o gráfico"))
+                .when(graficoService)
+                .gerarGraficoEvolucaoFitness(any(), any());
+
+        graficoServiceFactory.when(GraficoServiceFactory::getGraficoService)
+                .thenReturn(graficoService);
+
+        var enderecos = IntStream.range(0, 10)
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900))
+                .toArray(Endereco[]::new);
+
+        var algoritmoGenetico = new AlgoritmoGenetico
+                .Builder()
+                .qtdeGeracoes(50)
+                .enderecos(enderecos)
+                .tamanhoPopulacao(30)
+                .chanceOcorrenciaMutacao(80)
+                .chanceOcorrenciaCrossover(80)
+                .build();
+
+        algoritmoGenetico.reproduzir();
+
+        assertEquals(51, algoritmoGenetico.getEstatisticasFitness().melhoresFitnessPorGeracao().size());
+    }
+
+    private static double[][] inicializarDistanciasFixas() {
+        return new double[][]{
+                {10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
+                {15, 15, 15, 25, 35, 45, 55, 65, 75, 85},
+                {10, 10, 10, 30, 20, 30, 40, 50, 60, 70},
+                {5, 5, 5, 5, 5, 15, 25, 35, 45, 55},
+                {10, 10, 10, 10, 10, 10, 20, 30, 40, 50},
+                {5, 5, 5, 5, 5, 5, 5, 15, 25, 35},
+                {10, 10, 10, 10, 10, 10, 10, 10, 20, 30},
+                {5, 5, 5, 5, 5, 5, 5, 5, 5, 15},
+                {10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
+                {10, 10, 10, 10, 10, 10, 10, 10, 10, 10}
+        };
+    }
+}

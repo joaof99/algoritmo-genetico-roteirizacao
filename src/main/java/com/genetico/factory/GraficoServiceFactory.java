@@ -1,4 +1,6 @@
-package com.genetico.service;
+package com.genetico.factory;
+
+import com.genetico.service.GraficoService;
 
 public class GraficoServiceFactory {
     private static GraficoService graficoService;
