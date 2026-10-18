@@ -119,6 +119,7 @@ A comunicação entre os projetos foi pensada para crescer junto com a simulaç�
 | **Padrão Transactional Outbox** | Garantia de que o registro da roteirização e o envio do pedido aconteçam sempre juntos |
 | **Docker Compose** | Subir todo o ambiente (banco de dados, filas e serviços) com um único comando |
 | **Resilience4j** | Políticas de nova tentativa e *circuit breaker* nas integrações com serviços externos |
+| **OSRM (Open Source Routing Machine)** | Cálculo local das distâncias reais entre os endereços, com mapas do OpenStreetMap: consultas mais rápidas, sem custo por consulta mesmo em grande volume, suporte a rotas com muitos endereços e perfis de roteamento próprios para caminhões |
 | **Kafka** | Fluxos de eventos em grande volume, quando o e-commerce e o monitoramento dos caminhões existirem |
 
 Nenhuma dessas tecnologias foi adotada ainda: a decisão depende dos resultados dessa análise.
