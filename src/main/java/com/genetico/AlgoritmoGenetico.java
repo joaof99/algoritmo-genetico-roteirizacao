@@ -4,11 +4,11 @@ import com.genetico.factory.GraficoServiceFactory;
 import com.genetico.model.Endereco;
 import com.genetico.model.EstatisticasFitness;
 import com.genetico.model.Populacao;
-import com.genetico.service.GraficoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class AlgoritmoGenetico {
@@ -18,7 +18,6 @@ public class AlgoritmoGenetico {
     private final int tamanhoPopulacao;
     private final int chanceOcorrenciaCrossover;
     private final int chanceOcorrenciaMutacao;
-    private final GraficoService graficoService = GraficoServiceFactory.getGraficoService();
     private Populacao populacao;
     private EstatisticasFitness estatisticasFitness;
 
@@ -50,17 +49,29 @@ public class AlgoritmoGenetico {
             melhoresFitnessPorGeracao.add(populacao.getCromossomos()[0].getFitness());
         }
 
-        graficoService.gerarGraficoEvolucaoFitness(
-                IntStream.rangeClosed(0, quantidadeGeracoes)
-                        .asDoubleStream()
-                        .toArray(),
-                melhoresFitnessPorGeracao.stream()
-                        .mapToDouble(Double::doubleValue)
-                        .toArray());
-
         estatisticasFitness = new EstatisticasFitness(melhoresFitnessPorGeracao);
 
+        gerarGraficoEvolucaoFitness(melhoresFitnessPorGeracao);
+
         return populacao;
+    }
+
+    private void gerarGraficoEvolucaoFitness(List<Double> melhoresFitnessPorGeracao) {
+        var indicesGeracoes = IntStream.rangeClosed(0, quantidadeGeracoes)
+                .asDoubleStream()
+                .toArray();
+
+        var valoresFitness = melhoresFitnessPorGeracao.stream()
+                .mapToDouble(Double::doubleValue)
+                .toArray();
+
+        try {
+            GraficoServiceFactory
+                    .getGraficoService()
+                    .gerarGraficoEvolucaoFitness(indicesGeracoes, valoresFitness);
+        } catch (RuntimeException e) {
+            log.warn("Não foi possível gerar o gráfico de evolução do fitness. A roteirização segue sem o gráfico", e);
+        }
     }
 
     public EstatisticasFitness getEstatisticasFitness() {
