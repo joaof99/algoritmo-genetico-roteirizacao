@@ -8,6 +8,9 @@ import com.genetico.service.GraficoService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.stream.IntStream;
+
 public class AlgoritmoGenetico {
     private static final Logger log = LogManager.getLogger();
     private final int quantidadeGeracoes;
@@ -39,36 +42,29 @@ public class AlgoritmoGenetico {
         log.info("População inicial");
         populacao.imprimirPopulacao();
 
-        var indicesGeracoes = new double[quantidadeGeracoes];
-        var melhoresFitnessPopulacoes = new double[quantidadeGeracoes];
+        var melhoresFitnessPorGeracao = new ArrayList<Double>();
+        melhoresFitnessPorGeracao.add(populacao.getCromossomos()[0].getFitness());
 
-        for (int indiceGeracao = 0; indiceGeracao < quantidadeGeracoes; indiceGeracao++) {
-            preencherValoresGraficoFitness(indicesGeracoes, indiceGeracao, melhoresFitnessPopulacoes);
-
+        for (int geracao = 1; geracao <= quantidadeGeracoes; geracao++) {
             populacao = populacao.gerarPopulacaoFilha();
+            melhoresFitnessPorGeracao.add(populacao.getCromossomos()[0].getFitness());
         }
 
-        graficoService.gerarGraficoEvolucaoFitness(indicesGeracoes, melhoresFitnessPopulacoes);
+        graficoService.gerarGraficoEvolucaoFitness(
+                IntStream.rangeClosed(0, quantidadeGeracoes)
+                        .asDoubleStream()
+                        .toArray(),
+                melhoresFitnessPorGeracao.stream()
+                        .mapToDouble(Double::doubleValue)
+                        .toArray());
 
-        var melhorFitnessPopulacaoInicial = melhoresFitnessPopulacoes[0];
-        var melhorFitnessPopulacaoFinal = populacao.getCromossomos()[0].getFitness();
-
-        estatisticasFitness = new EstatisticasFitness(melhorFitnessPopulacaoInicial, melhorFitnessPopulacaoFinal);
+        estatisticasFitness = new EstatisticasFitness(melhoresFitnessPorGeracao);
 
         return populacao;
     }
 
     public EstatisticasFitness getEstatisticasFitness() {
         return estatisticasFitness;
-    }
-
-    private void preencherValoresGraficoFitness(double[] indicesGeracoes, int indiceGeracao, double[] melhoresFitnessPopulacoes) {
-        indicesGeracoes[indiceGeracao] = indiceGeracao;
-
-        var cromossomoComMelhorFitness = populacao.getCromossomos()[0];
-
-        var melhorFitnessPopulacaoAtual = cromossomoComMelhorFitness.getFitness();
-        melhoresFitnessPopulacoes[indiceGeracao] = melhorFitnessPopulacaoAtual;
     }
 
     public static class Builder {

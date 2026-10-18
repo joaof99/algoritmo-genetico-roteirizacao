@@ -16,6 +16,7 @@ public class RoteirizacaoBodyBuilder {
         corpo.put("melhor_fitness_populacao_inicial", estatisticasFitness.melhorFitnessPopulacaoInicial());
         corpo.put("melhor_fitness_populacao_final", estatisticasFitness.melhorFitnessPopulacaoFinal());
         corpo.put("melhor_rota", melhorRota);
+        corpo.put("melhores_fitness_por_geracao", estatisticasFitness.melhoresFitnessPorGeracao());
 
         return OBJECT_MAPPER.writeValueAsString(corpo);
     }

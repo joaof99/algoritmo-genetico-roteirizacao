@@ -19,6 +19,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -50,7 +51,7 @@ class AgInterfaceClientTest {
         when(httpClient.send(any(), any()))
                 .thenReturn(resposta);
 
-        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(100.0, 40.0), new int[]{30, 10, 20});
+        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(List.of(100.0, 70.0, 40.0)), new int[]{30, 10, 20});
 
         var requisicaoCaptor = ArgumentCaptor.forClass(HttpRequest.class);
         verify(httpClient).send(requisicaoCaptor.capture(), any());
@@ -101,7 +102,7 @@ class AgInterfaceClientTest {
                 .thenReturn(respostaErroInterno)
                 .thenReturn(respostaSucesso);
 
-        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(100.0, 40.0), new int[]{30, 10, 20});
+        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(List.of(100.0, 70.0, 40.0)), new int[]{30, 10, 20});
 
         verify(httpClient, times(2)).send(any(), any());
     }
@@ -119,7 +120,7 @@ class AgInterfaceClientTest {
                 .thenThrow(new IOException("Falha de conexão"))
                 .thenReturn(respostaSucesso);
 
-        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(100.0, 40.0), new int[]{30, 10, 20});
+        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(List.of(100.0, 70.0, 40.0)), new int[]{30, 10, 20});
 
         verify(httpClient, times(2)).send(any(), any());
     }
@@ -136,7 +137,7 @@ class AgInterfaceClientTest {
         when(httpClient.send(any(), any()))
                 .thenReturn(respostaConflito);
 
-        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(100.0, 40.0), new int[]{30, 10, 20});
+        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(List.of(100.0, 70.0, 40.0)), new int[]{30, 10, 20});
 
         verify(httpClient, times(1)).send(any(), any());
     }
@@ -166,7 +167,7 @@ class AgInterfaceClientTest {
         logger.addAppender(appender);
 
         try {
-            agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(100.0, 40.0), new int[]{30, 10, 20});
+            agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(List.of(100.0, 70.0, 40.0)), new int[]{30, 10, 20});
         } finally {
             logger.removeAppender(appender);
         }
@@ -199,7 +200,7 @@ class AgInterfaceClientTest {
         logger.addAppender(appender);
 
         try {
-            agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(100.0, 40.0), new int[]{30, 10, 20});
+            agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(List.of(100.0, 70.0, 40.0)), new int[]{30, 10, 20});
         } finally {
             logger.removeAppender(appender);
         }
@@ -215,7 +216,7 @@ class AgInterfaceClientTest {
                 .when(httpClient)
                 .send(any(), any());
 
-        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(100.0, 40.0), new int[]{30, 10, 20});
+        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(List.of(100.0, 70.0, 40.0)), new int[]{30, 10, 20});
 
         verify(httpClient, times(6)).send(any(), any());
     }
@@ -227,7 +228,7 @@ class AgInterfaceClientTest {
                 .when(httpClient)
                 .send(any(), any());
 
-        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(100.0, 40.0), new int[]{30, 10, 20});
+        agInterfaceClient.enviarConclusao(7, new EstatisticasFitness(List.of(100.0, 70.0, 40.0)), new int[]{30, 10, 20});
 
         assertTrue(Thread.currentThread().isInterrupted());
     }

@@ -139,6 +139,39 @@ public class AlgoritmoGeneticoTest {
         assertEquals(populacaoFinal.getCromossomos()[0].getFitness(), estatisticasFitness.melhorFitnessPopulacaoFinal());
     }
 
+    @Test
+    @DisplayName("Reprodução deve registrar o melhor fitness da população inicial e de cada geração")
+    public void reproducaoDeveRegistrarMelhorFitnessDaPopulacaoInicialEDeCadaGeracao() {
+        var distanciasFixas = inicializarDistanciasFixas();
+
+        gerenciadorDistancias.when(() -> GerenciadorDistancias.obterDistanciaEntreEnderecos(anyInt(), anyInt()))
+                .thenAnswer(invocation -> {
+                    int indiceCidadeOrigem = invocation.getArgument(0);
+                    int indiceCidadeDestino = invocation.getArgument(1);
+                    return OptionalDouble.of(distanciasFixas[indiceCidadeOrigem][indiceCidadeDestino]);
+                });
+
+        graficoServiceFactory.when(GraficoServiceFactory::getGraficoService)
+                .thenReturn(mock(GraficoService.class));
+
+        var enderecos = IntStream.range(0, 10)
+                .mapToObj(i -> new Endereco(i, -40.3, -30.900))
+                .toArray(Endereco[]::new);
+
+        var algoritmoGenetico = new AlgoritmoGenetico
+                .Builder()
+                .qtdeGeracoes(50)
+                .enderecos(enderecos)
+                .tamanhoPopulacao(30)
+                .chanceOcorrenciaMutacao(80)
+                .chanceOcorrenciaCrossover(80)
+                .build();
+
+        algoritmoGenetico.reproduzir();
+
+        assertEquals(51, algoritmoGenetico.getEstatisticasFitness().melhoresFitnessPorGeracao().size());
+    }
+
     private static double[][] inicializarDistanciasFixas() {
         return new double[][]{
                 {10, 10, 20, 30, 40, 50, 60, 70, 80, 90},
